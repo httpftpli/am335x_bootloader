@@ -143,30 +143,28 @@ static unsigned int HSMMCSDXferStatusGet(mmcsdCtrlInfo *ctrl)
 
 int main(void)
 {
-    volatile unsigned int i = 0;
-    volatile unsigned int initFlg = 1;
-    unsigned int status;
-    platformInit(); 
-    DelayTimerSetup();
-    
-   MMCSDP_CtrlInfoInit(&mmcsdctr[0],SOC_MMCHS_0_REGS,96000000,24000000,MMCSD_BUSWIDTH_4BIT,0,
-                      &card0, HSMMCSDXferSetup,
-                      HSMMCSDCmdStatusGet,HSMMCSDXferStatusGet);
-   MMCSDP_CtrlInfoInit(&mmcsdctr[1],SOC_MMCHS_1_REGS,96000000,24000000,MMCSD_BUSWIDTH_4BIT,0,
-                      &card1, HSMMCSDXferSetup,
-                      HSMMCSDCmdStatusGet,HSMMCSDXferStatusGet);
-   MMCSDP_CtrlInit(&mmcsdctr[0]);
-   MMCSDP_CtrlInit(&mmcsdctr[1]);
-   return 0 ;
+   volatile unsigned int i = 0;
+   volatile unsigned int initFlg = 1;
+   unsigned int status;
+   platformInit();
+   DelayTimerSetup();
 
- 
+   MMCSDP_CtrlInfoInit(& mmcsdctr[0], SOC_MMCHS_0_REGS, 96000000, 24000000, MMCSD_BUSWIDTH_4BIT, 0,
+                       &card0, HSMMCSDXferSetup,
+                       HSMMCSDCmdStatusGet, HSMMCSDXferStatusGet);
+   MMCSDP_CtrlInfoInit(& mmcsdctr[1], SOC_MMCHS_1_REGS, 96000000, 24000000, MMCSD_BUSWIDTH_4BIT, 0,
+                       &card1, HSMMCSDXferSetup,
+                       HSMMCSDCmdStatusGet, HSMMCSDXferStatusGet);
+   MMCSDP_CtrlInit(& mmcsdctr[0]);
+   MMCSDP_CtrlInit(& mmcsdctr[1]);
 
-   // FATFS fs1,fs2;
-   // f_mount(0,&fs1);
-   // f_mount(3,&fs2);
-   
-   // f_copy("3:/MLO","0:/MLO",buf,sizeof buf);
-   // return  0; 
+   FATFS fs1,fs2;
+   unsigned char buf[512];
+   f_mount(0, &fs1);
+   f_mount(3, &fs2);
+
+   f_copy("3:/MLO", "0:/MLO", buf, sizeof buf);
+   return  0; 
    
 }
 
