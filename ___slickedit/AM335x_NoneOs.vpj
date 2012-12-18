@@ -1,0 +1,422 @@
+<!DOCTYPE Project SYSTEM "http://www.slickedit.com/dtd/vse/10.0/vpj.dtd">
+<Project
+    Version="10.0"
+    VendorName="SlickEdit"
+    TemplateName="Other C/C++"
+    WorkingDir=".">
+    <Config
+        Name="Debug"
+        Type="cpp"
+        DebugCallbackName="gdb"
+        OutputFile="%bdAM335x_NoneOs"
+        CompilerConfigName="Latest Version">
+        <Menu>
+            <Target
+                Name="Compile"
+                MenuCaption="&amp;Compile"
+                CaptureOutputWith="ProcessBuffer"
+                OutputExts="*.o"
+                SaveOption="SaveCurrent">
+                <Exec CmdLine='cc -c -g %i %defd -o "%bd%n.o" "%f"'/>
+            </Target>
+            <Target
+                Name="Link"
+                MenuCaption="&amp;Link">
+                <Exec CmdLine='cc -g -o "%o" %f %libs'/>
+            </Target>
+            <Target
+                Name="Build"
+                MenuCaption="&amp;Build"
+                CaptureOutputWith="ProcessBuffer"
+                SaveOption="SaveWorkspaceFiles"
+                RunFromDir="D:\Program Files\IAR Systems\Embedded Workbench 6.5\common\bin\">
+                <Exec CmdLine="IarBuild.exe  E:\AM335x_NoneOs\workspace\project\mmc_inand_fat\mmc_inand_fat.ewp -make Debug"/>
+            </Target>
+            <Target
+                Name="Rebuild"
+                MenuCaption="&amp;Rebuild"
+                CaptureOutputWith="ProcessBuffer"
+                SaveOption="SaveWorkspaceFiles"
+                RunFromDir="D:\Program Files\IAR Systems\Embedded Workbench 6.5\common\bin\">
+                <Exec CmdLine="IarBuild.exe  E:\AM335x_NoneOs\workspace\project\mmc_inand_fat\mmc_inand_fat.ewp -build  Debug"/>
+            </Target>
+            <Target
+                Name="Debug"
+                MenuCaption="&amp;Debug"
+                SaveOption="SaveNone"
+                BuildFirst="1"
+                CaptureOutputWith="ProcessBuffer"
+                RunFromDir="%rw">
+                <Exec CmdLine='vsdebugio -prog "%o"'/>
+            </Target>
+            <Target
+                Name="Execute"
+                MenuCaption="E&amp;xecute"
+                SaveOption="SaveNone"
+                BuildFirst="1"
+                CaptureOutputWith="ProcessBuffer"
+                RunFromDir="%rw">
+                <Exec CmdLine='"%o"'/>
+            </Target>
+        </Menu>
+    </Config>
+    <Config
+        Name="Release"
+        Type="cpp"
+        DebugCallbackName="gdb"
+        OutputFile="%bdAM335x_NoneOs"
+        CompilerConfigName="Latest Version">
+        <Menu>
+            <Target
+                Name="Compile"
+                MenuCaption="&amp;Compile"
+                CaptureOutputWith="ProcessBuffer"
+                SaveOption="SaveCurrent"
+                OutputExts="*.o">
+                <Exec CmdLine='cc -c -O %i %defd -o "%bd%n.o" "%f"'/>
+            </Target>
+            <Target
+                Name="Link"
+                MenuCaption="&amp;Link">
+                <Exec CmdLine='cc -O -o "%o" %f %libs'/>
+            </Target>
+            <Target
+                Name="Build"
+                MenuCaption="&amp;Build"
+                CaptureOutputWith="ProcessBuffer"
+                SaveOption="SaveWorkspaceFiles"
+                RunFromDir="D:\Program Files\IAR Systems\Embedded Workbench 6.5\common\bin\">
+                <Exec CmdLine="IarBuild.exe  E:\AM335x_NoneOs\workspace\project\mmc_inand_fat\mmc_inand_fat.ewp -make Debug"/>
+            </Target>
+            <Target
+                Name="Rebuild"
+                MenuCaption="&amp;Rebuild"
+                CaptureOutputWith="ProcessBuffer"
+                SaveOption="SaveWorkspaceFiles"
+                RunFromDir="D:\Program Files\IAR Systems\Embedded Workbench 6.5\common\bin\">
+                <Exec CmdLine="IarBuild.exe  E:\AM335x_NoneOs\workspace\project\mmc_inand_fat\mmc_inand_fat.ewp -build  Debug"/>
+            </Target>
+            <Target
+                Name="Debug"
+                MenuCaption="&amp;Debug"
+                SaveOption="SaveNone"
+                BuildFirst="1"
+                CaptureOutputWith="ProcessBuffer"
+                RunFromDir="%rw">
+                <Exec CmdLine='vsdebugio -prog "%o"'/>
+            </Target>
+            <Target
+                Name="Execute"
+                MenuCaption="E&amp;xecute"
+                SaveOption="SaveNone"
+                BuildFirst="1"
+                CaptureOutputWith="ProcessBuffer"
+                RunFromDir="%rw">
+                <Exec CmdLine='"%o"'/>
+            </Target>
+        </Menu>
+    </Config>
+    <Rules Name="Compile">
+        <Rule
+            InputExts="*.s"
+            OutputExts="*.o"
+            LinkObject="1">
+            <Exec CmdLine='as -o "%bd%n.o" "%f"'/>
+        </Rule>
+    </Rules>
+    <CustomFolders>
+        <Folder
+            Name="Source Files"
+            Filters="*.c;*.C;*.cc;*.cpp;*.cp;*.cxx;*.c++;*.prg;*.pas;*.dpr;*.asm;*.s;*.bas;*.java;*.cs;*.sc;*.e;*.cob;*.html;*.rc;*.tcl;*.py;*.pl;*.d;*.m;*.mm">
+        </Folder>
+        <Folder
+            Name="Header Files"
+            Filters="*.h;*.H;*.hh;*.hpp;*.hxx;*.inc;*.sh;*.cpy;*.if"/>
+        <Folder
+            Name="Resource Files"
+            Filters="*.ico;*.cur;*.dlg"/>
+        <Folder
+            Name="Bitmaps"
+            Filters="*.bmp"/>
+        <Folder
+            Name="Other Files"
+            Filters="">
+        </Folder>
+    </CustomFolders>
+    <Files AutoFolders="DirectoryView">
+        <Folder Name="../lib">
+            <Folder Name="cpu">
+                <Folder Name="armv7a">
+                    <Folder Name="ewarm">
+                        <F N="../lib/cpu/armv7a/ewarm/cp15.S"/>
+                        <F N="../lib/cpu/armv7a/ewarm/cpu.S"/>
+                        <F N="../lib/cpu/armv7a/ewarm/init.S"/>
+                    </Folder>
+                    <F N="../lib/cpu/armv7a/cache.c"/>
+                    <F N="../lib/cpu/armv7a/mmu.c"/>
+                </Folder>
+                <Folder Name="ewarm">
+                    <F N="../lib/cpu/ewarm/exceptionhandler.S"/>
+                </Folder>
+                <Folder Name="include">
+                    <Folder Name="armv7a">
+                        <F N="../lib/cpu/include/armv7a/cache.h"/>
+                        <F N="../lib/cpu/include/armv7a/cp15.h"/>
+                        <F N="../lib/cpu/include/armv7a/cpu.h"/>
+                        <F N="../lib/cpu/include/armv7a/mmu.h"/>
+                    </Folder>
+                    <F N="../lib/cpu/include/clock.h"/>
+                    <F N="../lib/cpu/include/edma_event.h"/>
+                    <F N="../lib/cpu/include/interrupt.h"/>
+                    <F N="../lib/cpu/include/interruptconfig.h"/>
+                    <F N="../lib/cpu/include/pin_mux.h"/>
+                </Folder>
+                <F N="../lib/cpu/clock.c"/>
+                <F N="../lib/cpu/interrupt.c"/>
+                <F N="../lib/cpu/startup.c"/>
+            </Folder>
+            <Folder Name="fatfs">
+                <Folder Name="port">
+                    <F N="../lib/fatfs/port/diskio.c"/>
+                    <F N="../lib/fatfs/port/diskio.h"/>
+                </Folder>
+                <Folder Name="src">
+                    <Folder Name="option">
+                        <F N="../lib/fatfs/src/option/cc932.c"/>
+                        <F N="../lib/fatfs/src/option/cc936.c"/>
+                        <F N="../lib/fatfs/src/option/cc949.c"/>
+                        <F N="../lib/fatfs/src/option/cc950.c"/>
+                        <F N="../lib/fatfs/src/option/ccsbcs.c"/>
+                        <F N="../lib/fatfs/src/option/syscall.c"/>
+                        <F N="../lib/fatfs/src/option/unicode.c"/>
+                    </Folder>
+                    <F N="../lib/fatfs/src/ff.c"/>
+                    <F N="../lib/fatfs/src/ff.h"/>
+                    <F N="../lib/fatfs/src/ff_ext.c"/>
+                    <F N="../lib/fatfs/src/ff_ext.h"/>
+                    <F N="../lib/fatfs/src/ffconf.h"/>
+                    <F N="../lib/fatfs/src/integer.h"/>
+                </Folder>
+            </Folder>
+            <Folder Name="mmcsdlib">
+                <Folder Name="include">
+                    <F N="../lib/mmcsdlib/include/hs_mmcsdlib.h"/>
+                    <F N="../lib/mmcsdlib/include/mmcsd_proto.h"/>
+                </Folder>
+                <F N="../lib/mmcsdlib/mmcsd_proto.c"/>
+                <F N="../lib/mmcsdlib/mmcsdhost.c"/>
+            </Folder>
+            <Folder Name="peri_drivers">
+                <Folder Name="include">
+                    <Folder Name="hw">
+                        <F N="../lib/peri_drivers/include/hw/hw_cm_cefuse.h"/>
+                        <F N="../lib/peri_drivers/include/hw/hw_cm_device.h"/>
+                        <F N="../lib/peri_drivers/include/hw/hw_cm_dpll.h"/>
+                        <F N="../lib/peri_drivers/include/hw/hw_cm_gfx.h"/>
+                        <F N="../lib/peri_drivers/include/hw/hw_cm_mpu.h"/>
+                        <F N="../lib/peri_drivers/include/hw/hw_cm_per.h"/>
+                        <F N="../lib/peri_drivers/include/hw/hw_cm_rtc.h"/>
+                        <F N="../lib/peri_drivers/include/hw/hw_cm_wkup.h"/>
+                        <F N="../lib/peri_drivers/include/hw/hw_control_AM335x.h"/>
+                        <F N="../lib/peri_drivers/include/hw/hw_cpsw_ale.h"/>
+                        <F N="../lib/peri_drivers/include/hw/hw_cpsw_cpdma.h"/>
+                        <F N="../lib/peri_drivers/include/hw/hw_cpsw_cpts.h"/>
+                        <F N="../lib/peri_drivers/include/hw/hw_cpsw_port.h"/>
+                        <F N="../lib/peri_drivers/include/hw/hw_cpsw_sl.h"/>
+                        <F N="../lib/peri_drivers/include/hw/hw_cpsw_ss.h"/>
+                        <F N="../lib/peri_drivers/include/hw/hw_cpsw_wr.h"/>
+                        <F N="../lib/peri_drivers/include/hw/hw_dcan.h"/>
+                        <F N="../lib/peri_drivers/include/hw/hw_ddr2_mddr.h"/>
+                        <F N="../lib/peri_drivers/include/hw/hw_dmtimer.h"/>
+                        <F N="../lib/peri_drivers/include/hw/hw_ecap.h"/>
+                        <F N="../lib/peri_drivers/include/hw/hw_edma3cc.h"/>
+                        <F N="../lib/peri_drivers/include/hw/hw_edma3tc.h"/>
+                        <F N="../lib/peri_drivers/include/hw/hw_ehrpwm.h"/>
+                        <F N="../lib/peri_drivers/include/hw/hw_elm.h"/>
+                        <F N="../lib/peri_drivers/include/hw/hw_emif4d.h"/>
+                        <F N="../lib/peri_drivers/include/hw/hw_emifa2.h"/>
+                        <F N="../lib/peri_drivers/include/hw/hw_gpio_v2.h"/>
+                        <F N="../lib/peri_drivers/include/hw/hw_gpmc.h"/>
+                        <F N="../lib/peri_drivers/include/hw/hw_hs_mmcsd.h"/>
+                        <F N="../lib/peri_drivers/include/hw/hw_hsi2c.h"/>
+                        <F N="../lib/peri_drivers/include/hw/hw_intc.h"/>
+                        <F N="../lib/peri_drivers/include/hw/hw_lcdc.h"/>
+                        <F N="../lib/peri_drivers/include/hw/hw_mailbox.h"/>
+                        <F N="../lib/peri_drivers/include/hw/hw_mcasp.h"/>
+                        <F N="../lib/peri_drivers/include/hw/hw_mcspi.h"/>
+                        <F N="../lib/peri_drivers/include/hw/hw_mdio.h"/>
+                        <F N="../lib/peri_drivers/include/hw/hw_prm_mpu.h"/>
+                        <F N="../lib/peri_drivers/include/hw/hw_prm_per.h"/>
+                        <F N="../lib/peri_drivers/include/hw/hw_prm_wkup.h"/>
+                        <F N="../lib/peri_drivers/include/hw/hw_pwmss.h"/>
+                        <F N="../lib/peri_drivers/include/hw/hw_rtc.h"/>
+                        <F N="../lib/peri_drivers/include/hw/hw_tps65217.h"/>
+                        <F N="../lib/peri_drivers/include/hw/hw_tps65910.h"/>
+                        <F N="../lib/peri_drivers/include/hw/hw_tsc_adc_ss.h"/>
+                        <F N="../lib/peri_drivers/include/hw/hw_types.h"/>
+                        <F N="../lib/peri_drivers/include/hw/hw_uart_irda_cir.h"/>
+                        <F N="../lib/peri_drivers/include/hw/hw_usb.h"/>
+                        <F N="../lib/peri_drivers/include/hw/hw_usbOtg_AM335x.h"/>
+                        <F N="../lib/peri_drivers/include/hw/hw_usbphyGS70.h"/>
+                        <F N="../lib/peri_drivers/include/hw/hw_watchdog.h"/>
+                        <F N="../lib/peri_drivers/include/hw/soc_AM335x.h"/>
+                    </Folder>
+                    <F N="../lib/peri_drivers/include/cpsw.h"/>
+                    <F N="../lib/peri_drivers/include/dcan.h"/>
+                    <F N="../lib/peri_drivers/include/dmtimer.h"/>
+                    <F N="../lib/peri_drivers/include/ecap.h"/>
+                    <F N="../lib/peri_drivers/include/edma.h"/>
+                    <F N="../lib/peri_drivers/include/ehrpwm.h"/>
+                    <F N="../lib/peri_drivers/include/elm.h"/>
+                    <F N="../lib/peri_drivers/include/epwm.h"/>
+                    <F N="../lib/peri_drivers/include/gpio.h"/>
+                    <F N="../lib/peri_drivers/include/gpio_v2.h"/>
+                    <F N="../lib/peri_drivers/include/gpmc.h"/>
+                    <F N="../lib/peri_drivers/include/hs_mmcsd.h"/>
+                    <F N="../lib/peri_drivers/include/hsi2c.h"/>
+                    <F N="../lib/peri_drivers/include/mailbox.h"/>
+                    <F N="../lib/peri_drivers/include/mcasp.h"/>
+                    <F N="../lib/peri_drivers/include/mcspi.h"/>
+                    <F N="../lib/peri_drivers/include/mdio.h"/>
+                    <F N="../lib/peri_drivers/include/perf.h"/>
+                    <F N="../lib/peri_drivers/include/phy.h"/>
+                    <F N="../lib/peri_drivers/include/pruss.h"/>
+                    <F N="../lib/peri_drivers/include/raster.h"/>
+                    <F N="../lib/peri_drivers/include/rtc.h"/>
+                    <F N="../lib/peri_drivers/include/systick.h"/>
+                    <F N="../lib/peri_drivers/include/tsc_adc.h"/>
+                    <F N="../lib/peri_drivers/include/uart_irda_cir.h"/>
+                    <F N="../lib/peri_drivers/include/usb.h"/>
+                    <F N="../lib/peri_drivers/include/vpif.h"/>
+                    <F N="../lib/peri_drivers/include/watchdog.h"/>
+                </Folder>
+                <F N="../lib/peri_drivers/cpsw.c"/>
+                <F N="../lib/peri_drivers/dcan.c"/>
+                <F N="../lib/peri_drivers/dmtimer.c"/>
+                <F N="../lib/peri_drivers/ecap.c"/>
+                <F N="../lib/peri_drivers/edma.c"/>
+                <F N="../lib/peri_drivers/ehrpwm.c"/>
+                <F N="../lib/peri_drivers/elm.c"/>
+                <F N="../lib/peri_drivers/gpio_v2.c"/>
+                <F N="../lib/peri_drivers/gpmc.c"/>
+                <F N="../lib/peri_drivers/hs_mmcsd.c"/>
+                <F N="../lib/peri_drivers/hsi2c.c"/>
+                <F N="../lib/peri_drivers/mailbox.c"/>
+                <F N="../lib/peri_drivers/mcasp.c"/>
+                <F N="../lib/peri_drivers/mcspi.c"/>
+                <F N="../lib/peri_drivers/mdio.c"/>
+                <F N="../lib/peri_drivers/phy.c"/>
+                <F N="../lib/peri_drivers/raster.c"/>
+                <F N="../lib/peri_drivers/rtc.c"/>
+                <F N="../lib/peri_drivers/tsc_adc.c"/>
+                <F N="../lib/peri_drivers/uart_irda_cir.c"/>
+                <F N="../lib/peri_drivers/usb.c"/>
+                <F N="../lib/peri_drivers/usbphyGS70.c"/>
+                <F N="../lib/peri_drivers/watchdog.c"/>
+            </Folder>
+            <Folder Name="platform">
+                <Folder Name="include">
+                    <F N="../lib/platform/include/platform.h"/>
+                </Folder>
+                <F N="../lib/platform/pf_cpsw.c"/>
+                <F N="../lib/platform/pf_dmtimer.c"/>
+                <F N="../lib/platform/pf_edma.c"/>
+                <F N="../lib/platform/pf_gpio.c"/>
+                <F N="../lib/platform/pf_hs_mmcsd.c"/>
+                <F N="../lib/platform/pf_hsi2c.c"/>
+                <F N="../lib/platform/pf_int.c"/>
+                <F N="../lib/platform/pf_mux.h"/>
+                <F N="../lib/platform/pf_platform.c"/>
+                <F N="../lib/platform/pf_pwmss.c"/>
+                <F N="../lib/platform/pf_rtc.c"/>
+                <F N="../lib/platform/pf_sysdelay.c"/>
+                <F N="../lib/platform/pf_sysperf.c"/>
+                <F N="../lib/platform/pf_timertick.c"/>
+                <F N="../lib/platform/pf_uart.c"/>
+                <F N="../lib/platform/pf_uartConsole.c"/>
+                <F N="../lib/platform/pf_usb.c"/>
+                <F N="../lib/platform/pf_watchdog.c"/>
+            </Folder>
+            <Folder Name="tool">
+                <Folder Name="ewarm">
+                    <F N="../lib/tool/ewarm/am335x.icf"/>
+                </Folder>
+            </Folder>
+            <Folder Name="usblib">
+                <Folder Name="device">
+                    <F N="../lib/usblib/device/usbdbulk.c"/>
+                    <F N="../lib/usblib/device/usbdcdc.c"/>
+                    <F N="../lib/usblib/device/usbdcdesc.c"/>
+                    <F N="../lib/usblib/device/usbdcomp.c"/>
+                    <F N="../lib/usblib/device/usbdconfig.c"/>
+                    <F N="../lib/usblib/device/usbdenum.c"/>
+                    <F N="../lib/usblib/device/usbdhandler.c"/>
+                    <F N="../lib/usblib/device/usbdhid.c"/>
+                    <F N="../lib/usblib/device/usbdhidmouse.c"/>
+                    <F N="../lib/usblib/device/usbdmsc.c"/>
+                </Folder>
+                <Folder Name="host">
+                    <F N="../lib/usblib/host/usbhhid.c"/>
+                    <F N="../lib/usblib/host/usbhhidkeyboard.c"/>
+                    <F N="../lib/usblib/host/usbhhidmouse.c"/>
+                    <F N="../lib/usblib/host/usbhmsc.c"/>
+                    <F N="../lib/usblib/host/usbhostenum.c"/>
+                    <F N="../lib/usblib/host/usbhscsi.c"/>
+                </Folder>
+                <Folder Name="include">
+                    <F N="../lib/usblib/include/usb-ids.h"/>
+                    <F N="../lib/usblib/include/usbcdc.h"/>
+                    <F N="../lib/usblib/include/usbdbulk.h"/>
+                    <F N="../lib/usblib/include/usbdcdc.h"/>
+                    <F N="../lib/usblib/include/usbdcomp.h"/>
+                    <F N="../lib/usblib/include/usbdevice.h"/>
+                    <F N="../lib/usblib/include/usbdevicepriv.h"/>
+                    <F N="../lib/usblib/include/usbdhid.h"/>
+                    <F N="../lib/usblib/include/usbdhidmouse.h"/>
+                    <F N="../lib/usblib/include/usbdmsc.h"/>
+                    <F N="../lib/usblib/include/usbhhid.h"/>
+                    <F N="../lib/usblib/include/usbhhidkeyboard.h"/>
+                    <F N="../lib/usblib/include/usbhhidmouse.h"/>
+                    <F N="../lib/usblib/include/usbhid.h"/>
+                    <F N="../lib/usblib/include/usbhmsc.h"/>
+                    <F N="../lib/usblib/include/usbhost.h"/>
+                    <F N="../lib/usblib/include/usbhscsi.h"/>
+                    <F N="../lib/usblib/include/usblib.h"/>
+                    <F N="../lib/usblib/include/usblibpriv.h"/>
+                    <F N="../lib/usblib/include/usbmsc.h"/>
+                </Folder>
+                <F N="../lib/usblib/usbbuffer.c"/>
+                <F N="../lib/usblib/usbdata.c"/>
+                <F N="../lib/usblib/usbdesc.c"/>
+                <F N="../lib/usblib/usbkeyboardmap.c"/>
+                <F N="../lib/usblib/usbringbuf.c"/>
+                <F N="../lib/usblib/usbtick.c"/>
+            </Folder>
+            <Folder Name="utils">
+                <Folder Name="include">
+                    <F N="../lib/utils/include/cmdline.h"/>
+                    <F N="../lib/utils/include/debug.h"/>
+                    <F N="../lib/utils/include/delay.h"/>
+                    <F N="../lib/utils/include/misc.h"/>
+                    <F N="../lib/utils/include/mmath.h"/>
+                    <F N="../lib/utils/include/perf.h"/>
+                    <F N="../lib/utils/include/systick.h"/>
+                    <F N="../lib/utils/include/type.h"/>
+                    <F N="../lib/utils/include/uartstdio.h"/>
+                </Folder>
+                <F N="../lib/utils/cmdline.c"/>
+                <F N="../lib/utils/delay.c"/>
+                <F N="../lib/utils/misc.c"/>
+                <F N="../lib/utils/perf.c"/>
+                <F N="../lib/utils/systick.c"/>
+                <F N="../lib/utils/uartStdio.c"/>
+            </Folder>
+        </Folder>
+        <Folder Name="../src">
+            <Folder Name="mmc_inand_fat">
+                <F N="../src/mmc_inand_fat/clip.c"/>
+                <F N="../src/mmc_inand_fat/mmc_inand_fat.c"/>
+            </Folder>
+        </Folder>
+    </Files>
+</Project>
