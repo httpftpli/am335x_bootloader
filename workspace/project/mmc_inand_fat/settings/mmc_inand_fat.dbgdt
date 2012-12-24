@@ -19,7 +19,7 @@
           
           
           
-        <Column0>204</Column0><Column1>27</Column1><Column2>27</Column2><Column3>27</Column3></ColumnWidths>
+        <Column0>128</Column0><Column1>27</Column1><Column2>27</Column2><Column3>27</Column3></ColumnWidths>
       </Workspace>
       <Disassembly>
         <col-names>
@@ -39,7 +39,7 @@
         <expressions>
           
           
-        <item>gf_MMCSD0CmdComp</item><item>array1</item><item>a</item><item>dataBuffer</item><item>card</item><item>ctrl-&gt;memBase</item><item>g_Mmcsd</item><item>mmcsdctr</item><item>fileinfo</item><item>filename</item><item/></expressions>
+        <item>gf_MMCSD0CmdComp</item><item>array1</item><item>a</item><item>dataBuffer</item><item>card</item><item>ctrl-&gt;memBase</item><item>g_Mmcsd</item><item>mmcsdctr</item><item>fileinfo</item><item>filename</item><item></item></expressions>
         <col-names>
           
           
@@ -92,7 +92,7 @@
           </Tab>
         <Tab><Identity>TabID-12114-24283</Identity><TabName>Breakpoints</TabName><Factory>Breakpoints</Factory></Tab></Tabs>
         
-      <SelectedTab>0</SelectedTab></Wnd0><Wnd1>
+      <SelectedTab>2</SelectedTab></Wnd0><Wnd3>
         <Tabs>
           <Tab>
             <Identity>TabID-18227-51</Identity>
@@ -102,9 +102,9 @@
               
             <NodeDict><ExpandedNode>mmc_inand_fat</ExpandedNode><ExpandedNode>mmc_inand_fat/3thLib</ExpandedNode><ExpandedNode>mmc_inand_fat/3thLib/fatfs</ExpandedNode><ExpandedNode>mmc_inand_fat/3thLib/fatfs/port</ExpandedNode><ExpandedNode>mmc_inand_fat/3thLib/fatfs/src</ExpandedNode><ExpandedNode>mmc_inand_fat/3thLib/fatfs/src/cc936.c</ExpandedNode><ExpandedNode>mmc_inand_fat/lib</ExpandedNode><ExpandedNode>mmc_inand_fat/lib/cpu</ExpandedNode><ExpandedNode>mmc_inand_fat/lib/mmcsdlib</ExpandedNode><ExpandedNode>mmc_inand_fat/lib/platform</ExpandedNode></NodeDict></Session>
           </Tab>
-        </Tabs>
+        <Tab><Identity>TabID-14569-19552</Identity><TabName>Call Stack</TabName><Factory>CallStack</Factory></Tab></Tabs>
         
-      <SelectedTab>0</SelectedTab></Wnd1><Wnd2>
+      <SelectedTab>0</SelectedTab></Wnd3><Wnd4>
         <Tabs>
           <Tab>
             <Identity>TabID-5200-9097</Identity>
@@ -120,7 +120,7 @@
               
               
               
-            <REG1>0</REG1><REG2>0</REG2><Group>16</Group><States>4</States><State0>CM_PER_L3S_CLKSTCTRL</State0><State1>CM_PER_L3_CLKSTCTRL</State1><State2>MAC_ID0_LO</State2><State3>MMCHS1_STAT</State3></Session>
+            <State8>MMCHS1_STAT</State8><State7>MMCHS1_STAT</State7><State6>MMCHS1_STAT</State6><REG1>0</REG1><REG2>281</REG2><Group>94</Group><States>6</States><State0>CM_PER_L3S_CLKSTCTRL</State0><State1>CM_PER_L4LS_CLKSTCTRL</State1><State2>DCAN0IF1MCTL</State2><State3>DCAN_RAMINIT</State3><State4>MAC_ID0_LO</State4><State5>MMCHS1_STAT</State5></Session>
           </Tab><Tab>
             <Identity>TabID-28975-54</Identity>
             <TabName>Disassembly</TabName>
@@ -128,20 +128,20 @@
             <Session/>
           </Tab><Tab><Identity>TabID-12062-30641</Identity><TabName>Locals</TabName><Factory>Locals</Factory></Tab></Tabs>
         
-      <SelectedTab>1</SelectedTab></Wnd2></Windows>
+      <SelectedTab>1</SelectedTab></Wnd4></Windows>
     <Editor>
       
       
       
       
-    <Pane><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\src\mmc_inand_fat\mmc_inand_fat.c</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>143</YPos2><SelStart2>4874</SelStart2><SelEnd2>4874</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\lib\fatfs\src\ff_ext.c</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>44</YPos2><SelStart2>1508</SelStart2><SelEnd2>1508</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\lib\fatfs\port\diskio.c</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>56</YPos2><SelStart2>2476</SelStart2><SelEnd2>2476</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\lib\cpu\startup.c</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>130</YPos2><SelStart2>6173</SelStart2><SelEnd2>6173</SelEnd2></Tab><ActiveTab>3</ActiveTab></Pane><ActivePane>0</ActivePane><Sizes><Pane><X>1000000</X><Y>1000000</Y></Pane></Sizes><SplitMode>1</SplitMode></Editor>
+    <Pane><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\lib\fatfs\src\ff_ext.c</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>36</YPos2><SelStart2>1508</SelStart2><SelEnd2>1508</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\lib\fatfs\port\diskio.c</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>55</YPos2><SelStart2>2392</SelStart2><SelEnd2>2392</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\lib\mmcsdlib\mmcsd_proto.c</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>584</YPos2><SelStart2>17234</SelStart2><SelEnd2>17234</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\lib\fatfs\src\ff.h</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>192</YPos2><SelStart2>7257</SelStart2><SelEnd2>7257</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\lib\platform\pf_dmtimer.c</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>0</YPos2><SelStart2>0</SelStart2><SelEnd2>0</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\lib\platform\pf_int.c</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>43</YPos2><SelStart2>1951</SelStart2><SelEnd2>1951</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\lib\cpu\armv7a\ewarm\init.S</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>122</YPos2><SelStart2>3885</SelStart2><SelEnd2>3885</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\lib\cpu\interrupt.c</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>54</YPos2><SelStart2>2529</SelStart2><SelEnd2>2529</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\lib\cpu\armv7a\mmu.c</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>9</YPos2><SelStart2>376</SelStart2><SelEnd2>376</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\lib\peri_drivers\include\hw\hw_control_AM335x.h</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>2225</YPos2><SelStart2>86537</SelStart2><SelEnd2>86537</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\lib\platform\pf_platform.c</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>193</YPos2><SelStart2>8333</SelStart2><SelEnd2>8333</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\lib\platform\include\platform.h</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>41</YPos2><SelStart2>0</SelStart2><SelEnd2>0</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\lib\platform\pf_rtc.c</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>272</YPos2><SelStart2>11119</SelStart2><SelEnd2>11119</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\lib\utils\uartStdio.c</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>103</YPos2><SelStart2>3274</SelStart2><SelEnd2>3274</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\lib\peri_drivers\include\hw\soc_AM335x.h</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>145</YPos2><SelStart2>8018</SelStart2><SelEnd2>8018</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\lib\peri_drivers\dcan.c</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>1018</YPos2><SelStart2>37447</SelStart2><SelEnd2>37447</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\lib\peri_drivers\include\hw\hw_dcan.h</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>79</YPos2><SelStart2>3582</SelStart2><SelEnd2>3582</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\lib\platform\pf_dcan.c</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>153</YPos2><SelStart2>5872</SelStart2><SelEnd2>5872</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\lib\cpu\ewarm\exceptionhandler.S</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>137</YPos2><SelStart2>7300</SelStart2><SelEnd2>7300</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\src\mmc_inand_fat\mmc_inand_fat.c</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>164</YPos2><SelStart2>5364</SelStart2><SelEnd2>5364</SelEnd2></Tab><ActiveTab>19</ActiveTab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\lib\cpu\startup.c</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>123</YPos2><SelStart2>6181</SelStart2><SelEnd2>6181</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\lib\peri_drivers\include\dcan.h</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>552</YPos2><SelStart2>24971</SelStart2><SelEnd2>24983</SelEnd2></Tab></Pane><ActivePane>0</ActivePane><Sizes><Pane><X>1000000</X><Y>1000000</Y></Pane></Sizes><SplitMode>1</SplitMode></Editor>
     <Positions>
       
       
       
       
       
-    <Top><Row0><Sizes><Toolbar-00e85ac0><key>iaridepm.enu1</key></Toolbar-00e85ac0></Sizes></Row0><Row1><Sizes><Toolbar-00ee4fe0><key>debuggergui.enu1</key></Toolbar-00ee4fe0></Sizes></Row1></Top><Left><Row0><Sizes><Wnd1><Rect><Top>-2</Top><Left>-2</Left><Bottom>464</Bottom><Right>295</Right><x>-2</x><y>-2</y><xscreen>305</xscreen><yscreen>344</yscreen><sizeHorzCX>238281</sizeHorzCX><sizeHorzCY>472527</sizeHorzCY><sizeVertCX>232031</sizeVertCX><sizeVertCY>640110</sizeVertCY></Rect></Wnd1></Sizes></Row0></Left><Right><Row0><Sizes><Wnd2><Rect><Top>-2</Top><Left>-2</Left><Bottom>464</Bottom><Right>280</Right><x>-2</x><y>-2</y><xscreen>305</xscreen><yscreen>344</yscreen><sizeHorzCX>238281</sizeHorzCX><sizeHorzCY>472527</sizeHorzCY><sizeVertCX>220313</sizeVertCX><sizeVertCY>640110</sizeVertCY></Rect></Wnd2></Sizes></Row0></Right><Bottom><Row0><Sizes><Wnd0><Rect><Top>-2</Top><Left>-2</Left><Bottom>195</Bottom><Right>1282</Right><x>-2</x><y>-2</y><xscreen>1284</xscreen><yscreen>197</yscreen><sizeHorzCX>1003125</sizeHorzCX><sizeHorzCY>270604</sizeHorzCY><sizeVertCX>238281</sizeVertCX><sizeVertCY>472527</sizeVertCY></Rect></Wnd0></Sizes></Row0></Bottom><Float><Sizes/></Float></Positions>
+    <Top><Row0><Sizes><Toolbar-01b962b8><key>iaridepm.enu1</key></Toolbar-01b962b8></Sizes></Row0><Row1><Sizes><Toolbar-08729408><key>debuggergui.enu1</key></Toolbar-08729408></Sizes></Row1></Top><Left><Row0><Sizes><Wnd3><Rect><Top>-2</Top><Left>-2</Left><Bottom>514</Bottom><Right>219</Right><x>-2</x><y>-2</y><xscreen>122</xscreen><yscreen>104</yscreen><sizeHorzCX>95313</sizeHorzCX><sizeHorzCY>142857</sizeHorzCY><sizeVertCX>172656</sizeVertCX><sizeVertCY>708791</sizeVertCY></Rect></Wnd3></Sizes></Row0></Left><Right><Row0><Sizes><Wnd4><Rect><Top>-2</Top><Left>-2</Left><Bottom>514</Bottom><Right>387</Right><x>-2</x><y>-2</y><xscreen>122</xscreen><yscreen>104</yscreen><sizeHorzCX>95313</sizeHorzCX><sizeHorzCY>142857</sizeHorzCY><sizeVertCX>303906</sizeVertCX><sizeVertCY>708791</sizeVertCY></Rect></Wnd4></Sizes></Row0></Right><Bottom><Row0><Sizes><Wnd0><Rect><Top>-2</Top><Left>-2</Left><Bottom>145</Bottom><Right>1282</Right><x>-2</x><y>-2</y><xscreen>1284</xscreen><yscreen>147</yscreen><sizeHorzCX>1003125</sizeHorzCX><sizeHorzCY>201923</sizeHorzCY><sizeVertCX>95313</sizeVertCX><sizeVertCY>142857</sizeVertCY></Rect></Wnd0></Sizes></Row0></Bottom><Float><Sizes/></Float></Positions>
   </Desktop>
 </Project>
 

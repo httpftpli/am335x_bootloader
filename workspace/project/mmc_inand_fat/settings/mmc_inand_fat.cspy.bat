@@ -19,6 +19,6 @@
 @REM 
 
 
-"D:\Program Files\IAR Systems\Embedded Workbench 6.5\common\bin\cspybat" "D:\Program Files\IAR Systems\Embedded Workbench 6.5\arm\bin\armproc.dll" "D:\Program Files\IAR Systems\Embedded Workbench 6.5\arm\bin\armjlink.dll"  %1 --plugin "D:\Program Files\IAR Systems\Embedded Workbench 6.5\arm\bin\armbat.dll" --macro "E:\AM335x_NoneOs\lib\tool\ewarm\AM335x_DDR2.mac" --backend -B "--endian=little" "--cpu=Cortex-A8" "--fpu=VFPv3Neon" "-p" "D:\Program Files\IAR Systems\Embedded Workbench 6.5\arm\CONFIG\debugger\TexasInstruments\am3359.ddf" "--semihosting=none" "--device=am3359" "--drv_communication=USB0" "--jlink_speed=auto" "--jlink_initial_speed=32" "--drv_catch_exceptions=0x000" "--jlink_reset_strategy=0,4" 
+"D:\Program Files\IAR Systems\Embedded Workbench 6.5\common\bin\cspybat" "D:\Program Files\IAR Systems\Embedded Workbench 6.5\arm\bin\armproc.dll" "D:\Program Files\IAR Systems\Embedded Workbench 6.5\arm\bin\armjlink.dll"  %1 --plugin "D:\Program Files\IAR Systems\Embedded Workbench 6.5\arm\bin\armbat.dll" --macro "E:\AM335x_NoneOs\workspace\project\mmc_inand_fat\..\..\tool\ewarm\AM335x_DDR2.mac" --backend -B "--endian=little" "--cpu=Cortex-A8" "--fpu=VFPv3Neon" "-p" "D:\Program Files\IAR Systems\Embedded Workbench 6.5\arm\CONFIG\debugger\TexasInstruments\am3359.ddf" "--semihosting=none" "--device=am3359" "--drv_communication=USB0" "--jlink_speed=auto" "--jlink_initial_speed=32" "--drv_catch_exceptions=0x000" "--jlink_reset_strategy=0,4" 
 
 

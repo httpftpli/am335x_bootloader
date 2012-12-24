@@ -37,7 +37,7 @@
         </option>
         <option>
           <name>MacFile</name>
-          <state>E:\AM335x_NoneOs\lib\tool\ewarm\AM335x_DDR2.mac</state>
+          <state>$PROJ_DIR$\..\..\tool\ewarm\AM335x_DDR2.mac</state>
         </option>
         <option>
           <name>MemOverride</name>

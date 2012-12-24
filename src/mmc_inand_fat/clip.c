@@ -37,5 +37,12 @@
     return  0;
 
 
-//scan dir
+//copy file 
+    FATFS fs1,fs2;
+    unsigned char buf[512];
+    f_mount(0, &fs1);
+    f_mount(3, &fs2);
+
+   f_copy("3:/MLO", "0:/MLO", buf, sizeof buf);
+
 

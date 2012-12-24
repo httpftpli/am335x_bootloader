@@ -699,7 +699,7 @@
         </option>
         <option>
           <name>IlinkIcfFile</name>
-          <state>E:\AM335x_NoneOs\lib\tool\ewarm\am335x.icf</state>
+          <state>$PROJ_DIR$\..\..\tool\ewarm\am335x.icf</state>
         </option>
         <option>
           <name>IlinkIcfFileSlave</name>
@@ -1996,6 +1996,9 @@
       <name>platform</name>
       <file>
         <name>$PROJ_DIR$\..\..\..\lib\platform\pf_cpsw.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\lib\platform\pf_dcan.c</name>
       </file>
       <file>
         <name>$PROJ_DIR$\..\..\..\lib\platform\pf_dmtimer.c</name>

@@ -3,7 +3,8 @@
     Version="10.0"
     VendorName="SlickEdit"
     TemplateName="Other C/C++"
-    WorkingDir=".">
+    WorkingDir="."
+    VCSProject="Git:">
     <Config
         Name="Debug"
         Type="cpp"
@@ -319,6 +320,7 @@
                     <F N="../lib/platform/include/platform.h"/>
                 </Folder>
                 <F N="../lib/platform/pf_cpsw.c"/>
+                <F N="../lib/platform/pf_dcan.c"/>
                 <F N="../lib/platform/pf_dmtimer.c"/>
                 <F N="../lib/platform/pf_edma.c"/>
                 <F N="../lib/platform/pf_gpio.c"/>

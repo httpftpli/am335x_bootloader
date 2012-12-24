@@ -12,10 +12,11 @@
 #include "mmu.h"
 #include "debug.h"
 #include "ff.h"
-//#include "fatfs.h"
+#include "dcan.h"
 #include "ff_ext.h"
 #ifdef MMCSD_PERF
 #include "perf.h"
+
 #endif
 
 /******************************************************************************
@@ -28,6 +29,8 @@
 
 
 #define SIZEOFARRYA                     2*1024
+
+#define DCAN_IN_CLK                       (24000000u)
 
 /* SD card info structure */
 mmcsdCardInfo card0, card1;
@@ -141,11 +144,26 @@ static unsigned int HSMMCSDXferStatusGet(mmcsdCtrlInfo *ctrl)
 }
 
 
+volatile unsigned int ack = 0;
+
+static void canrcvhandler(unsigned int index,CAN_FRAME *frame){
+      ack = 1;
+}
+
 int main(void)
 {
    volatile unsigned int i = 0;
    volatile unsigned int initFlg = 1;
    unsigned int status;
+   CAN_FRAME canFrame;
+   canFrame.id = 0x512<<18;
+   canFrame.xtd = 0;
+   canFrame.data[0] = 0;
+   canFrame.data[1] = 0x04;
+   canFrame.dlc = 8;
+   canFrame.dir = 0;
+
+
    platformInit();
    DelayTimerSetup();
 
@@ -157,13 +175,15 @@ int main(void)
                        HSMMCSDCmdStatusGet, HSMMCSDXferStatusGet);
    MMCSDP_CtrlInit(& mmcsdctr[0]);
    MMCSDP_CtrlInit(& mmcsdctr[1]);
+   CANRegistRcvedHandler(canrcvhandler);
+   CANInit(SOC_DCAN_0_REGS,CAN_MODE_NORMAL, DCAN_IN_CLK,1000000);
+   
+   while (1) {
+      CANSend_noblock(SOC_DCAN_0_REGS,&canFrame);
+      while (ack == 0);
+      ack = 0;
+   }
 
-   FATFS fs1,fs2;
-   unsigned char buf[512];
-   f_mount(0, &fs1);
-   f_mount(3, &fs2);
-
-   f_copy("3:/MLO", "0:/MLO", buf, sizeof buf);
    return  0; 
    
 }
