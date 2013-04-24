@@ -169,7 +169,6 @@
                     <F N="../lib/cpu/include/clock.h"/>
                     <F N="../lib/cpu/include/edma_event.h"/>
                     <F N="../lib/cpu/include/interrupt.h"/>
-                    <F N="../lib/cpu/include/interruptconfig.h"/>
                     <F N="../lib/cpu/include/pin_mux.h"/>
                 </Folder>
                 <F N="../lib/cpu/clock.c"/>
@@ -199,12 +198,28 @@
                     <F N="../lib/fatfs/src/integer.h"/>
                 </Folder>
             </Folder>
+            <Folder Name="font">
+                <Folder Name="Unicode">
+                    <F N="../lib/font/Unicode/unicode.c"/>
+                    <F N="../lib/font/Unicode/unicode.h"/>
+                </Folder>
+                <F N="../lib/font/font.c"/>
+                <F N="../lib/font/font.h"/>
+                <F N="../lib/font/utf8.c"/>
+                <F N="../lib/font/utf8.h"/>
+            </Folder>
+            <Folder Name="gui">
+                <F N="../lib/gui/Gui.c"/>
+                <F N="../lib/gui/Gui.h"/>
+            </Folder>
             <Folder Name="mmcsdlib">
                 <Folder Name="include">
                     <F N="../lib/mmcsdlib/include/hs_mmcsdlib.h"/>
                     <F N="../lib/mmcsdlib/include/mmcsd_proto.h"/>
+                    <F N="../lib/mmcsdlib/include/mmcsd_proto_hooks.h"/>
                 </Folder>
                 <F N="../lib/mmcsdlib/mmcsd_proto.c"/>
+                <F N="../lib/mmcsdlib/mmcsd_proto_hooks.c"/>
                 <F N="../lib/mmcsdlib/mmcsdhost.c"/>
             </Folder>
             <Folder Name="peri_drivers">
@@ -236,6 +251,7 @@
                         <F N="../lib/peri_drivers/include/hw/hw_elm.h"/>
                         <F N="../lib/peri_drivers/include/hw/hw_emif4d.h"/>
                         <F N="../lib/peri_drivers/include/hw/hw_emifa2.h"/>
+                        <F N="../lib/peri_drivers/include/hw/hw_eqep.h"/>
                         <F N="../lib/peri_drivers/include/hw/hw_gpio_v2.h"/>
                         <F N="../lib/peri_drivers/include/hw/hw_gpmc.h"/>
                         <F N="../lib/peri_drivers/include/hw/hw_hs_mmcsd.h"/>
@@ -262,6 +278,7 @@
                         <F N="../lib/peri_drivers/include/hw/hw_watchdog.h"/>
                         <F N="../lib/peri_drivers/include/hw/soc_AM335x.h"/>
                     </Folder>
+                    <F N="../lib/peri_drivers/include/cppi41dma.h"/>
                     <F N="../lib/peri_drivers/include/cpsw.h"/>
                     <F N="../lib/peri_drivers/include/dcan.h"/>
                     <F N="../lib/peri_drivers/include/dmtimer.h"/>
@@ -284,13 +301,13 @@
                     <F N="../lib/peri_drivers/include/pruss.h"/>
                     <F N="../lib/peri_drivers/include/raster.h"/>
                     <F N="../lib/peri_drivers/include/rtc.h"/>
-                    <F N="../lib/peri_drivers/include/systick.h"/>
                     <F N="../lib/peri_drivers/include/tsc_adc.h"/>
                     <F N="../lib/peri_drivers/include/uart_irda_cir.h"/>
                     <F N="../lib/peri_drivers/include/usb.h"/>
                     <F N="../lib/peri_drivers/include/vpif.h"/>
                     <F N="../lib/peri_drivers/include/watchdog.h"/>
                 </Folder>
+                <F N="../lib/peri_drivers/cppi41dma.c"/>
                 <F N="../lib/peri_drivers/cpsw.c"/>
                 <F N="../lib/peri_drivers/dcan.c"/>
                 <F N="../lib/peri_drivers/dmtimer.c"/>
@@ -317,27 +334,54 @@
             </Folder>
             <Folder Name="platform">
                 <Folder Name="include">
+                    <F N="../lib/platform/include/delay.h"/>
+                    <F N="../lib/platform/include/module.h"/>
+                    <F N="../lib/platform/include/pf_ecap.h"/>
+                    <F N="../lib/platform/include/pf_edma.h"/>
+                    <F N="../lib/platform/include/pf_eeprom.h"/>
+                    <F N="../lib/platform/include/pf_hs_mmcsd.h"/>
+                    <F N="../lib/platform/include/pf_hsi2c.h"/>
+                    <F N="../lib/platform/include/pf_int.h"/>
+                    <F N="../lib/platform/include/pf_lcd.h"/>
+                    <F N="../lib/platform/include/pf_mainloop.h"/>
+                    <F N="../lib/platform/include/pf_platform_cfg.h"/>
+                    <F N="../lib/platform/include/pf_qep.h"/>
+                    <F N="../lib/platform/include/pf_rx8025.h"/>
+                    <F N="../lib/platform/include/pf_timertick.h"/>
+                    <F N="../lib/platform/include/pf_tsc.h"/>
+                    <F N="../lib/platform/include/pf_usbmsc.h"/>
                     <F N="../lib/platform/include/platform.h"/>
+                    <F N="../lib/platform/include/tft.h"/>
                 </Folder>
+                <F N="../lib/platform/am335x_clock_data.c"/>
+                <F N="../lib/platform/am335x_module_data.c"/>
                 <F N="../lib/platform/pf_cpsw.c"/>
                 <F N="../lib/platform/pf_dcan.c"/>
                 <F N="../lib/platform/pf_dmtimer.c"/>
+                <F N="../lib/platform/pf_dmtimerpwm.c"/>
+                <F N="../lib/platform/pf_ecap.c"/>
                 <F N="../lib/platform/pf_edma.c"/>
+                <F N="../lib/platform/pf_eeprom.c"/>
                 <F N="../lib/platform/pf_gpio.c"/>
                 <F N="../lib/platform/pf_hs_mmcsd.c"/>
                 <F N="../lib/platform/pf_hsi2c.c"/>
                 <F N="../lib/platform/pf_int.c"/>
+                <F N="../lib/platform/pf_lcd.c"/>
                 <F N="../lib/platform/pf_mux.h"/>
+                <F N="../lib/platform/pf_norflash.c"/>
                 <F N="../lib/platform/pf_platform.c"/>
                 <F N="../lib/platform/pf_pwmss.c"/>
+                <F N="../lib/platform/pf_qep.c"/>
                 <F N="../lib/platform/pf_rtc.c"/>
-                <F N="../lib/platform/pf_sysdelay.c"/>
+                <F N="../lib/platform/pf_rx8025.c"/>
                 <F N="../lib/platform/pf_sysperf.c"/>
                 <F N="../lib/platform/pf_timertick.c"/>
                 <F N="../lib/platform/pf_uart.c"/>
                 <F N="../lib/platform/pf_uartConsole.c"/>
                 <F N="../lib/platform/pf_usb.c"/>
+                <F N="../lib/platform/pf_usbmsc.c"/>
                 <F N="../lib/platform/pf_watchdog.c"/>
+                <F N="../lib/platform/pl_tsc.c"/>
             </Folder>
             <Folder Name="tool">
                 <Folder Name="ewarm">
@@ -396,27 +440,30 @@
             </Folder>
             <Folder Name="utils">
                 <Folder Name="include">
+                    <F N="../lib/utils/include/algorithm.h"/>
                     <F N="../lib/utils/include/cmdline.h"/>
                     <F N="../lib/utils/include/debug.h"/>
-                    <F N="../lib/utils/include/delay.h"/>
                     <F N="../lib/utils/include/misc.h"/>
                     <F N="../lib/utils/include/mmath.h"/>
                     <F N="../lib/utils/include/perf.h"/>
-                    <F N="../lib/utils/include/systick.h"/>
                     <F N="../lib/utils/include/type.h"/>
                     <F N="../lib/utils/include/uartstdio.h"/>
                 </Folder>
+                <F N="../lib/utils/algorithm.c"/>
                 <F N="../lib/utils/cmdline.c"/>
-                <F N="../lib/utils/delay.c"/>
                 <F N="../lib/utils/misc.c"/>
                 <F N="../lib/utils/perf.c"/>
-                <F N="../lib/utils/systick.c"/>
                 <F N="../lib/utils/uartStdio.c"/>
             </Folder>
         </Folder>
         <Folder Name="../src">
+            <Folder Name="include">
+                <F N="../src/include/cpld.h"/>
+            </Folder>
             <Folder Name="mmc_inand_fat">
                 <F N="../src/mmc_inand_fat/clip.c"/>
+                <F N="../src/mmc_inand_fat/cpld.c"/>
+                <F N="../src/mmc_inand_fat/main.c"/>
                 <F N="../src/mmc_inand_fat/mmc_inand_fat.c"/>
             </Folder>
         </Folder>

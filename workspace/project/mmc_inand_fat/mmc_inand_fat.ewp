@@ -87,7 +87,7 @@
         </option>
         <option>
           <name>OGLastSavedByProductVersion</name>
-          <state>6.50.1.4445</state>
+          <state>6.50.3.4744</state>
         </option>
         <option>
           <name>GeneralEnableMisra</name>
@@ -307,6 +307,8 @@
           <state>$PROJ_DIR$\..\..\..\lib\usblib\include\</state>
           <state>$PROJ_DIR$\..\..\..\lib\cpu\include\armv7a\</state>
           <state>$PROJ_DIR$\..\..\..\lib\utils\include\</state>
+          <state>$PROJ_DIR$\..\..\..\lib\font\</state>
+          <state>$PROJ_DIR$\..\..\..\lib\gui\</state>
         </option>
         <option>
           <name>CCStdIncCheck</name>
@@ -463,11 +465,11 @@
         </option>
         <option>
           <name>AListHeader</name>
-          <state>1</state>
+          <state>0</state>
         </option>
         <option>
           <name>AListing</name>
-          <state>1</state>
+          <state>0</state>
         </option>
         <option>
           <name>Includes</name>
@@ -479,7 +481,7 @@
         </option>
         <option>
           <name>MacExps</name>
-          <state>1</state>
+          <state>0</state>
         </option>
         <option>
           <name>MacExec</name>
@@ -671,7 +673,7 @@
         </option>
         <option>
           <name>IlinkMapFile</name>
-          <state>0</state>
+          <state>1</state>
         </option>
         <option>
           <name>IlinkLogFile</name>
@@ -955,7 +957,7 @@
         <option>
           <name>Variant</name>
           <version>20</version>
-          <state>0</state>
+          <state>50</state>
         </option>
         <option>
           <name>GEndianMode</name>
@@ -986,11 +988,11 @@
         <option>
           <name>FPU</name>
           <version>2</version>
-          <state>0</state>
+          <state>4</state>
         </option>
         <option>
           <name>OGCoreOrChip</name>
-          <state>0</state>
+          <state>1</state>
         </option>
         <option>
           <name>GRuntimeLibSelect</name>
@@ -1012,7 +1014,7 @@
         </option>
         <option>
           <name>OGLastSavedByProductVersion</name>
-          <state>6.30.1.53141</state>
+          <state>6.50.3.4744</state>
         </option>
         <option>
           <name>GeneralEnableMisra</name>
@@ -1024,7 +1026,7 @@
         </option>
         <option>
           <name>OGChipSelectEditMenu</name>
-          <state>default	None</state>
+          <state>am3359	TexasInstruments am3359</state>
         </option>
         <option>
           <name>GenLowLevelInterface</name>
@@ -1032,7 +1034,7 @@
         </option>
         <option>
           <name>GEndianModeBE</name>
-          <state>0</state>
+          <state>1</state>
         </option>
         <option>
           <name>OGBufferedTerminalOutput</name>
@@ -1063,12 +1065,12 @@
         <option>
           <name>GFPUCoreSlave</name>
           <version>20</version>
-          <state>0</state>
+          <state>50</state>
         </option>
         <option>
           <name>GBECoreSlave</name>
           <version>20</version>
-          <state>0</state>
+          <state>50</state>
         </option>
         <option>
           <name>OGUseCmsis</name>
@@ -1094,6 +1096,7 @@
         <option>
           <name>CCDefines</name>
           <state>NDEBUG</state>
+          <state>am335x</state>
         </option>
         <option>
           <name>CCPreprocFile</name>
@@ -1222,7 +1225,18 @@
         </option>
         <option>
           <name>CCIncludePath2</name>
-          <state></state>
+          <state>$PROJ_DIR$\..\..\..\lib\peri_drivers\include\</state>
+          <state>$PROJ_DIR$\..\..\..\lib\peri_drivers\include\hw\</state>
+          <state>$PROJ_DIR$\..\..\..\lib\mmcsdlib\include\</state>
+          <state>$PROJ_DIR$\..\..\..\lib\platform\include\</state>
+          <state>$PROJ_DIR$\..\..\..\lib\cpu\include\</state>
+          <state>$PROJ_DIR$\..\..\..\lib\fatfs\src\</state>
+          <state>$PROJ_DIR$\..\..\..\lib\fatfs\port\</state>
+          <state>$PROJ_DIR$\..\..\..\lib\usblib\include\</state>
+          <state>$PROJ_DIR$\..\..\..\lib\cpu\include\armv7a\</state>
+          <state>$PROJ_DIR$\..\..\..\lib\utils\include\</state>
+          <state>$PROJ_DIR$\..\..\..\lib\font\</state>
+          <state>$PROJ_DIR$\..\..\..\lib\gui\</state>
         </option>
         <option>
           <name>CCStdIncCheck</name>
@@ -1467,7 +1481,7 @@
         </option>
         <option>
           <name>AUserIncludes</name>
-          <state></state>
+          <state>$PROJ_DIR$\..\..\..\lib\peri_drivers\include\hw\</state>
         </option>
         <option>
           <name>AExtraOptionsCheckV2</name>
@@ -1497,7 +1511,7 @@
         </option>
         <option>
           <name>OOCOutputFile</name>
-          <state>c.srec</state>
+          <state>mmc_inand_fat.srec</state>
         </option>
         <option>
           <name>OOCCommandLineProducer</name>
@@ -1587,7 +1601,7 @@
         </option>
         <option>
           <name>IlinkMapFile</name>
-          <state>0</state>
+          <state>1</state>
         </option>
         <option>
           <name>IlinkLogFile</name>
@@ -1611,11 +1625,11 @@
         </option>
         <option>
           <name>IlinkIcfOverride</name>
-          <state>0</state>
+          <state>1</state>
         </option>
         <option>
           <name>IlinkIcfFile</name>
-          <state>$TOOLKIT_DIR$\CONFIG\generic.icf</state>
+          <state>$PROJ_DIR$\..\..\tool\ewarm\am335x.icf</state>
         </option>
         <option>
           <name>IlinkIcfFileSlave</name>
@@ -1667,7 +1681,7 @@
         </option>
         <option>
           <name>IlinkOverrideProgramEntryLabel</name>
-          <state>0</state>
+          <state>1</state>
         </option>
         <option>
           <name>IlinkProgramEntryLabelSelect</name>
@@ -1675,7 +1689,7 @@
         </option>
         <option>
           <name>IlinkProgramEntryLabel</name>
-          <state></state>
+          <state>Entry</state>
         </option>
         <option>
           <name>DoFill</name>
@@ -1912,9 +1926,33 @@
       </group>
     </group>
     <group>
+      <name>font</name>
+      <group>
+        <name>unicode</name>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\lib\font\Unicode\unicode.c</name>
+        </file>
+      </group>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\lib\font\font.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\lib\font\utf8.c</name>
+      </file>
+    </group>
+    <group>
+      <name>gui</name>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\lib\gui\Gui.c</name>
+      </file>
+    </group>
+    <group>
       <name>mmcsdlib</name>
       <file>
         <name>$PROJ_DIR$\..\..\..\lib\mmcsdlib\mmcsd_proto.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\lib\mmcsdlib\mmcsd_proto_hooks.c</name>
       </file>
       <file>
         <name>$PROJ_DIR$\..\..\..\lib\mmcsdlib\mmcsdhost.c</name>
@@ -1922,6 +1960,9 @@
     </group>
     <group>
       <name>per_drivers</name>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\lib\peri_drivers\cppi41dma.c</name>
+      </file>
       <file>
         <name>$PROJ_DIR$\..\..\..\lib\peri_drivers\cpsw.c</name>
       </file>
@@ -1995,6 +2036,12 @@
     <group>
       <name>platform</name>
       <file>
+        <name>$PROJ_DIR$\..\..\..\lib\platform\am335x_clock_data.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\lib\platform\am335x_module_data.c</name>
+      </file>
+      <file>
         <name>$PROJ_DIR$\..\..\..\lib\platform\pf_cpsw.c</name>
       </file>
       <file>
@@ -2002,6 +2049,9 @@
       </file>
       <file>
         <name>$PROJ_DIR$\..\..\..\lib\platform\pf_dmtimer.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\lib\platform\pf_ecap.c</name>
       </file>
       <file>
         <name>$PROJ_DIR$\..\..\..\lib\platform\pf_edma.c</name>
@@ -2019,16 +2069,28 @@
         <name>$PROJ_DIR$\..\..\..\lib\platform\pf_int.c</name>
       </file>
       <file>
+        <name>$PROJ_DIR$\..\..\..\lib\platform\pf_lcd.c</name>
+      </file>
+      <file>
         <name>$PROJ_DIR$\..\..\..\lib\platform\pf_mux.h</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\lib\platform\pf_norflash.c</name>
       </file>
       <file>
         <name>$PROJ_DIR$\..\..\..\lib\platform\pf_platform.c</name>
       </file>
       <file>
+        <name>$PROJ_DIR$\..\..\..\lib\platform\pf_pwmss.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\lib\platform\pf_qep.c</name>
+      </file>
+      <file>
         <name>$PROJ_DIR$\..\..\..\lib\platform\pf_rtc.c</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\..\..\..\lib\platform\pf_sysdelay.c</name>
+        <name>$PROJ_DIR$\..\..\..\lib\platform\pf_rx8025.c</name>
       </file>
       <file>
         <name>$PROJ_DIR$\..\..\..\lib\platform\pf_sysperf.c</name>
@@ -2046,7 +2108,85 @@
         <name>$PROJ_DIR$\..\..\..\lib\platform\pf_usb.c</name>
       </file>
       <file>
+        <name>$PROJ_DIR$\..\..\..\lib\platform\pf_usbmsc.c</name>
+      </file>
+      <file>
         <name>$PROJ_DIR$\..\..\..\lib\platform\pf_watchdog.c</name>
+      </file>
+    </group>
+    <group>
+      <name>usblib</name>
+      <group>
+        <name>device</name>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\lib\usblib\device\usbdbulk.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\lib\usblib\device\usbdcdc.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\lib\usblib\device\usbdcdesc.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\lib\usblib\device\usbdcomp.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\lib\usblib\device\usbdconfig.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\lib\usblib\device\usbdenum.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\lib\usblib\device\usbdhandler.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\lib\usblib\device\usbdhid.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\lib\usblib\device\usbdhidmouse.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\lib\usblib\device\usbdmsc.c</name>
+        </file>
+      </group>
+      <group>
+        <name>host</name>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\lib\usblib\host\usbhhid.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\lib\usblib\host\usbhhidkeyboard.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\lib\usblib\host\usbhhidmouse.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\lib\usblib\host\usbhmsc.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\lib\usblib\host\usbhostenum.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\lib\usblib\host\usbhscsi.c</name>
+        </file>
+      </group>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\lib\usblib\usbbuffer.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\lib\usblib\usbdata.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\lib\usblib\usbdesc.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\lib\usblib\usbkeyboardmap.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\lib\usblib\usbringbuf.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\lib\usblib\usbtick.c</name>
       </file>
     </group>
     <group>
@@ -2055,27 +2195,30 @@
         <name>$PROJ_DIR$\..\..\..\lib\utils\cmdline.c</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\..\..\..\lib\utils\delay.c</name>
-      </file>
-      <file>
         <name>$PROJ_DIR$\..\..\..\lib\utils\misc.c</name>
       </file>
       <file>
         <name>$PROJ_DIR$\..\..\..\lib\utils\perf.c</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\..\..\..\lib\utils\systick.c</name>
-      </file>
-      <file>
         <name>$PROJ_DIR$\..\..\..\lib\utils\uartStdio.c</name>
       </file>
     </group>
   </group>
+  <group>
+    <name>src</name>
+    <group>
+      <name>include</name>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\src\include\cpld.h</name>
+      </file>
+    </group>
+    <file>
+      <name>$PROJ_DIR$\..\..\..\src\mmc_inand_fat\mmc_inand_fat.c</name>
+    </file>
+  </group>
   <file>
-    <name>$PROJ_DIR$\..\..\..\lib\tool\ewarm\am335x.icf</name>
-  </file>
-  <file>
-    <name>$PROJ_DIR$\..\..\..\src\mmc_inand_fat\mmc_inand_fat.c</name>
+    <name>$PROJ_DIR$\..\..\..\src\mmc_inand_fat\main.c</name>
   </file>
 </project>
 

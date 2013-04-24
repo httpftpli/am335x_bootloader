@@ -1,0 +1,65 @@
+
+[Sfr]
+
+
+;     Name                                                           Zone      Address     Bytesize  Displaybase Bitrange
+;     ----                                                           ----      -------     --------  ----------- --------
+
+sfr = "SF_PWM"                                           	, "Memory", 0x01000000,        2, base=16
+sfr = "SF_EN"                                 			, "Memory", 0x01000002,        2, base=16
+
+sfr = "LIGHT_GREEN"                                		, "Memory", 0x01000010,        2, base=16
+sfr = "LGHT_YELLOW"                                		, "Memory", 0x01000012,        2, base=16
+sfr = "LIGHT_RED"                                   		, "Memory", 0x01000014,        2, base=16
+sfr = "DAY_LIGHT_LAMP"                                		, "Memory", 0x01000016,        2, base=16
+
+sfr = "SHOCK_PLUS_FRONT"                                	, "Memory", 0x01000020,        2, base=16
+sfr = "SHOCK_PLUS_BACK"                                		, "Memory", 0x01000022,        2, base=16
+
+sfr = "SONGSHA_R"                                		, "Memory", 0x01000030,        2, base=16
+sfr = "SONGSHA_L"                                		, "Memory", 0x01000032,        2, base=16
+sfr = "LOU_LA"                                			, "Memory", 0x01000034,        2, base=16
+
+sfr = "LJD_CLK"                                			, "Memory", 0x01000040,        2, base=16
+sfr = "LJD_REF"                                			, "Memory", 0x01000042,        2, base=16
+sfr = "LJD_DIR"                                			, "Memory", 0x01000044,        2, base=16
+
+sfr = "LJZ1_CLK"                                		, "Memory", 0x01000048,        2, base=16
+sfr = "LJZ1_REF"                                		, "Memory", 0x0100004A,        2, base=16
+sfr = "LJZ1_DIR"                                		, "Memory", 0x0100004C,        2, base=16
+
+sfr = "LJZ2_CLK"                                		, "Memory", 0x01000050,        2, base=16
+sfr = "LJZ2_REF"                                		, "Memory", 0x01000052,        2, base=16
+sfr = "LJZ2_DIR"                                		, "Memory", 0x01000054,        2, base=16
+
+sfr = "RJD_CLK"                                			, "Memory", 0x01000058,        2, base=16
+sfr = "RJD_REF"                                			, "Memory", 0x0100005A,        2, base=16
+sfr = "RJD_DIR"                                			, "Memory", 0x0100005C,        2, base=16
+
+sfr = "RJZ1_CLK"                                		, "Memory", 0x01000060,        2, base=16
+sfr = "RJZ1_REF"                                		, "Memory", 0x01000062,        2, base=16
+sfr = "RJZ1_DIR"                                		, "Memory", 0x01000064,        2, base=16
+
+sfr = "RJZ2_CLK"                                		, "Memory", 0x01000068,        2, base=16
+sfr = "RJZ2_REF"                                		, "Memory", 0x0100006A,        2, base=16
+sfr = "RJZ2_DIR"                                		, "Memory", 0x0100006C,        2, base=16
+
+
+sfr = "QD_UP"                                			, "Memory", 0x01000070,        2, base=16
+sfr = "QD_DOWM"                                			, "Memory", 0x01000072,        2, base=16
+sfr = "QD_SC"                                			, "Memory", 0x01000074,        2, base=16
+
+sfr = "NEEDLE_CW"                                		, "Memory", 0x01000076,        2, base=16
+sfr = "NEEDLE_CCW"                                		, "Memory", 0x01000078,        2, base=16
+
+
+sfr = "ALM0_INPUT"                                		, "Memory", 0x01000080,        2, base=16
+sfr = "ALM1_INPUT"                                		, "Memory", 0x01000082,        2, base=16
+sfr = "ALL2_INPUT"                                		, "Memory", 0x01000084,        2, base=16
+
+sfr = "YARN_OUT_CRT"                                		, "Memory", 0x01000090,        2, base=16                               			
+
+
+
+[SfrGroupInfo]
+group = "CPLD MODULE regester","SF_PWM","SF_EN","LIGHT_GREEN","LGHT_YELLOW","LIGHT_RED","DAY_LIGHT_LAMP","SHOCK_PLUS_FRONT","SHOCK_PLUS_BACK","SONGSHA_R","SONGSHA_L","LOU_LA","LJD_CLK","LJD_REF","LJZ1_CLK","LJZ1_REF","LJZ1_DIR","LJZ2_CLK","LJZ2_REF","LJZ2_DIR","RJD_CLK","RJD_REF","RJD_DIR","RJZ1_CLK","RJZ1_REF","RJZ1_DIR","RJZ2_CLK","RJZ2_REF" ,"RJZ2_DIR","QD_UP","QD_DOWM","QD_SC","NEEDLE_CW","NEEDLE_CCW","ALM0_INPUT","ALM1_INPUT","ALL2_INPUT" ,"YARN_OUT_CRT" 

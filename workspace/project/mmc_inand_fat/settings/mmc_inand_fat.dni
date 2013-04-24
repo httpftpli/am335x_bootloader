@@ -8,6 +8,59 @@ UseTrigger=1
 TriggerName=main
 LimitSize=0
 ByteLimit=50
+[DebugChecksum]
+Checksum=-1858126406
+[JLinkDriver]
+WatchCond=_ 0
+Watch0=_ 0 "" 0 "" 0 "" 0 "" 0 0 0 0
+Watch1=_ 0 "" 0 "" 0 "" 0 "" 0 0 0 0
+CStepIntDis=_ 0
+[Exceptions]
+StopOnUncaught=_ 0
+StopOnThrow=_ 0
+[CallStack]
+ShowArgs=0
+[Disassembly]
+MixedMode=1
+[SfrWindow]
+Show=1 1
+Sort=4 0
+[struct_types]
+Fmt0=mmcsdCardInfo-busWidthSupport	4	0
+Fmt1=mmcsdCardInfo-rca	4	0
+Fmt2=mmcsdCardInfo-tranSpeed	3	0
+Fmt3=mmcsdCtrlInfo-memBase	4	0
+[array_types]
+Fmt0=signed int[3]	3	0
+Fmt1=unsigned char[3]	4	0
+Fmt2=unsigned char[4096]	4	0
+Fmt3=unsigned int[1048576]	4	0
+Fmt4=unsigned int[2]	4	0
+Fmt5=unsigned int[4]	4	0
+Fmt6=unsigned short[4]	4	0
+[watch_formats]
+Fmt0={W}0:*(unsigned int *) 0x481d8204	4	0
+Fmt1={W}0:a	4	0
+Fmt2={W}0:b	4	0
+Fmt3={W}0:bufmmc	0	4
+Fmt4={W}0:ctrl->memBase	4	0
+Fmt5={W}0:ucs2_string	4	0
+Fmt6={W}0:xxx	4	0
+[Log file]
+LoggingEnabled=_ 0
+LogFile=_ ""
+Category=_ 0
+[TermIOLog]
+LoggingEnabled=_ 0
+LogFile=_ ""
+[CallStackLog]
+Enabled=0
+[DriverProfiling]
+Enabled=0
+Mode=0
+Graph=0
+Symbiont=0
+Exclusions=
 [InterruptLog]
 LogEnabled=0
 SumEnabled=0
@@ -33,73 +86,10 @@ ActionState=1
 [Trace1]
 Enabled=0
 ShowSource=1
-[DebugChecksum]
-Checksum=-953607249
-[JLinkDriver]
-WatchCond=_ 0
-Watch0=_ 0 "" 0 "" 0 "" 0 "" 0 0 0 0
-Watch1=_ 0 "" 0 "" 0 "" 0 "" 0 0 0 0
-[Exceptions]
-StopOnUncaught=_ 0
-StopOnThrow=_ 0
-[CallStack]
-ShowArgs=0
-[Disassembly]
-MixedMode=1
-[struct_types]
-Fmt0=EDMA3CCPaRAMEntry-aCnt	4	0
-Fmt1=EDMA3CCPaRAMEntry-bCnt	3	0
-Fmt2=EDMA3CCPaRAMEntry-destCIdx	4	0
-Fmt3=EDMA3CCPaRAMEntry-dstAddr	4	0
-Fmt4=EDMA3CCPaRAMEntry-opt	4	0
-Fmt5=EDMA3CCPaRAMEntry-srcAddr	4	0
-Fmt6=mmcsdCardInfo-busWidthSupport	4	0
-Fmt7=mmcsdCardInfo-rca	4	0
-Fmt8=mmcsdCardInfo-tranSpeed	3	0
-Fmt9=mmcsdCmd-arg	4	0
-Fmt10=mmcsdCmd-blksize	4	0
-Fmt11=mmcsdCtrlInfo-memBase	4	0
-[array_types]
-Fmt0=unsigned char[4096]	4	0
-Fmt1=unsigned int[2]	4	0
-Fmt2=unsigned int[4]	4	0
-[watch_formats]
-Fmt0={W}0:*(unsigned int *) 0x481d8204	4	0
-Fmt1={W}0:a	4	0
-Fmt2={W}0:b	4	0
-Fmt3={W}0:ctrl->memBase	4	0
-[Log file]
-LoggingEnabled=_ 0
-LogFile=_ ""
-Category=_ 0
-[TermIOLog]
-LoggingEnabled=_ 0
-LogFile=_ ""
-[CallStackLog]
-Enabled=0
-[DriverProfiling]
-Enabled=0
-Mode=0
-Graph=0
-Symbiont=0
-Exclusions=
 [Disassemble mode]
 mode=0
 [Breakpoints2]
-Bp0=_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\..\..\lib\mmcsdlib\mmcsdhost.c}.137.9" 0 0 1 "" 0 "" 0
-Bp1=_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\..\..\lib\mmcsdlib\mmcsd_proto.c}.915.7" 0 0 1 "" 0 "" 0
-Bp2=_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\..\..\lib\mmcsdlib\mmcsd_proto.c}.912.4" 0 0 1 "" 0 "" 0
-Bp3=_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\..\..\lib\platform\pf_hs_mmcsd.c}.90.10" 0 0 1 "" 0 "" 0
-Bp4=_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\..\..\lib\mmcsdlib\mmcsd_proto.c}.872.1" 0 0 1 "" 0 "" 0
-Bp5=_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\..\..\lib\mmcsdlib\mmcsd_proto.c}.872.4" 0 0 1 "" 0 "" 0
-Bp6=_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\..\..\3thLib\fatfs\port\diskio.c}.250.10" 0 0 1 "" 0 "" 0
-Bp7=_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\..\..\3thLib\fatfs\src\ff.c}.3872.2" 0 0 1 "" 0 "" 0
-Bp8=_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\..\..\3thLib\fatfs\src\ff.c}.3861.24" 0 0 1 "" 0 "" 0
-Bp9=_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\..\..\lib\fatfs\src\ff_ext.c}.38.4" 0 0 1 "" 0 "" 0
-Bp10=_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\..\..\lib\platform\pf_dcan.c}.170.13" 0 0 1 "" 0 "" 0
-Bp11=_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\..\..\src\mmc_inand_fat\mmc_inand_fat.c}.182.7" 0 0 1 "" 0 "" 0
-Bp12=_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\..\..\lib\peri_drivers\dcan.c}.1033.6" 0 0 1 "" 0 "" 0
-Count=13
+Count=0
 [Aliases]
 Count=0
 SuppressDialog=0

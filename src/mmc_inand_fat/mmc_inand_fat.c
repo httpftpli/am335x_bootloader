@@ -16,8 +16,15 @@
 #include "ff_ext.h"
 #ifdef MMCSD_PERF
 #include "perf.h"
-
 #endif
+#include "gpio_v2.h"
+#include "utf8.h"
+#include "gui.h"
+#include "pf_lcd.h"
+#include "pf_usbmsc.h"
+#include "pf_platform_cfg.h"
+#include "font.h"
+#include "../include/cpld.h"
 
 /******************************************************************************
 **                      INTERNAL MACRO DEFINITIONS
@@ -32,6 +39,9 @@
 
 #define DCAN_IN_CLK                       (24000000u)
 
+#define RX8025_ADDR                     0x32
+#define EEPROM_ADDR                     0x50
+ 
 /* SD card info structure */
 mmcsdCardInfo card0, card1;
 
@@ -65,83 +75,6 @@ unsigned char data[HSMMCSD_DATA_SIZE]
 **                          FUNCTION DEFINITIONS
 *******************************************************************************/
 
-volatile unsigned  int mmcreadfinish = 0,mmcwritefinish = 0;
-
-
-static void HSMMCSDXferSetup(mmcsdCtrlInfo *ctrl, unsigned char rwFlag, void *ptr, 
-                             unsigned int blkSize, unsigned int nBlks)
-{
-   unsigned int index = HSMMCSDBaseAddrToIndex(ctrl->memBase);
-   unsigned int dmachannelr,dmachannelw;
-   
-   if (0 == index) {
-      dmachannelr = EDMA3_CHA_MMCSD0_RX;
-      dmachannelw = EDMA3_CHA_MMCSD0_TX;
-   }else{
-      dmachannelr = EDMA3_CHA_MMCSD1_RX;
-      dmachannelw = EDMA3_CHA_MMCSD1_TX;
-   }
-   //g_Mmcsd[index].fgXferComp = 0;
-
-   if (rwFlag == 1)
-    {
-        mmcreadfinish = 0;
-        EDMARegisterHandler(dmachannelr,NULL);
-        EDMARequestXferWithBufferEntry(EDMA3_TRIG_MODE_EVENT,dmachannelr,
-                                       ctrl->memBase + MMCHS_DATA,
-                                       (unsigned int)ptr,1,32,blkSize,
-                                       nBlks,dmachannelr);
-    }
-    else
-    {
-        mmcwritefinish = 0;
-        EDMARegisterHandler(dmachannelw,NULL);
-        EDMARequestXferWithBufferEntry(EDMA3_TRIG_MODE_EVENT,dmachannelw,
-                                       ctrl->memBase + MMCHS_DATA,(unsigned int)ptr,
-                                       0,32,blkSize,nBlks,dmachannelw);
-    }
-    ctrl->dmaEnable = 1;                                           
-}
-
-
-/*
- * Check command status.will block
- */
-static unsigned int HSMMCSDCmdStatusGet(mmcsdCtrlInfo *ctrl) {
-
-   unsigned int index = HSMMCSDBaseAddrToIndex(ctrl->memBase);
-   
-   while ((g_Mmcsd[index].fgCmdComp == 0) && (g_Mmcsd[index].fgCmdTimeout == 0));
-   if (g_Mmcsd[index].fgCmdComp == 1) {
-      g_Mmcsd[index].fgCmdComp = 0;
-      return 1;
-   }
-   if (g_Mmcsd[index].fgCmdTimeout == 1) {
-      g_Mmcsd[index].fgCmdTimeout = 0;
-      return 0;
-   }
-   return 0;
-}
-
-
-/*
- * Check data transfer finish .will block
- */
-
-static unsigned int HSMMCSDXferStatusGet(mmcsdCtrlInfo *ctrl)
-{
-    unsigned int index = HSMMCSDBaseAddrToIndex(ctrl->memBase);
-    while ((g_Mmcsd[index].fgXferComp == 0)&&(g_Mmcsd[index].fgDataTimeout == 0));
-    if (g_Mmcsd[index].fgXferComp == 1) {
-       g_Mmcsd[index].fgXferComp = 0; 
-       return 1;
-    } 
-    if (g_Mmcsd[index].fgDataTimeout ==1) {
-       g_Mmcsd[index].fgDataTimeout = 0;
-       return 0;
-    }     
-    return 0;
-}
 
 
 volatile unsigned int ack = 0;
@@ -150,43 +83,120 @@ static void canrcvhandler(unsigned int index,CAN_FRAME *frame){
       ack = 1;
 }
 
-int main(void)
-{
-   volatile unsigned int i = 0;
-   volatile unsigned int initFlg = 1;
-   unsigned int status;
-   CAN_FRAME canFrame;
-   canFrame.id = 0x512<<18;
-   canFrame.xtd = 0;
-   canFrame.data[0] = 0;
-   canFrame.data[1] = 0x04;
-   canFrame.dlc = 8;
-   canFrame.dir = 0;
+
+unsigned int bufmmc1[1024*1024],bufmmc2[1024*1024];
+
+char buffer[1024];
+unsigned int fontloaded = 0;
+
+#define FONT_LOAD_ADDR        0x80000000+128*1024*1024
 
 
-   platformInit();
-   DelayTimerSetup();
-
-   MMCSDP_CtrlInfoInit(& mmcsdctr[0], SOC_MMCHS_0_REGS, 96000000, 24000000, MMCSD_BUSWIDTH_4BIT, 0,
-                       &card0, HSMMCSDXferSetup,
-                       HSMMCSDCmdStatusGet, HSMMCSDXferStatusGet);
-   MMCSDP_CtrlInfoInit(& mmcsdctr[1], SOC_MMCHS_1_REGS, 96000000, 24000000, MMCSD_BUSWIDTH_4BIT, 0,
-                       &card1, HSMMCSDXferSetup,
-                       HSMMCSDCmdStatusGet, HSMMCSDXferStatusGet);
-   MMCSDP_CtrlInit(& mmcsdctr[0]);
-   MMCSDP_CtrlInit(& mmcsdctr[1]);
-   CANRegistRcvedHandler(canrcvhandler);
-   CANInit(SOC_DCAN_0_REGS,CAN_MODE_NORMAL, DCAN_IN_CLK,1000000);
-   
-   while (1) {
-      CANSend_noblock(SOC_DCAN_0_REGS,&canFrame);
-      while (ack == 0);
-      ack = 0;
+void udiskread(){
+   static unsigned int error=0;
+   int r;
+   if((g_usbMscState == USBMSC_DEVICE_READY)&&(fontloaded == 0)&&(error == 0)){
+     
+     TCHAR path[100];
+     UTF8toUCS2_string("2:/simkai_U16.bin",path,0);
+     r = loadFont(path,  FONT_LOAD_ADDR);
+     if (r!=0) {
+        error = 1;
+        return;
+     }
+     fontloaded = 1;   
    }
-
-   return  0; 
-   
 }
 
 
+void drawText(){
+   static unsigned int textdrawed = 0;
+   if ((textdrawed == 0)&&(fontloaded == 1)) {
+      textdrawed = 1;
+      Dis_DrawText("杭州欢迎你",30,30,C_White,C_TRANSPARENT);
+      Dis_DrawText("杭州はあなたを歓迎する",30,60,C_White,C_TRANSPARENT);
+      Dis_DrawText("Welcome to Hangzhou",30,90,C_White,C_TRANSPARENT);
+      Dis_DrawText("Hangzhou Hoşgeldiniz",30,120,C_White,C_TRANSPARENT);
+      Dis_DrawText("wiwiwiwiwi",30,150,C_White,C_TRANSPARENT);
+   }
+}
+
+volatile unsigned short cpldbuffer[100];
+
+int main(void)
+{
+
+   volatile unsigned int initFlg = 1;
+   unsigned int status;
+ 
+   platformInit();
+   
+
+      
+      SF_PWM = 100;
+      SF_EN = 0;
+      while(1);
+     
+
+
+
+   while(1){
+   for(int i=0;i<16;i++){
+      ((unsigned short *)(1<<24))[i] =  i;
+   }
+   for(int i=0;i<16;i++){    
+      cpldbuffer[i] =  ((unsigned short *)(1<<24))[i]; 
+   }
+   }
+   
+   
+     
+   LCDRasterStart();	//lcd 
+    
+
+   MMCSDP_CtrlInfoInit(& mmcsdctr[0], SOC_MMCHS_0_REGS, 96000000, 24000000, MMCSD_BUSWIDTH_4BIT, 0,
+                       &card0, NULL,NULL, NULL);
+   MMCSDP_CtrlInit(& mmcsdctr[0]);
+   MMCSDP_CardInit(mmcsdctr,MMCSD_CARD_AUTO);
+   
+
+   for (int i=0;i<sizeof(bufmmc1)/4;i++) {
+      bufmmc1[i]=0x55555555;
+   }
+   for (int i=0;i<sizeof(bufmmc2)/4;i++) {
+      bufmmc2[i]=0;
+   }
+   
+   MMCSDP_Write(mmcsdctr,bufmmc1,0,1024);
+   MMCSDP_Read(mmcsdctr,bufmmc2,0,1024);
+   for(int i=0;i<512*1024/4;i++){
+     if(bufmmc2[i]!=bufmmc1[1])
+        while(1);
+   }
+   
+   while(1);
+   while (1) {
+      usbMscProcess();
+      udiskread();
+      drawText();
+   }
+     
+}
+
+
+
+
+
+
+
+
+/*void mainLoop(0){
+      LCDSwapContex();  
+      LcdClear(C_Red);
+      LCDSwapFb(); 
+      
+      LCDSwapContex();
+      LcdClear(C_Green);
+      LCDSwapFb();  
+}*/
 

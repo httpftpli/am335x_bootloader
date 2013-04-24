@@ -1,0 +1,36 @@
+;; Memory information ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; 
+;; Used to define address zones within the ARM address space (Memory). 
+;;
+;;   Name      may be almost anything
+;;   AdrSpace  must be Memory
+;;   StartAdr  start of memory block
+;;   EndAdr    end of memory block
+;;   AccType   type of access, read-only (R), read-write (RW) or SFR (W)
+
+[Memory]
+;;         Name             AdrSpace    StartAdr    EndAdr      AccType
+Memory0 =  PeriphSGX530       Memory      0x56000000  0x56FFFFFF  W  
+Memory1 =  Periph1          Memory      0x44000000  0x443FFFFF  W  
+Memory2 =  Periph2          Memory      0x44800000  0x44FFFFFF  W  
+Memory3 =  Periph3          Memory      0x46000000  0x467FFFFF  W  
+Memory4 =  Periph4          Memory      0x47400000  0x47407FFF  W  
+Memory5 =  ROM              Memory      0x40000000  0x4002BFFF  R  
+Memory6 =  Periph5          Memory      0x47810000  0x4781FFFF  W  
+Memory7 =  Periph6          Memory      0x48000000  0x490FFFFF  W  
+Memory8 =  ExtMem1          Memory      0x00000000  0x1FFFFFFF  RW 
+Memory9 =  Periph7          Memory      0x49800000  0x49AFFFFF  W  
+Memory10 =  RAM              Memory      0x402F0400  0x4030FFFF  RW 
+Memory11 =  ExtMem           Memory      0x80000000  0xBFFFFFFF  RW 
+Memory12 =  Periph8          Memory      0x4A000000  0x4CFFFFFF  W  
+Memory13 =  Periph9          Memory      0x50000000  0x50FFFFFF  W  
+
+TrustedRanges = true
+UseSfrFilter = true
+
+[SfrInclude]
+File = ioam3358.ddf
+
+;;ioam3358.ddf
+;;cpld.ddf
+
