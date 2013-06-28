@@ -2,7 +2,7 @@
 
 <workspace>
   <project>
-    <path>$WS_DIR$\project\mmc_inand_fat\mmc_inand_fat.ewp</path>
+    <path>$WS_DIR$\project\project1\project.ewp</path>
   </project>
   <batchBuild/>
 </workspace>

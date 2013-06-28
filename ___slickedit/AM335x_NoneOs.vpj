@@ -205,6 +205,7 @@
                 </Folder>
                 <F N="../lib/font/font.c"/>
                 <F N="../lib/font/font.h"/>
+                <F N="../lib/font/font_ascii_data.c"/>
                 <F N="../lib/font/utf8.c"/>
                 <F N="../lib/font/utf8.h"/>
             </Folder>
@@ -342,6 +343,7 @@
                     <F N="../lib/platform/include/pf_hs_mmcsd.h"/>
                     <F N="../lib/platform/include/pf_hsi2c.h"/>
                     <F N="../lib/platform/include/pf_int.h"/>
+                    <F N="../lib/platform/include/pf_key_touchpad.h"/>
                     <F N="../lib/platform/include/pf_lcd.h"/>
                     <F N="../lib/platform/include/pf_mainloop.h"/>
                     <F N="../lib/platform/include/pf_platform_cfg.h"/>
@@ -362,31 +364,29 @@
                 <F N="../lib/platform/pf_ecap.c"/>
                 <F N="../lib/platform/pf_edma.c"/>
                 <F N="../lib/platform/pf_eeprom.c"/>
+                <F N="../lib/platform/pf_eventloop.c"/>
                 <F N="../lib/platform/pf_gpio.c"/>
                 <F N="../lib/platform/pf_hs_mmcsd.c"/>
                 <F N="../lib/platform/pf_hsi2c.c"/>
                 <F N="../lib/platform/pf_int.c"/>
+                <F N="../lib/platform/pf_key_touchpad.c"/>
                 <F N="../lib/platform/pf_lcd.c"/>
+                <F N="../lib/platform/pf_module.c"/>
                 <F N="../lib/platform/pf_mux.h"/>
                 <F N="../lib/platform/pf_norflash.c"/>
-                <F N="../lib/platform/pf_platform.c"/>
                 <F N="../lib/platform/pf_pwmss.c"/>
                 <F N="../lib/platform/pf_qep.c"/>
                 <F N="../lib/platform/pf_rtc.c"/>
                 <F N="../lib/platform/pf_rx8025.c"/>
                 <F N="../lib/platform/pf_sysperf.c"/>
                 <F N="../lib/platform/pf_timertick.c"/>
+                <F N="../lib/platform/pf_tsc.c"/>
                 <F N="../lib/platform/pf_uart.c"/>
                 <F N="../lib/platform/pf_uartConsole.c"/>
                 <F N="../lib/platform/pf_usb.c"/>
                 <F N="../lib/platform/pf_usbmsc.c"/>
                 <F N="../lib/platform/pf_watchdog.c"/>
                 <F N="../lib/platform/pl_tsc.c"/>
-            </Folder>
-            <Folder Name="tool">
-                <Folder Name="ewarm">
-                    <F N="../lib/tool/ewarm/am335x.icf"/>
-                </Folder>
             </Folder>
             <Folder Name="usblib">
                 <Folder Name="device">
@@ -441,8 +441,10 @@
             <Folder Name="utils">
                 <Folder Name="include">
                     <F N="../lib/utils/include/algorithm.h"/>
+                    <F N="../lib/utils/include/atomic.h"/>
                     <F N="../lib/utils/include/cmdline.h"/>
                     <F N="../lib/utils/include/debug.h"/>
+                    <F N="../lib/utils/include/mem.h"/>
                     <F N="../lib/utils/include/misc.h"/>
                     <F N="../lib/utils/include/mmath.h"/>
                     <F N="../lib/utils/include/perf.h"/>
@@ -451,6 +453,7 @@
                 </Folder>
                 <F N="../lib/utils/algorithm.c"/>
                 <F N="../lib/utils/cmdline.c"/>
+                <F N="../lib/utils/mem.c"/>
                 <F N="../lib/utils/misc.c"/>
                 <F N="../lib/utils/perf.c"/>
                 <F N="../lib/utils/uartStdio.c"/>
@@ -458,13 +461,22 @@
         </Folder>
         <Folder Name="../src">
             <Folder Name="include">
-                <F N="../src/include/cpld.h"/>
+                <F N="../src/include/bl.h"/>
+                <F N="../src/include/bl_copy.h"/>
+                <F N="../src/include/bl_platform.h"/>
             </Folder>
-            <Folder Name="mmc_inand_fat">
-                <F N="../src/mmc_inand_fat/clip.c"/>
-                <F N="../src/mmc_inand_fat/cpld.c"/>
-                <F N="../src/mmc_inand_fat/main.c"/>
-                <F N="../src/mmc_inand_fat/mmc_inand_fat.c"/>
+            <F N="../src/bl_copy.c"/>
+            <F N="../src/bl_main.c"/>
+            <F N="../src/bl_platform.c"/>
+            <F N="../src/burn.c"/>
+            <F N="../src/emmc_header.c"/>
+            <F N="../src/ui.c"/>
+        </Folder>
+        <Folder Name="../workspace">
+            <Folder Name="tool">
+                <Folder Name="ewarm">
+                    <F N="../workspace/tool/ewarm/boot.icf"/>
+                </Folder>
             </Folder>
         </Folder>
     </Files>

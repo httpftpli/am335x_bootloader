@@ -1,0 +1,1 @@
+$PROJ_DIR$....toolewarmtiimage.exe 0x402F0400 MMCSD $TARGET_BPATH$.bin $TARGET_BPATH$_ti.bin

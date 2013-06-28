@@ -61,7 +61,7 @@
         <option>
           <name>FPU</name>
           <version>2</version>
-          <state>4</state>
+          <state>0</state>
         </option>
         <option>
           <name>OGCoreOrChip</name>
@@ -83,7 +83,7 @@
         </option>
         <option>
           <name>OGProductVersion</name>
-          <state>5.10.0.159</state>
+          <state>6.50.3.4744</state>
         </option>
         <option>
           <name>OGLastSavedByProductVersion</name>
@@ -103,7 +103,7 @@
         </option>
         <option>
           <name>GenLowLevelInterface</name>
-          <state>0</state>
+          <state>1</state>
         </option>
         <option>
           <name>GEndianModeBE</name>
@@ -163,12 +163,10 @@
         <wantNonLocal>1</wantNonLocal>
         <debug>1</debug>
         <option>
-          <name>CCOptimizationNoSizeConstraints</name>
-          <state>0</state>
-        </option>
-        <option>
           <name>CCDefines</name>
           <state>am335x</state>
+          <state>beaglebone</state>
+          <state>INNERBOOT</state>
         </option>
         <option>
           <name>CCPreprocFile</name>
@@ -245,11 +243,11 @@
         </option>
         <option>
           <name>IExtraOptionsCheck</name>
-          <state>0</state>
+          <state>1</state>
         </option>
         <option>
           <name>IExtraOptions</name>
-          <state></state>
+          <state>--no_unaligned_access</state>
         </option>
         <option>
           <name>CCLangConformance</name>
@@ -309,6 +307,8 @@
           <state>$PROJ_DIR$\..\..\..\lib\utils\include\</state>
           <state>$PROJ_DIR$\..\..\..\lib\font\</state>
           <state>$PROJ_DIR$\..\..\..\lib\gui\</state>
+          <state>$PROJ_DIR$\..\..\..\src\include\</state>
+          <state>$PROJ_DIR$\..\..\..\src\config\</state>
         </option>
         <option>
           <name>CCStdIncCheck</name>
@@ -320,7 +320,7 @@
         </option>
         <option>
           <name>IInterwork2</name>
-          <state>1</state>
+          <state>0</state>
         </option>
         <option>
           <name>IProcessorMode2</name>
@@ -401,6 +401,10 @@
           <name>IccFloatSemantics</name>
           <state>0</state>
         </option>
+        <option>
+          <name>CCOptimizationNoSizeConstraints</name>
+          <state>0</state>
+        </option>
       </data>
     </settings>
     <settings>
@@ -465,11 +469,11 @@
         </option>
         <option>
           <name>AListHeader</name>
-          <state>0</state>
+          <state>1</state>
         </option>
         <option>
           <name>AListing</name>
-          <state>0</state>
+          <state>1</state>
         </option>
         <option>
           <name>Includes</name>
@@ -481,7 +485,7 @@
         </option>
         <option>
           <name>MacExps</name>
-          <state>0</state>
+          <state>1</state>
         </option>
         <option>
           <name>MacExec</name>
@@ -583,7 +587,7 @@
         </option>
         <option>
           <name>OOCOutputFile</name>
-          <state>mmc_inand_fat.bin</state>
+          <state>boot.mbt</state>
         </option>
         <option>
           <name>OOCCommandLineProducer</name>
@@ -624,10 +628,6 @@
         <wantNonLocal>1</wantNonLocal>
         <debug>1</debug>
         <option>
-          <name>IlinkOutputFile</name>
-          <state>c.out</state>
-        </option>
-        <option>
           <name>IlinkLibIOConfig</name>
           <state>1</state>
         </option>
@@ -638,6 +638,10 @@
         <option>
           <name>IlinkInputFileSlave</name>
           <state>0</state>
+        </option>
+        <option>
+          <name>IlinkOutputFile</name>
+          <state>project.out</state>
         </option>
         <option>
           <name>IlinkDebugInfoEnable</name>
@@ -701,7 +705,7 @@
         </option>
         <option>
           <name>IlinkIcfFile</name>
-          <state>$PROJ_DIR$\..\..\tool\ewarm\am335x.icf</state>
+          <state>$PROJ_DIR$\..\..\tool\ewarm\boot.icf</state>
         </option>
         <option>
           <name>IlinkIcfFileSlave</name>
@@ -1010,7 +1014,7 @@
         </option>
         <option>
           <name>OGProductVersion</name>
-          <state>5.10.0.159</state>
+          <state>6.50.3.4744</state>
         </option>
         <option>
           <name>OGLastSavedByProductVersion</name>
@@ -1090,13 +1094,10 @@
         <wantNonLocal>1</wantNonLocal>
         <debug>0</debug>
         <option>
-          <name>CCOptimizationNoSizeConstraints</name>
-          <state>0</state>
-        </option>
-        <option>
           <name>CCDefines</name>
           <state>NDEBUG</state>
           <state>am335x</state>
+          <state>beaglebone</state>
         </option>
         <option>
           <name>CCPreprocFile</name>
@@ -1136,7 +1137,7 @@
         </option>
         <option>
           <name>CCDiagSuppress</name>
-          <state></state>
+          <state>Pa050,Pe1750</state>
         </option>
         <option>
           <name>CCDiagRemark</name>
@@ -1185,7 +1186,7 @@
         </option>
         <option>
           <name>CCSignedPlainChar</name>
-          <state>1</state>
+          <state>0</state>
         </option>
         <option>
           <name>CCRequirePrototypes</name>
@@ -1237,6 +1238,7 @@
           <state>$PROJ_DIR$\..\..\..\lib\utils\include\</state>
           <state>$PROJ_DIR$\..\..\..\lib\font\</state>
           <state>$PROJ_DIR$\..\..\..\lib\gui\</state>
+          <state>$PROJ_DIR$\..\..\..\src\include\</state>
         </option>
         <option>
           <name>CCStdIncCheck</name>
@@ -1248,7 +1250,7 @@
         </option>
         <option>
           <name>IInterwork2</name>
-          <state>1</state>
+          <state>0</state>
         </option>
         <option>
           <name>IProcessorMode2</name>
@@ -1319,7 +1321,7 @@
         </option>
         <option>
           <name>IccCppInlineSemantics</name>
-          <state>0</state>
+          <state>1</state>
         </option>
         <option>
           <name>IccCmsis</name>
@@ -1327,6 +1329,10 @@
         </option>
         <option>
           <name>IccFloatSemantics</name>
+          <state>0</state>
+        </option>
+        <option>
+          <name>CCOptimizationNoSizeConstraints</name>
           <state>0</state>
         </option>
       </data>
@@ -1511,7 +1517,7 @@
         </option>
         <option>
           <name>OOCOutputFile</name>
-          <state>mmc_inand_fat.srec</state>
+          <state>project.srec</state>
         </option>
         <option>
           <name>OOCCommandLineProducer</name>
@@ -1552,10 +1558,6 @@
         <wantNonLocal>1</wantNonLocal>
         <debug>0</debug>
         <option>
-          <name>IlinkOutputFile</name>
-          <state>c.out</state>
-        </option>
-        <option>
           <name>IlinkLibIOConfig</name>
           <state>1</state>
         </option>
@@ -1566,6 +1568,10 @@
         <option>
           <name>IlinkInputFileSlave</name>
           <state>0</state>
+        </option>
+        <option>
+          <name>IlinkOutputFile</name>
+          <state>project.out</state>
         </option>
         <option>
           <name>IlinkDebugInfoEnable</name>
@@ -1629,7 +1635,7 @@
         </option>
         <option>
           <name>IlinkIcfFile</name>
-          <state>$PROJ_DIR$\..\..\tool\ewarm\am335x.icf</state>
+          <state>$PROJ_DIR$\..\..\tool\ewarm\boot.icf</state>
         </option>
         <option>
           <name>IlinkIcfFileSlave</name>
@@ -1861,29 +1867,38 @@
     <name>lib</name>
     <group>
       <name>cpu</name>
-      <file>
-        <name>$PROJ_DIR$\..\..\..\lib\cpu\armv7a\cache.c</name>
-      </file>
+      <group>
+        <name>armv7a</name>
+        <group>
+          <name>ewarm</name>
+          <file>
+            <name>$PROJ_DIR$\..\..\..\lib\cpu\armv7a\ewarm\cp15.S</name>
+          </file>
+          <file>
+            <name>$PROJ_DIR$\..\..\..\lib\cpu\armv7a\ewarm\cpu.S</name>
+          </file>
+          <file>
+            <name>$PROJ_DIR$\..\..\..\lib\cpu\armv7a\ewarm\init.S</name>
+          </file>
+        </group>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\lib\cpu\armv7a\cache.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\lib\cpu\armv7a\mmu.c</name>
+        </file>
+      </group>
+      <group>
+        <name>ewarm</name>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\lib\cpu\ewarm\exceptionhandler.S</name>
+        </file>
+      </group>
       <file>
         <name>$PROJ_DIR$\..\..\..\lib\cpu\clock.c</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\..\..\..\lib\cpu\armv7a\ewarm\cp15.S</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$\..\..\..\lib\cpu\armv7a\ewarm\cpu.S</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$\..\..\..\lib\cpu\ewarm\exceptionhandler.S</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$\..\..\..\lib\cpu\armv7a\ewarm\init.S</name>
-      </file>
-      <file>
         <name>$PROJ_DIR$\..\..\..\lib\cpu\interrupt.c</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$\..\..\..\lib\cpu\armv7a\mmu.c</name>
       </file>
       <file>
         <name>$PROJ_DIR$\..\..\..\lib\cpu\startup.c</name>
@@ -1901,10 +1916,7 @@
         </file>
       </group>
       <group>
-        <name>src</name>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\lib\fatfs\src\option\cc936.c</name>
-        </file>
+        <name>scr</name>
         <file>
           <name>$PROJ_DIR$\..\..\..\lib\fatfs\src\ff.c</name>
         </file>
@@ -1918,9 +1930,6 @@
           <name>$PROJ_DIR$\..\..\..\lib\fatfs\src\ff_ext.h</name>
         </file>
         <file>
-          <name>$PROJ_DIR$\..\..\..\lib\fatfs\src\ffconf.h</name>
-        </file>
-        <file>
           <name>$PROJ_DIR$\..\..\..\lib\fatfs\src\integer.h</name>
         </file>
       </group>
@@ -1928,16 +1937,25 @@
     <group>
       <name>font</name>
       <group>
-        <name>unicode</name>
+        <name>Unicode</name>
         <file>
           <name>$PROJ_DIR$\..\..\..\lib\font\Unicode\unicode.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\lib\font\Unicode\unicode.h</name>
         </file>
       </group>
       <file>
         <name>$PROJ_DIR$\..\..\..\lib\font\font.c</name>
       </file>
       <file>
+        <name>$PROJ_DIR$\..\..\..\lib\font\font.h</name>
+      </file>
+      <file>
         <name>$PROJ_DIR$\..\..\..\lib\font\utf8.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\lib\font\utf8.h</name>
       </file>
     </group>
     <group>
@@ -1948,6 +1966,9 @@
     </group>
     <group>
       <name>mmcsdlib</name>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\lib\mmcsdlib\hs_mmcsdlib.c</name>
+      </file>
       <file>
         <name>$PROJ_DIR$\..\..\..\lib\mmcsdlib\mmcsd_proto.c</name>
       </file>
@@ -2051,10 +2072,19 @@
         <name>$PROJ_DIR$\..\..\..\lib\platform\pf_dmtimer.c</name>
       </file>
       <file>
+        <name>$PROJ_DIR$\..\..\..\lib\platform\pf_dmtimerpwm.c</name>
+      </file>
+      <file>
         <name>$PROJ_DIR$\..\..\..\lib\platform\pf_ecap.c</name>
       </file>
       <file>
         <name>$PROJ_DIR$\..\..\..\lib\platform\pf_edma.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\lib\platform\pf_eeprom.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\lib\platform\pf_eventloop.c</name>
       </file>
       <file>
         <name>$PROJ_DIR$\..\..\..\lib\platform\pf_gpio.c</name>
@@ -2069,16 +2099,19 @@
         <name>$PROJ_DIR$\..\..\..\lib\platform\pf_int.c</name>
       </file>
       <file>
+        <name>$PROJ_DIR$\..\..\..\lib\platform\pf_key_touchpad.c</name>
+      </file>
+      <file>
         <name>$PROJ_DIR$\..\..\..\lib\platform\pf_lcd.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\lib\platform\pf_module.c</name>
       </file>
       <file>
         <name>$PROJ_DIR$\..\..\..\lib\platform\pf_mux.h</name>
       </file>
       <file>
         <name>$PROJ_DIR$\..\..\..\lib\platform\pf_norflash.c</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$\..\..\..\lib\platform\pf_platform.c</name>
       </file>
       <file>
         <name>$PROJ_DIR$\..\..\..\lib\platform\pf_pwmss.c</name>
@@ -2093,10 +2126,16 @@
         <name>$PROJ_DIR$\..\..\..\lib\platform\pf_rx8025.c</name>
       </file>
       <file>
+        <name>$PROJ_DIR$\..\..\..\lib\platform\pf_sysdelay.c</name>
+      </file>
+      <file>
         <name>$PROJ_DIR$\..\..\..\lib\platform\pf_sysperf.c</name>
       </file>
       <file>
         <name>$PROJ_DIR$\..\..\..\lib\platform\pf_timertick.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\lib\platform\pf_tsc.c</name>
       </file>
       <file>
         <name>$PROJ_DIR$\..\..\..\lib\platform\pf_uart.c</name>
@@ -2192,7 +2231,13 @@
     <group>
       <name>utils</name>
       <file>
+        <name>$PROJ_DIR$\..\..\..\lib\utils\algorithm.c</name>
+      </file>
+      <file>
         <name>$PROJ_DIR$\..\..\..\lib\utils\cmdline.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\lib\utils\mem.c</name>
       </file>
       <file>
         <name>$PROJ_DIR$\..\..\..\lib\utils\misc.c</name>
@@ -2206,20 +2251,35 @@
     </group>
   </group>
   <group>
-    <name>src</name>
-    <group>
-      <name>include</name>
-      <file>
-        <name>$PROJ_DIR$\..\..\..\src\include\cpld.h</name>
-      </file>
-    </group>
+    <name>linker</name>
     <file>
-      <name>$PROJ_DIR$\..\..\..\src\mmc_inand_fat\mmc_inand_fat.c</name>
+      <name>$PROJ_DIR$\..\..\tool\ewarm\boot.icf</name>
     </file>
   </group>
-  <file>
-    <name>$PROJ_DIR$\..\..\..\src\mmc_inand_fat\main.c</name>
-  </file>
+  <group>
+    <name>src</name>
+    <file>
+      <name>$PROJ_DIR$\..\..\..\src\bl_copy.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\..\src\bl_main.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\..\src\bl_platform.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\..\src\burn.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\..\src\emmc_header.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\..\src\test.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\..\src\ui.c</name>
+    </file>
+  </group>
 </project>
 
 
