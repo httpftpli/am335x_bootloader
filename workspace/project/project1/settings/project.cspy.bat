@@ -19,6 +19,6 @@
 @REM 
 
 
-"D:\Program Files\IAR Systems\Embedded Workbench 6.5\common\bin\cspybat" "D:\Program Files\IAR Systems\Embedded Workbench 6.5\arm\bin\armproc.dll" "D:\Program Files\IAR Systems\Embedded Workbench 6.5\arm\bin\armjlink.dll"  %1 --plugin "D:\Program Files\IAR Systems\Embedded Workbench 6.5\arm\bin\armbat.dll" --backend -B "--endian=little" "--cpu=Cortex-A8" "--fpu=None" "-p" "E:\md335x_bootloader\workspace\project\project1\..\..\tool\ewarm\am3359.ddf" "--semihosting" "--device=am3359" "--drv_communication=USB0" "--jlink_speed=10000" "--drv_catch_exceptions=0x000" "--jlink_reset_strategy=0,1" 
+"D:\Program Files\IAR Systems\Embedded Workbench 6.5\common\bin\cspybat" "D:\Program Files\IAR Systems\Embedded Workbench 6.5\arm\bin\armproc.dll" "D:\Program Files\IAR Systems\Embedded Workbench 6.5\arm\bin\armjlink.dll"  %1 --plugin "D:\Program Files\IAR Systems\Embedded Workbench 6.5\arm\bin\armbat.dll" --backend -B "--endian=little" "--cpu=Cortex-A8" "--fpu=None" "-p" "E:\md335x_bootloader\workspace\project\project1\..\..\tool\ewarm\am3359.ddf" "--drv_verify_download" "--semihosting" "--device=am3359" "--drv_communication=USB0" "--jlink_speed=10000" "--drv_catch_exceptions=0x000" "--jlink_reset_strategy=0,1" 
 
 

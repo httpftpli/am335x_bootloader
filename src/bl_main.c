@@ -17,7 +17,7 @@ unsigned int DspEntryPoint = 0;
 
 
 static BOOL forceEnterBoot(){
-  //atomicClear(&g_keyPushed);
+  atomicClear(&g_keyPushed);
   unsigned int val = 0;
   unsigned int timemark = TimerTickGet();
   while (1) {
@@ -40,7 +40,7 @@ int main(void) {
    UARTPuts("Minde bootloader \n\r ", -1);
    int val;
    if ((!forceEnterBoot()) && ((val = bootCopy()) == 0)) {
-      //jumptoApp();
+       jumptoApp();
    }
    if (APP_COPY_ERROR == val) {
       UARTPuts("Application copy error...\r\n\n", -1);

@@ -75,7 +75,7 @@ define block LCD_FRAMEBUFFER with alignment = 8, size = 0x300000 { };
 
 do not initialize  { section .noinit };
 do not initialize  { section LCD_FRAMEBUFFER };
-initialize by copy { readwrite };
+initialize by copy with packing = zeros{ readwrite };
 
 place in RAM_region   { section SYSTEMSTART };
 place in RAM_region   { readonly };

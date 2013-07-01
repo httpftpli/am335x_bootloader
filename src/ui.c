@@ -106,8 +106,8 @@ LABEL statLabel1 = {
 };
  
 
-const LABEL frametitles[] = {
-   [0]={.x = 240,.y = 35,.width=220,.height=20,.haveFrame=1,.haveFrame=1,.caption = "idisk"},
+LABEL frametitles[] = {
+   [0]={.x = 240,.y = 35,.width=220,.height=20,.haveFrame=1,.haveFrame=1,.caption = NULL},
    [1]={.x = 460,.y = 35,.width=220,.height=20,.haveFrame=1,.haveFrame=1,.caption = "udisk"},  
 };
 
@@ -227,8 +227,10 @@ void labelSetCaption(LABEL *label,TEXTCHAR *caption){
    label->statChanged = 1;
 }
 
-static void statBarPrint(TEXTCHAR *buf){
-   labelSetCaption(&statLabel1,buf);
+void labelRedraw(const LABEL *label, unsigned int force);
+void statBarPrint(TEXTCHAR *buf){
+   statLabel1.caption = buf;
+   labelRedraw(&statLabel1,1);
 }
 
 void labelRedraw(const LABEL *label, unsigned int force) {
@@ -388,7 +390,7 @@ static void idiskbuttonhandler(void *button, unsigned int stat) {
          if (grop[i] == NULL) {
             break;
          }
-         if (grop[i] != b) {
+         if ((grop[i] != b)&&(grop[i]->pushed==1)) {
             grop[i]->pushed = 0;
             grop[i]->statChanged = 1;
          }else{
@@ -412,10 +414,15 @@ void probUdisk(){
       scan_files("2:/",udiskfileinfolist,&udiskFileCount);
       probed = 1; 
       ufilegroupindex = 0 ;
+      ufileindex  = -1;
       ufilestatchagned = 1;       
    } else if ((g_usbMscState == USBMSC_NO_DEVICE)&&(probed==1)) {
       probed = 0;
       ufilegroupindex = 0 ;
+      if (ufileindex!=-1) {
+         buttonSetStat(&udiskButtons[ufileindex],0);
+      }
+      ufileindex = -1;
       memset(udiskfileinfolist,0,sizeof udiskfileinfolist ); 
       udiskFileCount=0;
       ufilestatchagned = 1;
@@ -428,6 +435,7 @@ void displayUdisk() {
       for (unsigned int i = 0; i < 12; i++) {
          if ((ufilegroupindex * 12 + i) > udiskFileCount) {
             buttonSetCaption(&udiskButtons[i], NULL);
+            //buttonSetStat(&udiskButtons[ufileindex],(ufileindex==-1)?0:1);
             buttonDisable(&udiskButtons[i]);
          } else {
            buttonSetCaption(&udiskButtons[i],udiskfileinfolist[ufilegroupindex * 12 + i].filename);
@@ -441,8 +449,9 @@ void displayUdisk() {
 
 void probIdisk_display(){
    static int probed = 0;
+   static TEXTCHAR labelchar[48];
    if (ifilestatchagned == 1) {
-      udiskFileCount = NARRAY(udiskfileinfolist);
+      idiskFileCount = NARRAY(idiskfileinfolist);
       scan_files("0:/",idiskfileinfolist,&idiskFileCount);
       ifilestatchagned = 0 ; 
       for (unsigned int i = 0; i < 12; i++) {
@@ -454,6 +463,9 @@ void probIdisk_display(){
            buttonEnable(&inandButtons[i]);
          }
       }
+      unsigned int free =  getpartitionfree("0:/")/1024;
+      sprintf(labelchar,"idisk(%dKB free)",free);
+      labelSetCaption(&frametitles[0],labelchar);
    } 
 }
 
@@ -468,9 +480,11 @@ static void udiskbuttonhandler(void *button, unsigned int stat) {
          if (grop[i] == NULL) {
             break;
          }
-         if (grop[i] != b) {
-            grop[i]->pushed = 0;
-            grop[i]->statChanged = 1;
+         if (grop[i] != b){
+           if(grop[i]->pushed==1){
+              grop[i]->pushed = 0;
+              grop[i]->statChanged = 1;
+           }
          }else{
             index=i;
          }
@@ -545,10 +559,10 @@ static void burnfonthandler(void *button,unsigned int stat){
    char pathbuf[20] = "2:/";
    unsigned int ret = burnFont(strcat(pathbuf, udiskfileinfolist[index].filename));
    if (FALSE==ret) {
-      statBarPrint("burn bootloader fail");
+      statBarPrint("burn font fail");
       return ;
    }
-   statBarPrint("burn bootloader success");
+   statBarPrint("burn font success");
    ifilestatchagned = 1;
 }
 
@@ -606,6 +620,7 @@ void hmiInit(){
    buttonRegistHandler(burnpagebuttons+2,burnapphandler);
    buttonRegistHandler(burnpagebuttons+3,burnfonthandler); 
    registLabel(&statLabel1);
+   registLabel(&frametitles[0]);
    for (int i=0;i<NARRAY(burnpagebuttons);i++) {
       burnpagebuttons[i].haveFrame = 1;
       registButton(burnpagebuttons+i);

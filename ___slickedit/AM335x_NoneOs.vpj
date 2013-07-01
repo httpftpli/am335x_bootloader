@@ -460,6 +460,10 @@
             </Folder>
         </Folder>
         <Folder Name="../src">
+            <Folder Name="config">
+                <F N="../src/config/ffconf.h"/>
+                <F N="../src/config/platform_cfg.h"/>
+            </Folder>
             <Folder Name="include">
                 <F N="../src/include/bl.h"/>
                 <F N="../src/include/bl_copy.h"/>
