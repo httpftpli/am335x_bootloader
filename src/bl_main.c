@@ -10,6 +10,7 @@
 #include "pf_tsc.h"
 #include "pf_key_touchpad.h"
 #include "pf_lcd.h"
+#include "debug.h"
 
 
 unsigned int entryPoint = 0;
@@ -33,6 +34,22 @@ static BOOL forceEnterBoot(){
   }
   return FALSE;
 }
+
+
+BOOL enterTouchCal = 0;
+void bootkeyhandler(int keycode){
+  static int cnt = 0;
+  if(KEY_OK==keycode){
+    cnt++;
+    if(cnt == 4){
+      enterTouchCal = 1;
+      cnt = 0;
+    }
+  }else{
+    cnt = 0;
+  }
+}
+  
 
 
 int main(void) {
@@ -60,6 +77,7 @@ int main(void) {
    }
    
 BOOTLOADER:
+  registKeyHandler(bootkeyhandler);
   LCDRasterStart();
   LCDBackLightON();
   TouchCalibrate(0);
@@ -72,6 +90,11 @@ BOOTLOADER:
          probUdisk();
          displayUdisk();
          probIdisk_display();
-      }
+         if(enterTouchCal==1){
+            while (!TouchCalibrate(1)) ;  
+            hmishow();
+            enterTouchCal = 0;
+         }
+  }
 }
 

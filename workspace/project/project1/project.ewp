@@ -167,6 +167,7 @@
           <state>am335x</state>
           <state>beaglebone</state>
           <state>INNERBOOT</state>
+          <state>DEBUG_ERROR_NOTOUTPUT1</state>
         </option>
         <option>
           <name>CCPreprocFile</name>

@@ -196,6 +196,7 @@ void buttonRedraw(const BUTTON *button, unsigned int force) {
 
 
 
+
 void buttonShow(const BUTTON *button){
    buttonRedraw(button,1);
 }
@@ -366,7 +367,7 @@ void hmishow(){
    }
 }
 
-static void tscalhandler(void *button,unsigned int stat){
+void tscalhandler(void *button,unsigned int stat){
    if (1==stat) {
       while (!TouchCalibrate(1)) ;
    } 
@@ -382,7 +383,6 @@ unsigned int ufilestatchagned = 0,ifilestatchagned=1;
 static void idiskbuttonhandler(void *button, unsigned int stat) {
    BUTTON *b = (BUTTON *)button;
    BUTTON **grop;
-   static TEXTCHAR buff[100];
    unsigned int index;
    if (stat == 1) {
       grop = (BUTTON **)(b->group);
@@ -390,9 +390,11 @@ static void idiskbuttonhandler(void *button, unsigned int stat) {
          if (grop[i] == NULL) {
             break;
          }
-         if ((grop[i] != b)&&(grop[i]->pushed==1)) {
-            grop[i]->pushed = 0;
-            grop[i]->statChanged = 1;
+         if (grop[i] != b){
+           if(grop[i]->pushed==1){
+              grop[i]->pushed = 0;
+              grop[i]->statChanged = 1;
+           }
          }else{
             index=i;
          }
@@ -401,10 +403,12 @@ static void idiskbuttonhandler(void *button, unsigned int stat) {
    }else{
      ifileindex = -1;
    }
-   sprintf(buff,"ifile   %d",ifileindex);
-   statBarPrint(buff);
+   if(ifileindex!=-1){
+        statBarPrint(idiskfileinfolist[ifilegroupindex*12+ifileindex].filename);
+   }else{
+        statBarPrint(NULL);    
+   } 
 }
-
 
 
 void probUdisk(){
@@ -435,7 +439,6 @@ void displayUdisk() {
       for (unsigned int i = 0; i < 12; i++) {
          if ((ufilegroupindex * 12 + i) > udiskFileCount) {
             buttonSetCaption(&udiskButtons[i], NULL);
-            //buttonSetStat(&udiskButtons[ufileindex],(ufileindex==-1)?0:1);
             buttonDisable(&udiskButtons[i]);
          } else {
            buttonSetCaption(&udiskButtons[i],udiskfileinfolist[ufilegroupindex * 12 + i].filename);
@@ -580,6 +583,7 @@ static void runapphandler(void *button,unsigned int stat){
   if(0==ret){
     LCDBackLightOFF();
     LCDRasterEnd();
+    registKeyHandler(NULL);
     jumptoApp();
   }
 }

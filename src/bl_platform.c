@@ -1175,7 +1175,7 @@ void BlPlatformConfig(void)
     
     EDMAInit();
     UARTStdioInit();
-    uartInit(MODULE_ID_UART1, 115200, 8,UART_PARITY_NONE,
+    uartInit(MODULE_ID_UART1, 57600, 8,UART_PARITY_NONE,
             UART_FRAME_NUM_STB_1, UART_INT_RHR_CTI,UART_FCR_RX_TRIG_LVL_8,UART_FCR_RX_TRIG_LVL_8); //for keyboard
             
     GPIOInit(MODULE_ID_GPIO0,0,0); //for lcd blacklight
