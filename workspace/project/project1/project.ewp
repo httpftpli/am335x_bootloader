@@ -1936,33 +1936,39 @@
       </group>
     </group>
     <group>
-      <name>font</name>
-      <group>
-        <name>Unicode</name>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\lib\font\Unicode\unicode.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\lib\font\Unicode\unicode.h</name>
-        </file>
-      </group>
-      <file>
-        <name>$PROJ_DIR$\..\..\..\lib\font\font.c</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$\..\..\..\lib\font\font.h</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$\..\..\..\lib\font\utf8.c</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$\..\..\..\lib\font\utf8.h</name>
-      </file>
-    </group>
-    <group>
       <name>gui</name>
       <file>
-        <name>$PROJ_DIR$\..\..\..\lib\gui\Gui.c</name>
+        <name>$PROJ_DIR$\..\..\..\lib\gui\ascii_16.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\lib\gui\ascii_20.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\lib\gui\font.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\lib\gui\GUI_draw.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\lib\gui\GUI_font.h</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\lib\gui\GUI_SIF_Prop.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\lib\gui\GUICharP.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\lib\gui\GUIType.h</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\lib\gui\lib_gui.h</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\lib\gui\utf8.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\lib\gui\utf8.h</name>
       </file>
     </group>
     <group>

@@ -91,7 +91,7 @@ static const unsigned int CS_ADDRLINE_BIT[7] = {24,24,24,24,24,24,24};
 #define UCS16_CODEC  1
 #define ASCII_CODEC  2
 #define UTF8_CODEC   3
-#define CHARACTER_DIS_CODEC  UNICODE_CODEC
+#define CHARACTER_DIS_CODEC  ASCII_CODEC
 
 #endif
 

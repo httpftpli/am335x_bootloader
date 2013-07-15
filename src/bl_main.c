@@ -13,6 +13,7 @@
 #include "debug.h"
 
 
+
 unsigned int entryPoint = 0;
 unsigned int DspEntryPoint = 0;
 
@@ -50,14 +51,14 @@ void bootkeyhandler(int keycode){
   }
 }
   
-
+FATFS inandfs;
 
 int main(void) {
    BlPlatformConfig();
    UARTPuts("Minde bootloader \n\r ", -1);
    int val;
    if ((!forceEnterBoot()) && ((val = bootCopy()) == 0)) {
-       jumptoApp();
+       //jumptoApp();
    }
    if (APP_COPY_ERROR == val) {
       UARTPuts("Application copy error...\r\n\n", -1);
@@ -82,7 +83,6 @@ BOOTLOADER:
   LCDBackLightON();
   TouchCalibrate(0);
   hmiInit();
-  static FATFS inandfs;
   f_mount(0, &inandfs);
   while (1) {
          guiExec();

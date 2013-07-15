@@ -198,20 +198,19 @@
                     <F N="../lib/fatfs/src/integer.h"/>
                 </Folder>
             </Folder>
-            <Folder Name="font">
-                <Folder Name="Unicode">
-                    <F N="../lib/font/Unicode/unicode.c"/>
-                    <F N="../lib/font/Unicode/unicode.h"/>
-                </Folder>
-                <F N="../lib/font/font.c"/>
-                <F N="../lib/font/font.h"/>
-                <F N="../lib/font/font_ascii_data.c"/>
-                <F N="../lib/font/utf8.c"/>
-                <F N="../lib/font/utf8.h"/>
-            </Folder>
             <Folder Name="gui">
-                <F N="../lib/gui/Gui.c"/>
-                <F N="../lib/gui/Gui.h"/>
+                <F N="../lib/gui/ascii_16.c"/>
+                <F N="../lib/gui/ascii_20.c"/>
+                <F N="../lib/gui/font.c"/>
+                <F N="../lib/gui/font.h"/>
+                <F N="../lib/gui/GUI_draw.c"/>
+                <F N="../lib/gui/GUI_font.h"/>
+                <F N="../lib/gui/GUI_SIF_Prop.c"/>
+                <F N="../lib/gui/GUICharP.c"/>
+                <F N="../lib/gui/GUIType.h"/>
+                <F N="../lib/gui/lib_gui.h"/>
+                <F N="../lib/gui/utf8.c"/>
+                <F N="../lib/gui/utf8.h"/>
             </Folder>
             <Folder Name="mmcsdlib">
                 <Folder Name="include">
@@ -386,7 +385,6 @@
                 <F N="../lib/platform/pf_usb.c"/>
                 <F N="../lib/platform/pf_usbmsc.c"/>
                 <F N="../lib/platform/pf_watchdog.c"/>
-                <F N="../lib/platform/pl_tsc.c"/>
             </Folder>
             <Folder Name="usblib">
                 <Folder Name="device">

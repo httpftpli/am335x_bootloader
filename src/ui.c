@@ -1,4 +1,3 @@
-#include "gui.h"
 #include "mmath.h"
 #include "pf_timertick.h"
 #include "pf_tsc.h"
@@ -13,9 +12,14 @@
 #include "hw_types.h"
 #include "mmcsd_proto.h"
 #include "mem.h"
+#include "lib_gui.h"
+
 
 #define MAX_BUTTON_CAPTION   30
 #define MAX_LABEL_CAPTION    100
+
+#define BTR_VERSION  "V1.0"
+
 
 #define ID_SET        1
 #define ID_BURN       2
@@ -31,6 +35,8 @@
 #define ID_DOWNFONT   12
 #define ID_TC         13
 
+
+extern GUI_FONT GUI_Fontascii_16,GUI_Fontascii_20;
 
 extern BOOL idiskFdisk();
 extern BOOL idiskFormat();
@@ -66,6 +72,7 @@ typedef struct __label{
 
 
 
+
 BUTTON *buttonList[50];
 unsigned int buttonindext = 0;
 LABEL *labelList[20];
@@ -90,7 +97,7 @@ void registLabel(LABEL *label){
 
 
 const LABEL titleLabel = {
-   .x = 0,.y = 0,.width=800,.height=20,.haveFrame=1,.caption = "mingde   bootloader",
+   .x = 0,.y = 0,.width=800,.height=20,.haveFrame=1,.caption = "mingde   bootloader  " BTR_VERSION,
 };
 
 const LABEL pageLabel = {
@@ -170,25 +177,25 @@ void buttonRedraw(const BUTTON *button, unsigned int force) {
    if (forcetemp) {
       if (!button->pushed) {
          if (button->haveFrame == 1) {
-            Dis_HLine(button->x, button->y, button->width, C_White);
-            Dis_HLine(button->x, button->y + button->height - 1, button->width, C_White);
-            Dis_VLine(button->x, button->y, button->height, C_White);
-            Dis_VLine(button->x + button->width - 1, button->y, button->height, C_White);
+            drawHLineEx(button->x, button->y, button->width, C_WHITE);
+            drawHLineEx(button->x, button->y + button->height - 1, button->width, C_WHITE);
+            drawVLineEx(button->x, button->y, button->height, C_WHITE);
+            drawVLineEx(button->x + button->width - 1, button->y, button->height, C_WHITE);
          }
-         Dis_RectFill(button->x + 1, button->y + 1, button->width - 2, button->height - 2, C_Blue);
+         drawRectFillEx(button->x + 1, button->y + 1, button->width - 2, button->height - 2, C_BLUE);
          if (button->caption != NULL) {
-            Dis_StringAligen1(button->caption, ALIGEN_MIDDLE, button->x, button->y, button->width, button->height, 0, C_White, C_TRANSPARENT);
+            drawStringAligenEx(button->caption, ALIGEN_MIDDLE, button->x, button->y, button->width, button->height,&GUI_Fontascii_16 , C_WHITE, C_TRANSPARENT);
          }
       } else {
          if (button->haveFrame == 1) {
-            Dis_HLine(button->x, button->y, button->width, C_Blue);
-            Dis_HLine(button->x, button->y + button->height - 1, button->width, C_Blue);
-            Dis_VLine(button->x, button->y, button->height, C_Blue);
-            Dis_VLine(button->x + button->width - 1, button->y, button->height, C_Blue);
+            drawHLineEx(button->x, button->y, button->width, C_BLUE);
+            drawHLineEx(button->x, button->y + button->height - 1, button->width, C_BLUE);
+            drawVLineEx(button->x, button->y, button->height, C_BLUE);
+            drawVLineEx(button->x + button->width - 1, button->y, button->height, C_BLUE);
          }
-         Dis_RectFill(button->x + 1, button->y + 1, button->width - 2, button->height - 2, C_White);
+         drawRectFillEx(button->x + 1, button->y + 1, button->width - 2, button->height - 2, C_WHITE);
          if (button->caption != NULL) {
-            Dis_StringAligen1(button->caption, ALIGEN_MIDDLE, button->x, button->y, button->width, button->height, 0, C_Blue, C_TRANSPARENT);
+            drawStringAligenEx(button->caption, ALIGEN_MIDDLE, button->x, button->y, button->width, button->height, &GUI_Fontascii_16, C_BLUE, C_TRANSPARENT);
          }
       }
    }
@@ -237,15 +244,15 @@ void statBarPrint(TEXTCHAR *buf){
 void labelRedraw(const LABEL *label, unsigned int force) {
    unsigned int forcetemp = force || label->statChanged;
    if (forcetemp) {
-      Dis_RectFill(label->x, label->y, label->width, label->height, C_Blue);
+      drawRectFillEx(label->x, label->y, label->width, label->height, C_BLUE);
       if (label->haveFrame) {
-         Dis_HLine(label->x, label->y, label->width, C_White);
-         Dis_HLine(label->x, label->y + label->height - 1, label->width, C_White);
-         Dis_VLine(label->x, label->y, label->height, C_White);
-         Dis_VLine(label->x + label->width - 1, label->y, label->height, C_White);
+         drawHLineEx(label->x, label->y, label->width, C_WHITE);
+         drawHLineEx(label->x, label->y + label->height - 1, label->width, C_WHITE);
+         drawVLineEx(label->x, label->y, label->height, C_WHITE);
+         drawVLineEx(label->x + label->width - 1, label->y, label->height, C_WHITE);
       }
       if (label->caption != NULL) {
-         Dis_StringAligen1(label->caption, ALIGEN_MIDDLE, label->x, label->y, label->width, label->height, 0, C_White, C_TRANSPARENT);
+         drawStringAligenEx(label->caption, ALIGEN_MIDDLE, label->x, label->y, label->width, label->height, &GUI_Fontascii_16, C_WHITE, C_TRANSPARENT);
       }
    }
 }
@@ -332,18 +339,6 @@ void labelShow(const LABEL *label) {
 
 TEXTCHAR buff[100];
 
-
-static void idiskformathandler(void *button,unsigned int stat){
-   BOOL r;
-   if (1==stat) {
-      r = idiskFormat();
-      if (r) {
-         statBarPrint("idisk format success");
-      }else{
-         statBarPrint("idisk format fail");
-      }
-   } 
-}
 
 void hmishow(){  
    labelShow(&titleLabel);
@@ -458,7 +453,7 @@ void probIdisk_display(){
       scan_files("0:/",idiskfileinfolist,&idiskFileCount);
       ifilestatchagned = 0 ; 
       for (unsigned int i = 0; i < 12; i++) {
-         if ((ifilegroupindex * 12 + i) > idiskFileCount) {
+         if (((ifilegroupindex * 12 + i) > idiskFileCount) || (idiskFileCount==0)) {
             buttonSetCaption(&inandButtons[i], NULL);
             buttonDisable(&inandButtons[i]);
          } else {
@@ -472,6 +467,19 @@ void probIdisk_display(){
    } 
 }
 
+
+static void idiskformathandler(void *button,unsigned int stat){
+   BOOL r;
+   if (1==stat) {
+      r = idiskFormat();
+      if (r) {
+         statBarPrint("idisk format success");
+      }else{
+         statBarPrint("idisk format fail");
+      }
+   }
+   ifilestatchagned = 1; 
+}
 
 static void udiskbuttonhandler(void *button, unsigned int stat) {
    BUTTON *b = (BUTTON *)button;
@@ -613,6 +621,8 @@ static void ufiledownhandler(void *button ,unsigned int stat){
 }
 
 void hmiInit(){
+   GUI_SetBkColor(C_BLUE);
+   GUI_SetColor(C_WHITE);
    buttonRegistHandler(burnpagebuttons,tscalhandler);
    buttonRegistHandler(burnpagebuttons+1,idiskformathandler);
    buttonRegistHandler(burnpagebuttons+8,ufiledownhandler);
