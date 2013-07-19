@@ -82,7 +82,6 @@ BOOL idiskFormat(){
    if (FR_OK!=r) {
       return FALSE;
    }
-   FATFS fs1;
    r = f_mkfs(0,0,0);
    if (FR_OK!=r) {
       return FALSE;
@@ -90,9 +89,10 @@ BOOL idiskFormat(){
    return TRUE;
 }
 
-
+extern void statBarPrint(unsigned int error,TEXTCHAR *buf);
 BOOL burnAPP(TCHAR *path){
    unsigned char *buf = (unsigned char *)0x80000000;
+   unsigned char headbuf[512];
    unsigned int rdlen;
    APPHEADER header;
    FIL file;
@@ -101,10 +101,7 @@ BOOL burnAPP(TCHAR *path){
    char disbuf[32];
    unsigned short crc16;
    unsigned int  percent = 0,percentold =0;
-   unsigned int  filesize,filesizekb;
-   if (!strendwith(path,".BIN")) {
-      return FALSE;
-   }
+   unsigned int  filesize, count;
    fret = f_open(&file, path, FA_READ);
    if (fret != FR_OK) {
       return FALSE;
@@ -113,55 +110,57 @@ BOOL burnAPP(TCHAR *path){
       goto ERROR;
    }
    filesize = file.fsize;
-   header.imageSize = file.fsize;
+   if (filesize%512) {
+      goto ERROR; 
+   }
+   count = filesize/512;
+   if (count<2) goto ERROR;
+   header.imageSize = (count-1)*510;
    header.loadAddr = APP_ENTRY;
    header.magic = APP_MAGIC_NO;
-   memcpy(buf,&header,sizeof header);
-   ret = MMCSDP_Write(mmcsdctr, buf, APP_HEAD_SECTOR, 1);
+   memset(headbuf,0,sizeof headbuf);
+   memcpy(headbuf,&header,sizeof header);
+   ret = MMCSDP_Write(mmcsdctr, headbuf, APP_HEAD_SECTOR, 1);
    if (FALSE == ret) {
       goto ERROR;
    }
-   sprintf(disbuf, "%d%%", percent);
-   statBarPrint(disbuf);
-   filesizekb = BOUND(filesize,4096);
-   statBarPrint("reading");
-   for (int i = 0;; i++) {
-      fret = f_read(&file, buf+4096*i, 4096, &rdlen);
-      if (fret != FR_OK) {
-         goto ERROR;
-      }
-      percent = i * 4096* 100 / filesizekb;
-      if (percent / 5 != percentold / 5) {
-         sprintf(disbuf, "%d%%", percent + 10);
-         statBarPrint(disbuf);
-         percentold = percent;
-      }
-      if (rdlen != 4096) {
+   statBarPrint(0,"reading");
+   delay(300);
+   for (int i = 0;i<count; i++) {
+      fret = f_read(&file, headbuf, 512, &rdlen);
+      if (fret != FR_OK)  goto ERROR;
+      if (0 == rdlen) {
+         if ((count - 1) != i) goto ERROR;
          break;
       }
+      for (int j = 0; j < 256; j++) {
+         headbuf[j] ^= ProgramTable[j];
+         headbuf[j + 256] ^= ProgramTable[j];
+      }
+      crc16 = crc16_MD(headbuf, 510);
+      if (crc16 != *(unsigned short *)&headbuf[510]) goto ERROR;
+      if (i == 0) {
+         if ((headbuf[0] != 'T') || (headbuf[1] != 'H') || (headbuf[2] != 'J')) goto ERROR;
+         if ((headbuf[10] != 'A') || (headbuf[11] != 'R') || (headbuf[12] != 'A')) goto ERROR;
+      } else {
+         memcpy(buf + 510 * (i - 1), headbuf, 510);
+      }
+      percent = i * 100 / count;
+      if (percent / 5 != percentold / 5) {
+         sprintf(disbuf, "%d%%", percent);
+         statBarPrint(0,disbuf);
+         percentold = percent;
+      }
    }
-   f_close(&file);
-
-/*
-   statBarPrint("processing");
-   crc16 = crc16_MD(buf,filesize-2);
-   if (crc16 != (unsigned short)(buf[filesize-1-2])) {
-      statBarPrint("processing error");
-      delay(1000);
-      return FALSE;
-   }
-   for (int i=0;i<filesize-2;i++) {
-      buf[i] = buf[i]^((unsigned int *)ProgramTable)[i%64];
-   }*/
-   
-   statBarPrint("writing");
-   ret = MMCSDP_Write(mmcsdctr, buf, APP_BEGIN_SECTOR, BOUND(filesize,512)/512);
+   statBarPrint(0,"writing");
+   ret = MMCSDP_Write(mmcsdctr, buf, APP_BEGIN_SECTOR, DIVUP(header.imageSize,512));
       if (FALSE == ret) {
          goto ERROR;
    }
    header.magic = APP_MAGIC_OK;
-   memcpy(buf,&header,sizeof header);
-   MMCSDP_Write(mmcsdctr, buf, APP_HEAD_SECTOR, 1);
+   memset(headbuf,0,sizeof headbuf);
+   memcpy(headbuf,&header,sizeof header);
+   MMCSDP_Write(mmcsdctr, headbuf, APP_HEAD_SECTOR, 1);
    return TRUE;
 ERROR:
    f_close(&file); 
@@ -203,12 +202,12 @@ BOOL f_copy_disp(const TCHAR *scrpath,const TCHAR * despath){
          f_close(&scrfile);
          f_close(&desfile);
          sprintf(disbuf,"%d%%",100);
-         statBarPrint(disbuf);
+         statBarPrint(0,disbuf);
          return  FR_OK;
       }else{
          percent+=5;
          sprintf(disbuf,"%d%%",percent);
-         statBarPrint(disbuf);
+         statBarPrint(0,disbuf);
       }
    }  
 ERROR:

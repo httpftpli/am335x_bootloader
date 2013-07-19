@@ -49,7 +49,7 @@ define symbol __ICFEDIT_region_FRAMEBUFFER_start__ = 0x86000000;
 define symbol __ICFEDIT_region_FRAMEBUFFER_end__   = 0x87FFFFFF;
 
 /*-Sizes-*/
-define symbol __ICFEDIT_size_cstack__   = 0x1000;
+define symbol __ICFEDIT_size_cstack__   = 0x2000;
 define symbol __ICFEDIT_size_svcstack__ = 0x8;
 define symbol __ICFEDIT_size_irqstack__ = 0x500;
 define symbol __ICFEDIT_size_fiqstack__ = 0x8;

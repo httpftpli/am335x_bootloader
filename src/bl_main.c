@@ -26,7 +26,7 @@ static BOOL forceEnterBoot(){
      if(atomicTestClear(&g_keyPushed)&& (g_keycode==KEY_QUK)){
         val++;
      }
-     if ((TimerTickGet()-timemark)>500) {
+     if ((TimerTickGet()-timemark)>400) {
         break;
      }
   }
@@ -38,7 +38,7 @@ static BOOL forceEnterBoot(){
 
 
 BOOL enterTouchCal = 0;
-void bootkeyhandler(int keycode){
+static void bootkeyhandler(int keycode){
   static int cnt = 0;
   if(KEY_OK==keycode){
     cnt++;
@@ -50,16 +50,36 @@ void bootkeyhandler(int keycode){
     cnt = 0;
   }
 }
-  
-FATFS inandfs;
+
+FATFS inandfs ;
+BOOL isIDok;
+
+extern BOOL isIDvailable();
+extern void hmiInit();
+extern void guiExec(void);
+extern void probUdisk();
+extern void displayUdisk();
+extern void probIdisk_display();
+extern void hmishow();
 
 int main(void) {
    BlPlatformConfig();
    UARTPuts("Minde bootloader \n\r ", -1);
-   int val;
-   if ((!forceEnterBoot()) && ((val = bootCopy()) == 0)) {
-       //jumptoApp();
+   int val = 0;
+   isIDok = isIDvailable();
+   if(!isIDok){
+      UARTPuts("ID error...\r\n\n", -1);
+      goto BOOTLOADER;
    }
+   if (forceEnterBoot()){
+      goto BOOTLOADER;
+   }
+#ifndef INNERBOOT
+   val = bootCopy();
+   if(0 == val){
+      jumptoApp();
+   }
+#endif
    if (APP_COPY_ERROR == val) {
       UARTPuts("Application copy error...\r\n\n", -1);
       goto BOOTLOADER;

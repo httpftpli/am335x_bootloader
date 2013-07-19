@@ -2237,6 +2237,42 @@
     </group>
     <group>
       <name>utils</name>
+      <group>
+        <name>include</name>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\lib\utils\include\algorithm.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\lib\utils\include\atomic.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\lib\utils\include\cmdline.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\lib\utils\include\debug.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\lib\utils\include\mem.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\lib\utils\include\misc.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\lib\utils\include\mmath.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\lib\utils\include\perf.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\lib\utils\include\systick.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\lib\utils\include\type.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\lib\utils\include\uartstdio.h</name>
+        </file>
+      </group>
       <file>
         <name>$PROJ_DIR$\..\..\..\lib\utils\algorithm.c</name>
       </file>
@@ -2265,6 +2301,15 @@
   </group>
   <group>
     <name>src</name>
+    <group>
+      <name>config</name>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\src\config\ffconf.h</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\src\config\platform_cfg.h</name>
+      </file>
+    </group>
     <file>
       <name>$PROJ_DIR$\..\..\..\src\bl_copy.c</name>
     </file>

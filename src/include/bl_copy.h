@@ -13,7 +13,7 @@
 
 #define APP_HEAD_SECTOR         770
 #define APP_BEGIN_SECTOR      771
-#define APP_MAX_SIZE          10*1024*1024
+#define APP_MAX_SIZE          20*1024*1024
 #define APP_ENTRY             0x80000000
 #define APP_MAGIC_OK          0x5555aaaa
 #define APP_MAGIC_NO          0xaaaa5555

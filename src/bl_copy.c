@@ -53,6 +53,20 @@ int bootCopy() {
    return reval;
 }
 
+BOOL isIDvailable(){
+   unsigned int buf[512 / 4];
+   memset(buf,0,sizeof buf);
+   unsigned int mac[4];
+   mac[0] = ~ HWREG(SOC_CONTROL_REGS + CONTROL_MAC_ID_LO(0));
+   mac[1] = ~ HWREG(SOC_CONTROL_REGS + CONTROL_MAC_ID_HI(0));
+   mac[2] = ~ HWREG(SOC_CONTROL_REGS + CONTROL_MAC_ID_LO(1));
+   mac[3] = ~ HWREG(SOC_CONTROL_REGS + CONTROL_MAC_ID_HI(1));
+   MMCSDP_Read(mmcsdctr, buf, 641, 1);
+   if((buf[0] != mac[0]) || (buf[1] != mac[1])||(buf[2] != mac[2])||(buf[3] != mac[3])){
+     return FALSE;
+   }
+   return TRUE;
+}
 
 
 void jumptoApp(){

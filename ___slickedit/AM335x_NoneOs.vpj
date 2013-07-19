@@ -377,6 +377,7 @@
                 <F N="../lib/platform/pf_qep.c"/>
                 <F N="../lib/platform/pf_rtc.c"/>
                 <F N="../lib/platform/pf_rx8025.c"/>
+                <F N="../lib/platform/pf_spi.c"/>
                 <F N="../lib/platform/pf_sysperf.c"/>
                 <F N="../lib/platform/pf_timertick.c"/>
                 <F N="../lib/platform/pf_tsc.c"/>

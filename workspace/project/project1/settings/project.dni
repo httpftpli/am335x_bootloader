@@ -39,7 +39,7 @@ ActionState=1
 Enabled=0
 ShowSource=1
 [DebugChecksum]
-Checksum=1455503408
+Checksum=-1379903111
 [Exceptions]
 StopOnUncaught=_ 0
 StopOnThrow=_ 0
@@ -52,6 +52,8 @@ Fmt0=FILINFO-fattrib	4	0
 Fmt1=GUI_CONTEXT-BkColor	4	0
 Fmt2=GUI_CONTEXT-Color	4	0
 Fmt3=KEYTOUCHMSG-tscval	4	0
+[array_types]
+Fmt0=unsigned int[4]	4	0
 [watch_formats]
 Fmt0={W}0:g_keycode	3	0
 [Disassemble mode]
@@ -60,7 +62,10 @@ mode=0
 Bp0=_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\..\..\lib\usblib\host\usbhostenum.c}.567.17" 0 0 1 "" 0 "" 0
 Bp1=_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\..\..\lib\fatfs\src\ff_ext.c}.40.4" 0 0 1 "" 0 "" 0
 Bp2=_ 0 "EMUL_CODE" "0x402F0400" 0 0 1 "" 0 "" 0
-Count=3
+Bp3=_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\..\..\lib\platform\pf_key_touchpad.c}.330.10" 0 0 1 "" 0 "" 0
+Bp4=_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\..\..\lib\utils\include\atomic.h}.42.5" 0 0 1 "" 0 "" 0
+Bp5=_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\..\..\lib\platform\pf_tsc.c}.51.41" 0 0 1 "" 0 "" 0
+Count=6
 [Log file]
 LoggingEnabled=_ 0
 LogFile=_ ""

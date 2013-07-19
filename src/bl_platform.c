@@ -1187,8 +1187,7 @@ void BlPlatformConfig(void)
     
     TimerTickConfigure();    
     TimerTickStart();
-    LCDRasterInit(MODULE_ID_LCDC);
-    TouchScreenInit();
+    LCDRasterInit();
     tsEnalbe();
 
     usbMscInit(); 
