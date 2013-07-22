@@ -39,12 +39,13 @@ typedef void BUTTON_CLICK_HANDLER(void *button,unsigned int stat);
 
 typedef struct __button{
    unsigned short x,y,width,height;
-   unsigned short pushed:1;
-   unsigned short statChanged:1;
-   unsigned short checkable:1;
-   unsigned short haveFrame:1;
-   unsigned short enable:1;
-   unsigned short colorIndex:2;
+   unsigned char pushed:1;
+   unsigned char statChanged:1;
+   unsigned char checkable:1;
+   unsigned char haveFrame:1;
+   unsigned char enable:1;
+   unsigned char colorIndex:2;
+   unsigned char shortkey:8;
    unsigned short tabId;
    unsigned int   group;
    void *parent; 
@@ -57,9 +58,11 @@ typedef struct __label{
    unsigned short x,y,width,height;
    unsigned int haveFrame:1;
    unsigned int statChanged:1;
+   unsigned int focus:1;
    unsigned int colorIndex :2;
    TEXTCHAR *caption;
 }LABEL;
+
 
 
 
@@ -86,11 +89,11 @@ void registLabel(LABEL *label){
 }
 
 
-const LABEL titleLabel = {
+LABEL titleLabel = {
    .x = 0,.y = 0,.width=800,.height=20,.haveFrame=1,.caption = "mingde bootloader "  BTR_VERSION " (build "__DATE__ ")",
 };
 
-const LABEL pageLabel = {
+LABEL pageLabel = {
    .x = 0,.y = 20,.width=800,.height=560,.haveFrame=1,
 };
 
@@ -104,90 +107,189 @@ LABEL statLabel1 = {
  
 
 LABEL frametitles[] = {
-   [0]={.x = 240,.y = 35,.width=220,.height=20,.haveFrame=1,.haveFrame=1,.caption = NULL},
-   [1]={.x = 460,.y = 35,.width=220,.height=20,.haveFrame=1,.haveFrame=1,.caption = "udisk"},  
+   [0]={.x = 230,.y = 35,.width=220,.height=20,.haveFrame=1,.haveFrame=1,.caption = NULL},
+   [1]={.x = 450,.y = 35,.width=220,.height=20,.haveFrame=1,.haveFrame=1,.caption = "udisk"},  
 };
 
-const LABEL frames[] = {
-   [0]={.x = 240,.y = 55,.width=220,.height=480,.haveFrame=1,},
-   [1]={.x = 460,.y = 55,.width=220,.height=480,.haveFrame=1,},
+LABEL frames[] = {
+   [0]={.x = 230,.y = 55,.width=220,.height=482,.haveFrame=1,},
+   [1]={.x = 450,.y = 55,.width=220,.height=482,.haveFrame=1,.focus=1},
 };
 
 BUTTON burnpagebuttons[] = {
-   [0]={.x = 690,.y = 140,.width=100,.height=40,.enable=1,.tabId=0,.caption = "ts calibrat",},
-   [1]={.x = 690,.y = 240,.width=100,.height=40,.enable=1,.tabId=1,.caption = "idisk format",},
-   [2]={.x = 690,.y = 290,.width=100,.height=40,.enable=1,.tabId=2,.caption = "burn app",},
-   [3]={.x = 690,.y = 340,.width=100,.height=40,.enable=1,.tabId=3,.caption = "burn font",},
-   [4]={.x = 690,.y = 490,.width=100,.height=40,.enable=1,.tabId=6,.caption = "run app",},
+   [0]={.x = 680,.y = 140,.width=110,.height=40,.enable=1,.tabId=0,.caption = "ts cal",.shortkey = KEY_F1},
+   [1]={.x = 680,.y = 240,.width=110,.height=40,.enable=1,.tabId=1,.caption = "iformat",.shortkey = KEY_F2},
+   [2]={.x = 680,.y = 290,.width=110,.height=40,.enable=1,.tabId=2,.caption = "burn app",.shortkey = KEY_F3},
+   [3]={.x = 680,.y = 340,.width=110,.height=40,.enable=1,.tabId=3,.caption = "burn font",.shortkey = KEY_F4},
+   [4]={.x = 680,.y = 490,.width=110,.height=40,.enable=1,.tabId=6,.caption = "run app",.shortkey = KEY_OK},
 #ifdef INNERBOOT
-   [9]={.x = 690,.y = 390,.width=100,.height=40,.enable=1,.tabId=4,.caption = "burn boot",},
-   [10]={.x = 690,.y = 440,.width=100,.height=40,.enable=1,.tabId=5,.caption = "burn auto",.colorIndex = 1},
+   [5]={.x = 680,.y = 390,.width=110,.height=40,.enable=1,.tabId=4,.caption = "burn boot",.shortkey = KEY_F5},
+   [6]={.x = 680,.y = 440,.width=110,.height=40,.enable=1,.tabId=5,.caption = "burn auto",.colorIndex = 1,.shortkey = KEY_F6},
 #endif
-   [5]={.x = 250,.y = 540,.width=80,.height=35,.enable=1,.tabId=-1,.caption = "up",},
-   [6]={.x = 360,.y = 540,.width=80,.height=35,.enable=1,.tabId=-1,.caption = "down",},
-   [7]={.x = 480,.y = 540,.width=80,.height=35,.enable=1,.tabId=-1,.caption = "up",},
-   [8]={.x = 590,.y = 540,.width=80,.height=35,.enable=1,.tabId=-1,.caption = "down",},
 };
 
-BUTTON inandButtons[] = {
-   [0]={.x = 240,.y = 55,.width=220,.height=40,.checkable=1},
-   [1]={.x = 240,.y = 95,.width=220,.height=40,.checkable=1},
-   [2]={.x = 240,.y = 135,.width=220,.height=40,.checkable=1},
-   [3]={.x = 240,.y = 175,.width=220,.height=40,.checkable=1},
-   [4]={.x = 240,.y = 215,.width=220,.height=40,.checkable=1},
-   [5]={.x = 240,.y = 255,.width=220,.height=40,.checkable=1},
-   [6]={.x = 240,.y = 295,.width=220,.height=40,.checkable=1},
-   [7]={.x = 240,.y = 335,.width=220,.height=40,.checkable=1},
-   [8]={.x = 240,.y = 375,.width=220,.height=40,.checkable=1},
-   [9]={.x = 240,.y = 415,.width=220,.height=40,.checkable=1},
-   [10]={.x = 240,.y = 455,.width=220,.height=40,.checkable=1},
-   [11]={.x = 240,.y = 495,.width=220,.height=40,.checkable=1},
+BUTTON pagebuttons[2][2] ={
+  {{.x = 240,.y = 540,.width=80,.height=35,.enable=1,.tabId=-1,.caption = "up",.shortkey = KEY_PU},
+  {.x = 350,.y = 540,.width=80,.height=35,.enable=1,.tabId=-1,.caption = "down",.shortkey = KEY_PD},},
+  {{.x = 470,.y = 540,.width=80,.height=35,.enable=1,.tabId=-1,.caption = "up",.shortkey = KEY_PU},
+  {.x = 580,.y = 540,.width=80,.height=35,.enable=1,.tabId=-1,.caption = "down",.shortkey = KEY_PD},},
 };
-BUTTON udiskButtons[] = {
-   [0]={.x = 460,.y = 55,.width=220,.height=40,.checkable=1},
-   [1]={.x = 460,.y = 95,.width=220,.height=40,.checkable=1},
-   [2]={.x = 460,.y = 135,.width=220,.height=40,.checkable=1},
-   [3]={.x = 460,.y = 175,.width=220,.height=40,.checkable=1},
-   [4]={.x = 460,.y = 215,.width=220,.height=40,.checkable=1},
-   [5]={.x = 460,.y = 255,.width=220,.height=40,.checkable=1},
-   [6]={.x = 460,.y = 295,.width=220,.height=40,.checkable=1},
-   [7]={.x = 460,.y = 335,.width=220,.height=40,.checkable=1},
-   [8]={.x = 460,.y = 375,.width=220,.height=40,.checkable=1},
-   [9]={.x = 460,.y = 415,.width=220,.height=40,.checkable=1},
-   [10]={.x = 460,.y = 455,.width=220,.height=40,.checkable=1},
-   [11]={.x = 460,.y = 495,.width=220,.height=40,.checkable=1},
-};
+
+BUTTON inandButtons[12]; 
+BUTTON udiskButtons[12];
+
+
+static const char * key2keycaption(unsigned int key){
+   const char *cap;
+   switch (key) {
+   case KEY_0 :
+      cap =  "0";
+      break;
+   case KEY_1 :
+      cap =   "1";
+      break;
+   case KEY_2 :
+      cap =   "2";
+      break;
+   case KEY_3 :
+      cap =   "3";
+      break;
+   case KEY_4  :
+      cap =   "4";
+      break;
+   case KEY_5  :
+      cap =   "5";
+      break;
+   case KEY_6  :
+      cap =   "6";
+      break;
+   case KEY_7 :
+      cap =   "7";
+      break;
+   case KEY_8 :
+      cap =   "8";
+      break;
+   case KEY_9 :
+      cap =   "9";
+      break;
+   case KEY_POINT:
+      cap =   ".";
+      break;
+   case KEY_ZF :
+      cap =   "+/-";
+      break;
+   case KEY_A  :
+      cap =   "A";
+      break;
+   case KEY_B :
+      cap =   "B";
+      break;
+   case KEY_C  :
+      cap =   "C";
+      break;
+   case KEY_D :
+      cap =   "D";
+      break;
+   case KEY_E :
+      cap =   "E";
+      break;
+   case KEY_F :
+      cap =  "F";
+      break;
+   case KEY_F1:
+      cap =   "F1";
+      break;
+   case KEY_F2 :
+      cap =   "F2";
+      break;
+   case KEY_F3 :
+      cap =   "F3";
+      break;
+   case KEY_F4 :
+      cap =  "F4";
+      break;
+   case KEY_F5 :
+      cap = "F5";
+      break;      
+   case KEY_F6:
+      cap = "F6";
+      break; 
+   case KEY_RIGHT:
+      cap =   "<-";
+      break;
+   case KEY_LEFT :
+      cap =   "->";
+      break;
+   case KEY_UP :
+      cap = "UP";
+      break;
+   case KEY_DOWN:
+      cap =   "DWN";
+      break;
+   case KEY_QUK :
+      cap =   ">>";
+      break;
+   case KEY_ESC :
+      cap =   "ESC";
+      break;
+   case KEY_OK:
+      cap =   "EN";
+      break;
+   case KEY_PU :
+      cap =   "PU";
+      break;
+   case KEY_PD :
+      cap =   "PD";
+      break;
+   case KEY_USB:
+      cap =   "USB";
+      break;
+   case KEY_CE :
+      cap =   "CE";
+      break;
+   case KEY_MEM :
+      cap =   "MEM";
+      break;
+   case KEY_POP :
+      cap =   "POP";
+      break;
+   default:
+      cap =   NULL;
+      break;
+   }
+   return cap;
+}
 
 
 void buttonRedraw(const BUTTON *button, unsigned int force) {
    unsigned int forcetemp = force || button->statChanged;
    if (forcetemp) {
-      COLOR color = (button->colorIndex==0)? C_BLUE:C_RED;
+      COLOR color = (button->colorIndex == 0) ? C_BLUE : C_RED;
+      COLOR colorfill, colorframe;
       if (!button->pushed) {
-         if (button->haveFrame == 1) {
-            drawHLineEx(button->x, button->y, button->width, C_WHITE);
-            drawHLineEx(button->x, button->y + button->height - 1, button->width, C_WHITE);
-            drawVLineEx(button->x, button->y, button->height, C_WHITE);
-            drawVLineEx(button->x + button->width - 1, button->y, button->height, C_WHITE);
-         }
-         drawRectFillEx(button->x + 1, button->y + 1, button->width - 2, button->height - 2, color);
-         if (button->caption != NULL) {
-            drawStringAligenEx(button->caption, ALIGEN_MIDDLE, button->x, button->y, button->width, button->height,&GUI_Fontascii_16 , C_WHITE, C_TRANSPARENT);
-         }
+         colorfill =  color;
+         colorframe = C_WHITE;
       } else {
-         if (button->haveFrame == 1) {
-            drawHLineEx(button->x, button->y, button->width, color);
-            drawHLineEx(button->x, button->y + button->height - 1, button->width, color);
-            drawVLineEx(button->x, button->y, button->height, color);
-            drawVLineEx(button->x + button->width - 1, button->y, button->height, color);
-         }
-         drawRectFillEx(button->x + 1, button->y + 1, button->width - 2, button->height - 2, C_WHITE);
-         if (button->caption != NULL) {
-            drawStringAligenEx(button->caption, ALIGEN_MIDDLE, button->x, button->y, button->width, button->height, &GUI_Fontascii_16, color, C_TRANSPARENT);
-         }
+         colorfill =  C_WHITE;
+         colorframe = color;
+      }
+      if (button->haveFrame == 1) {
+         drawHLineEx(button->x, button->y, button->width, colorframe);
+         drawHLineEx(button->x, button->y + button->height - 1, button->width, colorframe);
+         drawVLineEx(button->x, button->y, button->height, colorframe);
+         drawVLineEx(button->x + button->width - 1, button->y, button->height, colorframe);
+      }
+      drawRectFillEx(button->x + 1, button->y + 1, button->width - 2, button->height - 2, colorfill);
+      if (button->caption != NULL) {
+         char shortcut[20];
+         sprintf(shortcut,"%s%s%s","[",key2keycaption(button->shortkey),"]");
+         drawStringAligenEx(shortcut, ALIGN_RIGHT, button->x, button->y, button->width, button->height, &GUI_Fontascii_16, colorframe, C_TRANSPARENT);
+         unsigned int shortcutwidth = getStringMetricWidth(shortcut);
+         drawStringAligenEx(button->caption, ALIGN_MIDDLE, button->x, button->y, button->width-shortcutwidth, button->height, &GUI_Fontascii_16, colorframe, C_TRANSPARENT);
       }
    }
 }
+
 
 
 
@@ -223,7 +325,7 @@ void labelSetCaption(LABEL *label,TEXTCHAR *caption){
    label->statChanged = 1;
 }
 
-void labelRedraw(const LABEL *label, unsigned int force);
+void labelRedraw(LABEL *label, unsigned int force);
 void statBarPrint(unsigned int error,TEXTCHAR *buf){
    static TEXTCHAR caption[100];
    if(NULL==buf){
@@ -236,7 +338,7 @@ void statBarPrint(unsigned int error,TEXTCHAR *buf){
    labelRedraw(&statLabel1,1);
 }
 
-void labelRedraw(const LABEL *label, unsigned int force) {
+void labelRedraw(LABEL *label, unsigned int force) {
    unsigned int forcetemp = force || label->statChanged;
    COLOR color = (label->colorIndex ==0)? C_BLUE:C_RED;
    if (forcetemp) {
@@ -246,12 +348,38 @@ void labelRedraw(const LABEL *label, unsigned int force) {
          drawHLineEx(label->x, label->y + label->height - 1, label->width, C_WHITE);
          drawVLineEx(label->x, label->y, label->height, C_WHITE);
          drawVLineEx(label->x + label->width - 1, label->y, label->height, C_WHITE);
+         if (label->focus) {
+            drawHLineEx(label->x+1, label->y+1, label->width-2, C_WHITE);
+            drawHLineEx(label->x-1, label->y + label->height - 2, label->width-2, C_WHITE);
+            drawVLineEx(label->x+1, label->y+1, label->height-2, C_WHITE);
+            drawVLineEx(label->x + label->width - 2, label->y-1, label->height-2, C_WHITE);
+         }
       }
       if (label->caption != NULL) {
-         drawStringAligenEx(label->caption, ALIGEN_MIDDLE, label->x, label->y, label->width, label->height, &GUI_Fontascii_16, C_WHITE, C_TRANSPARENT);
+         drawStringAligenEx(label->caption, ALIGN_MIDDLE, label->x, label->y, label->width, label->height, &GUI_Fontascii_16, C_WHITE, C_TRANSPARENT);
       }
+      label->statChanged = 0;
    }
 }
+
+
+void labelSetFocus(LABEL * label,BOOL focus) {
+   if (label->focus == focus) {
+      return;
+   }
+   label->focus = focus;
+   COLOR color;
+   if (focus) {
+      color = C_WHITE;
+   } else {
+      color = (label->colorIndex == 0)?C_BLUE:C_RED;
+   }
+   drawHLineEx(label->x + 1, label->y + 1, label->width - 2, color);
+   drawHLineEx(label->x - 1, label->y + label->height - 2, label->width - 2, color);
+   drawVLineEx(label->x + 1, label->y + 1, label->height - 2, color);
+   drawVLineEx(label->x + label->width - 2, label->y - 1, label->height - 2, color);
+}
+
 
 void guiRedraw(void){
    for (int i=0;(i<NARRAY(labelList))&&(labelList[i]!=NULL);i++) {
@@ -328,7 +456,7 @@ case STAT_FROZE:
 }
 
 
-void labelShow(const LABEL *label) {
+void labelShow(LABEL *label) {
    labelRedraw(label,1);
 };
 
@@ -350,14 +478,11 @@ void hmishow(){
    for (int i=0;i<NARRAY(frames);i++) {
       labelShow(frames+i);
    } 
-   for (int i=0;i<NARRAY(burnpagebuttons);i++) {     
-      buttonShow(burnpagebuttons+i);
-   }
-   for (int i=0;i<NARRAY(inandButtons);i++) {
-      buttonShow(inandButtons+i);
-   }
-   for (int i=0;i<NARRAY(udiskButtons);i++) {
-      buttonShow(udiskButtons+i);
+   for (int i=0;i<NARRAY(buttonList);i++) { 
+      if (NULL == buttonList[i]) {
+         return;
+      }
+      buttonShow(buttonList[i]);
    }
 }
 
@@ -711,23 +836,36 @@ void hmiInit(){
    GUI_SetBkColor(C_BLUE);
    GUI_SetColor(C_WHITE);
    buttonRegistHandler(burnpagebuttons,tscalhandler);
-   buttonRegistHandler(burnpagebuttons+1,idiskformathandler);
-   buttonRegistHandler(burnpagebuttons+8,ufiledownhandler);
-   buttonRegistHandler(burnpagebuttons+7,ufileuphandler);  
-   buttonRegistHandler(burnpagebuttons+4,runapphandler);
-#ifdef INNERBOOT
-   buttonRegistHandler(burnpagebuttons+9,burnboothandler);
-   buttonRegistHandler(burnpagebuttons+10,burnautohandler);
-#endif
+   buttonRegistHandler(burnpagebuttons+1,idiskformathandler); 
    buttonRegistHandler(burnpagebuttons+2,burnapphandler);
-   buttonRegistHandler(burnpagebuttons+3,burnfonthandler); 
+   buttonRegistHandler(burnpagebuttons+3,burnfonthandler);  
+   buttonRegistHandler(burnpagebuttons+4,runapphandler);  
+#ifdef INNERBOOT
+   buttonRegistHandler(burnpagebuttons+5,burnboothandler);
+   buttonRegistHandler(burnpagebuttons+6,burnautohandler);
+#endif
+   buttonRegistHandler(&pagebuttons[1][0],ufileuphandler);
+   buttonRegistHandler(&pagebuttons[1][1],ufiledownhandler); 
+
    registLabel(&statLabel1);
    registLabel(&frametitles[0]);
    for (int i=0;i<NARRAY(burnpagebuttons);i++) {
       burnpagebuttons[i].haveFrame = 1;
       registButton(burnpagebuttons+i,NULL);
    }
+   for(int i=0;i<NARRAY(pagebuttons);i++){
+     for(int j=0;j<NARRAY(pagebuttons[i]);j++){
+       pagebuttons[i][j].haveFrame = 1;
+       registButton(&pagebuttons[i][j],NULL);
+     }
+   }
    for (int i=0;i<NARRAY(inandButtons);i++) {
+      inandButtons[i].x = frames[0].x+1;
+      inandButtons[i].y = frames[0].y+1+40*i;
+      inandButtons[i].width = frames[0].width-2;
+      inandButtons[i].height = 40;
+      inandButtons[i].checkable = 1;
+      inandButtons[i].shortkey = i;
       inandButtons[i].group = (unsigned int)buttonGroup1;
       buttonGroup1[i] = inandButtons+i;
       inandButtons[i].tabId = i;
@@ -735,6 +873,12 @@ void hmiInit(){
       buttonRegistHandler(inandButtons+i,idiskbuttonhandler);
    }
    for (int i=0;i<NARRAY(udiskButtons);i++) {
+      udiskButtons[i].x = frames[1].x+1;
+      udiskButtons[i].y = frames[1].y+1+40*i;
+      udiskButtons[i].width = frames[1].width-2;
+      udiskButtons[i].height = 40;
+      udiskButtons[i].checkable = 1; 
+      udiskButtons[i].shortkey = i;
       udiskButtons[i].group = (unsigned int)buttonGroup2;
       buttonGroup2[i] = udiskButtons+i;
       udiskButtons[i].tabId = i;
@@ -746,3 +890,50 @@ void hmiInit(){
 
 
 
+
+void shortcuthandler(int keycode) {
+   static int groupactive = 1;
+   BUTTON *pbutton;
+   unsigned short x,y;
+   if (KEY_NO == keycode) return;
+   if (KEY_RIGHT ==  keycode) {
+      groupactive = 1;
+      labelSetFocus(&frames[1],1);
+      labelSetFocus(&frames[0],0);
+   } else if (KEY_LEFT ==  keycode) {
+      groupactive = 0;
+      labelSetFocus(&frames[0],1);
+      labelSetFocus(&frames[1],0);
+   } else if ((keycode >= KEY_0) && (keycode <= KEY_F)) {
+      pbutton = (groupactive == 0) ? inandButtons : udiskButtons;
+      for (int i = 0; i < NARRAY(inandButtons); i++) {
+         if (pbutton[i].shortkey == keycode) {
+            x = pbutton[i].x + pbutton[i].width / 2;
+            y = pbutton[i].y + pbutton[i].height / 2;
+            simulateTouch(x, y);
+            return;
+         }
+      }
+   } else if ((keycode == KEY_PD) || (keycode == KEY_PU)) {
+      pbutton = (groupactive == 0) ? pagebuttons[0] : pagebuttons[1];
+      for (int i = 0; i < 2; i++) {
+         if (pbutton[i].shortkey == keycode) {
+            x = pbutton[i].x + pbutton[i].width / 2;
+            y = pbutton[i].y + pbutton[i].height / 2;
+            simulateTouch(x, y);
+            return;
+         }
+      }
+   } else {
+      for (int i = 0; i < NARRAY(burnpagebuttons); i++) {
+         if (burnpagebuttons[i].shortkey == keycode) {
+            pbutton = burnpagebuttons;
+            x = pbutton[i].x + pbutton[i].width / 2;
+            y = pbutton[i].y + pbutton[i].height / 2;
+            simulateTouch(x, y);
+            return;
+         }
+      }
+   }
+   return;
+}

@@ -37,30 +37,18 @@ static BOOL forceEnterBoot(){
 }
 
 
-BOOL enterTouchCal = 0;
-static void bootkeyhandler(int keycode){
-  static int cnt = 0;
-  if(KEY_OK==keycode){
-    cnt++;
-    if(cnt == 4){
-      enterTouchCal = 1;
-      cnt = 0;
-    }
-  }else{
-    cnt = 0;
-  }
-}
 
 FATFS inandfs ;
 BOOL isIDok;
 
-extern BOOL isIDvailable();
-extern void hmiInit();
+extern BOOL isIDvailable(void);
+extern void hmiInit(void);
 extern void guiExec(void);
-extern void probUdisk();
-extern void displayUdisk();
-extern void probIdisk_display();
-extern void hmishow();
+extern void probUdisk(void);
+extern void displayUdisk(void);
+extern void probIdisk_display(void);
+extern void hmishow(void);
+extern void shortcuthandler(int keycode);
 
 int main(void) {
    BlPlatformConfig();
@@ -96,9 +84,9 @@ int main(void) {
       UARTPuts("Application unavailable . Enter to bootloader...\r\n\n", -1);
       goto BOOTLOADER;
    }
-   
+
 BOOTLOADER:
-  registKeyHandler(bootkeyhandler);
+  registKeyHandler(shortcuthandler);
   LCDRasterStart();
   LCDBackLightON();
   TouchCalibrate(0);
@@ -110,11 +98,6 @@ BOOTLOADER:
          probUdisk();
          displayUdisk();
          probIdisk_display();
-         if(enterTouchCal==1){
-            while (!TouchCalibrate(1)) ;  
-            hmishow();
-            enterTouchCal = 0;
-         }
   }
 }
 
