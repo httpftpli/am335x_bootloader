@@ -1185,7 +1185,7 @@ void BlPlatformConfig(void)
     GPIOPinWrite(modulelist[GPIO_BEEP_MODULE].baseAddr,20,1);
     GPIODirModeSet(modulelist[GPIO_BEEP_MODULE].baseAddr, 20,GPIO_DIR_OUTPUT);
     
-    TimerTickConfigure();    
+    TimerTickConfigure(MODULE_ID_TIMER2);    
     TimerTickStart();
     LCDRasterInit();
     tsEnalbe();
