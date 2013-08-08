@@ -10,8 +10,8 @@ LimitSize=0
 ByteLimit=50
 [JLinkDriver]
 WatchCond=_ 0
-Watch0=_ 0 "0x00000000" 0 "0x00000000" 0 "0x00000000" 0 "0x00000000" 0 4 0 0
-Watch1=_ 0 "0x00000000" 0 "0x00000000" 0 "0x00000000" 0 "0x00000000" 0 4 0 0
+Watch0=_ 0 "" 0 "" 0 "" 0 "" 0 0 0 0
+Watch1=_ 0 "" 0 "" 0 "" 0 "" 0 0 0 0
 CStepIntDis=_ 0
 [InterruptLog]
 LogEnabled=0
@@ -39,7 +39,7 @@ ActionState=1
 Enabled=0
 ShowSource=1
 [DebugChecksum]
-Checksum=-80773257
+Checksum=433671929
 [Exceptions]
 StopOnUncaught=_ 0
 StopOnThrow=_ 0
@@ -56,6 +56,21 @@ Fmt3=KEYTOUCHMSG-tscval	4	0
 Fmt0=unsigned int[4]	4	0
 [watch_formats]
 Fmt0={W}0:g_keycode	3	0
+[TermIOLog]
+LoggingEnabled=_ 0
+LogFile=_ ""
+[CallStackLog]
+Enabled=0
+[DriverProfiling]
+Enabled=0
+Mode=0
+Graph=0
+Symbiont=0
+Exclusions=
+[Log file]
+LoggingEnabled=_ 0
+LogFile=_ ""
+Category=_ 0
 [Disassemble mode]
 mode=0
 [Breakpoints2]
@@ -67,21 +82,6 @@ Bp4=_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\..\..\lib\utils\include\atomic.h}.42.5" 0 0 
 Bp5=_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\..\..\lib\platform\pf_tsc.c}.51.41" 0 0 1 "" 0 "" 0
 Bp6=_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\..\..\lib\platform\pf_dmtimer.c}.157.1" 0 0 1 "" 0 "" 0
 Count=7
-[Log file]
-LoggingEnabled=_ 0
-LogFile=_ ""
-Category=_ 0
-[TermIOLog]
-LoggingEnabled=_ 0
-LogFile=_ ""
 [Aliases]
 Count=0
 SuppressDialog=0
-[CallStackLog]
-Enabled=0
-[DriverProfiling]
-Enabled=0
-Mode=0
-Graph=0
-Symbiont=0
-Exclusions=

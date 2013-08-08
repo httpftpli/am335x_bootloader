@@ -21,15 +21,6 @@
 
 
 
-typedef struct app_header_
-{
-   unsigned int imageSize;
-   unsigned int loadAddr;
-   unsigned int crc;
-   unsigned int magic;
-}APPHEADER;
-
-
 extern int bootCopy();
 extern BOOL burn(const TCHAR *filePath);
 extern void jumptoApp();

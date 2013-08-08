@@ -37,14 +37,9 @@ int bootCopy() {
    if (header->magic != APP_MAGIC_OK) {
       return APP_UNAVAILABLE;
    }
-   if (header->imageSize > APP_MAX_SIZE) {
-      return   APP_SIZE_ERROR;
-   }
-   if (header->loadAddr != APP_ENTRY) {
-      return  APP_ENTRY_ERROR;
-   }
-   if(SUCCESS==MMCSDP_Read(&mmcsdctr[0], (void *)(header->loadAddr),APP_BEGIN_SECTOR,
-               (header->imageSize + 511) / 512)){
+   
+   if(SUCCESS==MMCSDP_Read(&mmcsdctr[0], (void *)APP_ENTRY,APP_BEGIN_SECTOR,
+               header->appsec1.imageSize)){
       reval =  0;
     }else{
       reval =  APP_COPY_ERROR;

@@ -11,6 +11,37 @@
 #ifndef __BL_H__
 #define __BL_H__
 
+#define BURNAPP_READERROR       -1
+#define BURNAPP_FILE_ERROR      -2
+#define BURNAPP_WRITEERROR      -3
+
+typedef struct __appsection{
+   unsigned int imageaddr;
+   unsigned int imageSize;
+   unsigned int imageCheck;
+   char imageRevPrefix;
+   char dumy;
+   unsigned short imageMainRev;
+   unsigned short imageMidRev;
+   unsigned short imageMinRev;
+}APPSETCTION;
+
+typedef struct __apppackhead{
+   unsigned int nsection;
+   APPSETCTION appsec1;
+   APPSETCTION appsec2;
+}APPPACKHEAD;
+
+
+typedef struct app_header_
+{
+   unsigned int magic;
+   unsigned int nsection;
+   APPSETCTION appsec1;
+   APPSETCTION appsec2;
+}APPHEADER;
+
+
 
 /******************************************************************************
 **                    Global Variable Declarations

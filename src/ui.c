@@ -14,6 +14,7 @@
 #include "mem.h"
 #include "lib_gui.h"
 #include "delay.h"
+#include "bl.h"
 
 
 #define MAX_BUTTON_CAPTION   30
@@ -678,7 +679,7 @@ static void burnboothandler(void *button, unsigned int stat) {
 }
 
 
-extern BOOL burnAPP(TCHAR *path);
+extern int burnAPP(TCHAR *path);
 extern BOOL burnFont(const TCHAR *path );
 static  void burnautohandler(void *button, unsigned int stat) {
    statBarPrint(0,"format idisk");
@@ -688,7 +689,7 @@ static  void burnautohandler(void *button, unsigned int stat) {
    int fileindex, bootfilecount = 0,appfilecount = 0;
    char path[30];
    char printbuf[50];
-   BOOL ret;
+   int ret;
    //burn bootloader
    for (int i = 0; i < udiskFileCount; i++) {
       if (strendwith(udiskfileinfolist[i].filename, ".MBT")) {
@@ -743,7 +744,7 @@ static  void burnautohandler(void *button, unsigned int stat) {
       strcpy(path, "2:/");
       strcat(path, udiskfileinfolist[fileindex].filename);
       ret = burnAPP(path);
-      if (FALSE == ret) {
+      if (0 != ret) {
          statBarPrint(1,"auto burn fail");
       }else{
          statBarPrint(0,"auto burn finish");
@@ -760,11 +761,16 @@ static void burnapphandler(void *button, unsigned int stat){
    }
    char pathbuf[20] = "2:/";
    int ret = burnAPP(strcat(pathbuf, udiskfileinfolist[ufilegroupindex*12+ufileindex].filename));
-   if (FALSE == ret) {
-      statBarPrint(1,"burn bootloader fail");
-      return ;
+   if (BURNAPP_FILE_ERROR == ret) {
+      statBarPrint(1,"app file error,burn bootloader fail");
+   }else if(BURNAPP_READERROR==ret){
+      statBarPrint(1,"read app file error ,burn bootloader fail");
+   }else if(BURNAPP_WRITEERROR == ret){
+      statBarPrint(1,"write app error ,burn bootloader fail");
+   }else if(0==ret){
+      statBarPrint(0,"burn bootloader success");
    }
-   statBarPrint(0,"burn bootloader success");
+   return;
 }
 
 extern BOOL burnFont(const TCHAR *path );

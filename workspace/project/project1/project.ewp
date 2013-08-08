@@ -48,11 +48,11 @@
         <option>
           <name>Output variant</name>
           <version>2</version>
-          <state>1</state>
+          <state>0</state>
         </option>
         <option>
           <name>Output description</name>
-          <state>Full formatting.</state>
+          <state>Automatic choice of formatter.</state>
         </option>
         <option>
           <name>GOutputBinary</name>
@@ -103,7 +103,7 @@
         </option>
         <option>
           <name>GenLowLevelInterface</name>
-          <state>1</state>
+          <state>0</state>
         </option>
         <option>
           <name>GEndianModeBE</name>
@@ -167,7 +167,7 @@
           <state>am335x</state>
           <state>beaglebone</state>
           <state>INNERBOOT</state>
-          <state>DEBUG_ERROR_NOTOUTPUT1</state>
+          <state>DEBUG_ERROR_NOTOUTPUT</state>
         </option>
         <option>
           <name>CCPreprocFile</name>
