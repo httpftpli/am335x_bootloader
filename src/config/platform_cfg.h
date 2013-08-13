@@ -80,8 +80,8 @@ static const unsigned int CS_ADDRLINE_BIT[7] = {24,24,24,24,24,24,24};
 //config LCD backlight control gpio
 #define GPIO_LCDBACKLIGHT_BASE   SOC_GPIO_0_REGS
 #define GPIO_LCDBACKLIGHT_PIN    30
-#define LCD_BACKLIG_ON           1  
-#define LCD_BACKLIG_OFF          0
+#define LCD_BACKLIG_ON           0  
+#define LCD_BACKLIG_OFF          1
 
 #define TFT_AT080TN52    0
 #define TFT_AT070TN92    1
@@ -94,6 +94,14 @@ static const unsigned int CS_ADDRLINE_BIT[7] = {24,24,24,24,24,24,24};
 #define ASCII_CODEC  2
 #define UTF8_CODEC   3
 #define CHARACTER_DIS_CODEC  ASCII_CODEC
+
+
+#define ASCII_FONT16_IN_SOURCE     1
+#define ASCII_FONT20_IN_SOURCE     0
+
+
+#define BEEP_OFF() (void)0
+
 
 #endif
 

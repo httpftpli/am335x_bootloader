@@ -1,17 +1,11 @@
 
 
 #include "bl.h"
-#include "uartStdio.h"
 #include "hw_types.h"
 #include "bl_platform.h"
 #include "bl_copy.h"
-#include "mmcsd_proto.h"
-#include "soc_AM335X.h"
-#include "type.h"
-#include "pf_usbmsc.h"
-#include "ff.h"
 #include "string.h"
-#include "module.h"
+#include "platform.h"
 
 extern void BootAbort(void);
 

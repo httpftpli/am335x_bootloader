@@ -1,16 +1,8 @@
-#include "uartStdio.h"
 #include "bl_copy.h"
 #include "bl_platform.h"
 #include "bl.h"
 #include "type.h"
-#include "pf_usbmsc.h"
-#include "soc_AM335X.h"
-#include "interrupt.h"
-#include "pf_int.h"
-#include "pf_tsc.h"
-#include "pf_key_touchpad.h"
-#include "pf_lcd.h"
-#include "debug.h"
+#include "platform.h"
 
 
 

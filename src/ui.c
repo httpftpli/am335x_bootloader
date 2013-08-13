@@ -1,20 +1,11 @@
-#include "mmath.h"
-#include "pf_timertick.h"
-#include "pf_tsc.h"
-#include "pf_usbmsc.h"
+
 #include "string.h"
-#include "pf_key_touchpad.h"
 #include <stdio.h>
-#include "pf_lcd.h"
-#include "bl_copy.h"
-#include "soc_am335x.h"
 #include "hw_control_AM335x.h"
 #include "hw_types.h"
-#include "mmcsd_proto.h"
-#include "mem.h"
-#include "lib_gui.h"
-#include "delay.h"
 #include "bl.h"
+#include "bl_copy.h"
+#include "platform.h"
 
 
 #define MAX_BUTTON_CAPTION   30
@@ -435,20 +426,18 @@ void guiExec(void) {
       }
       break;
    case STAT_PUSHDOWN:
-      if ((!atomicTestClear(&g_touched)) && (TimerTickGet() - timemark > 150)) {
-         if (0 == buttonList[button]->checkable) {
-            buttonList[button]->pushed = 0;
-            buttonList[button]->statChanged = 1;
-         }
-         stat = STAT_FROZE;
-         timemark = TimerTickGet();
-      }
+     if (!atomicTestClear(&g_touched)){
+        if(TimerTickGet() - timemark > 150) {
+           if (0 == buttonList[button]->checkable) {
+              buttonList[button]->pushed = 0;
+              buttonList[button]->statChanged = 1;
+           }
+           stat = STAT_NO;          
+        }
+     }else{
+        timemark = TimerTickGet();
+     }
       break;  
-case STAT_FROZE:
-      if (TimerTickGet() - timemark > 50) {
-         stat = STAT_NO; 
-      }
-      break;
    default:
       break;
    }

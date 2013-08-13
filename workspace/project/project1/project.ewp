@@ -2063,11 +2063,20 @@
     </group>
     <group>
       <name>platform</name>
+      <group>
+        <name>include</name>
+        <file>
+          <name>$PROJ_DIR$\..\..\..\lib\platform\include\pf_platform_cfg.h</name>
+        </file>
+      </group>
       <file>
         <name>$PROJ_DIR$\..\..\..\lib\platform\am335x_clock_data.c</name>
       </file>
       <file>
         <name>$PROJ_DIR$\..\..\..\lib\platform\am335x_module_data.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\lib\platform\pf_beep.c</name>
       </file>
       <file>
         <name>$PROJ_DIR$\..\..\..\lib\platform\pf_cpsw.c</name>
@@ -2146,9 +2155,6 @@
       </file>
       <file>
         <name>$PROJ_DIR$\..\..\..\lib\platform\pf_uart.c</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$\..\..\..\lib\platform\pf_uartConsole.c</name>
       </file>
       <file>
         <name>$PROJ_DIR$\..\..\..\lib\platform\pf_usb.c</name>
@@ -2246,9 +2252,6 @@
           <name>$PROJ_DIR$\..\..\..\lib\utils\include\atomic.h</name>
         </file>
         <file>
-          <name>$PROJ_DIR$\..\..\..\lib\utils\include\cmdline.h</name>
-        </file>
-        <file>
           <name>$PROJ_DIR$\..\..\..\lib\utils\include\debug.h</name>
         </file>
         <file>
@@ -2259,9 +2262,6 @@
         </file>
         <file>
           <name>$PROJ_DIR$\..\..\..\lib\utils\include\mmath.h</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\..\..\lib\utils\include\perf.h</name>
         </file>
         <file>
           <name>$PROJ_DIR$\..\..\..\lib\utils\include\systick.h</name>
@@ -2277,16 +2277,10 @@
         <name>$PROJ_DIR$\..\..\..\lib\utils\algorithm.c</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\..\..\..\lib\utils\cmdline.c</name>
-      </file>
-      <file>
         <name>$PROJ_DIR$\..\..\..\lib\utils\mem.c</name>
       </file>
       <file>
         <name>$PROJ_DIR$\..\..\..\lib\utils\misc.c</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$\..\..\..\lib\utils\perf.c</name>
       </file>
       <file>
         <name>$PROJ_DIR$\..\..\..\lib\utils\uartStdio.c</name>

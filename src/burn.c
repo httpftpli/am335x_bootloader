@@ -1,16 +1,8 @@
-#include "ff.h"
-#include "ff_ext.h"
-#include "type.h"
-#include "pf_usbmsc.h"
-#include "mmath.h"
 #include "string.h"
-#include "mmcsd_proto.h"
 #include "bl_copy.h"
-#include "mem.h"
 #include "stdio.h"
-#include "algorithm.h"
-#include "delay.h"
 #include "bl.h"
+#include "platform.h"
 
 
 #define BOOTLOADER_BEGIN_SECTOR   256
@@ -105,8 +97,9 @@ int burnAPP(TCHAR *path) {
    unsigned short crc16;
    unsigned int  percent = 0, percentold = 0;
    unsigned int  filesize, count;
-   APPPACKHEAD *apppackhead = (APPPACKHEAD *)(buf+32);
-   APPSETCTION *appsection = &(apppackhead->appsec1);
+   APPPACKHEAD *apppackhead = (APPPACKHEAD * )(buf + 32);
+   APPSETCTION *appsection1 = &(apppackhead->appsec1);
+   APPSETCTION *appsection2 = &(apppackhead->appsec2);
    fret = f_open(&file, path, FA_READ);
    if (fret != FR_OK) {
       errorcode = BURNAPP_READERROR;
@@ -118,7 +111,7 @@ int burnAPP(TCHAR *path) {
       goto ERROR;
    }
 
-   count = DIVUP(filesize,512);
+   count = DIVUP(filesize, 512);
    memset(headbuf, 0, sizeof headbuf);
    statBarPrint(0, "reading");
    delay(300);
@@ -139,19 +132,21 @@ int burnAPP(TCHAR *path) {
             errorcode = BURNAPP_FILE_ERROR;
             goto ERROR;
          }
-         apppackhead = (APPPACKHEAD *)(buf+32);
-         appsection = &(apppackhead->appsec1);
-         if ((apppackhead->nsection < 1) || (apppackhead->nsection > 4)) {
+         apppackhead = (APPPACKHEAD * )(buf + 32);
+         appsection1 = &(apppackhead->appsec1);
+         appsection2 = &(apppackhead->appsec2);
+         if ((apppackhead->secflag & 0x01) &&
+             ((appsection1->imageaddr + appsection1->imageSize) > (filesize - 16))) {
             errorcode = BURNAPP_FILE_ERROR;
             goto ERROR;
          }
-         for (int i = 0; i < apppackhead->nsection; i++) {
-            unsigned endaddr = (appsection + i)->imageaddr + (appsection + i)->imageSize;
-            if (endaddr > (filesize - 16)) { // exclude 16 BYTE MD5SUM
-               errorcode = BURNAPP_FILE_ERROR;
-               goto ERROR;
-            }
+         if ((apppackhead->secflag & 0x02) &&
+             ((appsection2->imageaddr + appsection2->imageSize) > (filesize - 16))) {
+            errorcode = BURNAPP_FILE_ERROR;
+            goto ERROR;
          }
+
+
          count--;
       } else {
          percent = i * 100 / count;
@@ -165,9 +160,9 @@ int burnAPP(TCHAR *path) {
    MD5_CTX md5context;
    unsigned char decrypt[16];
    statBarPrint(0, "processing please waite");
-   MD5Init(&md5context);
-   MD5Update(&md5context, buf, filesize);
-   MD5Final(&md5context, decrypt);
+   MD5Init(& md5context);
+   MD5Update(& md5context, buf, filesize-16);
+   MD5Final(& md5context, decrypt);
    if (!memcmp(buf + filesize - 16, decrypt, 16)) {
       errorcode = BURNAPP_FILE_ERROR;
       goto ERROR;
@@ -175,32 +170,43 @@ int burnAPP(TCHAR *path) {
    statBarPrint(0, "write file please waite");
    delay(300);
    header->magic = APP_MAGIC_NO;
-   header->nsection = apppackhead->nsection;
-   unsigned int beginbock = APP_BEGIN_SECTOR;
-   for (int i = 0; i < header->nsection; i++) {
-      ((APPSETCTION * ) & (header->appsec1))[i] .imageaddr = beginbock;
-      beginbock  += DIVUP((appsection + i)->imageSize, 512);
-      ((APPSETCTION * )&(header->appsec1))[i] . imageSize = DIVUP((appsection + i)->imageSize, 512);
-      ((APPSETCTION * ) &(header->appsec1))[i] .imageRevPrefix = (appsection + i)->imageRevPrefix;
-      ((APPSETCTION * ) &(header->appsec1))[i]. imageMainRev = (appsection + i)->imageMainRev;
-      ((APPSETCTION * ) &(header->appsec1))[i] .imageMidRev = (appsection + i)->imageMidRev;
-      ((APPSETCTION * ) &(header->appsec1))[i].imageMinRev = (appsection + i)->imageMinRev;
+   header->secflag = apppackhead->secflag;
+   if (apppackhead->secflag & 0x01) {
+      header->appsec1.imageaddr = APP_BEGIN_SECTOR;
+      header->appsec1.imageSize = DIVUP(appsection1->imageSize, 512);
+      header->appsec1.imageRevPrefix = appsection1->imageRevPrefix;
+      header->appsec1.imageMainRev = appsection1->imageMainRev;
+      header->appsec1.imageMidRev = appsection1->imageMidRev;
+      header->appsec1.imageMinRev = appsection1->imageMinRev;
+   }
+   if (apppackhead->secflag & 0x02) {
+      header->appsec2.imageaddr = APP_BEGIN_SECTOR;
+      header->appsec2.imageSize = DIVUP(appsection2->imageSize, 512);
+      header->appsec2.imageRevPrefix = appsection2->imageRevPrefix;
+      header->appsec2.imageMainRev = appsection2->imageMainRev;
+      header->appsec2.imageMidRev = appsection2->imageMidRev;
+      header->appsec2.imageMinRev = appsection2->imageMinRev;
    }
    ret = MMCSDP_Write(mmcsdctr, headbuf, APP_HEAD_SECTOR, 1);
    if (FALSE == ret) {
       errorcode = BURNAPP_WRITEERROR;
       goto ERROR;
    }
-   for (int i = 0; i < header->nsection; i++) {
-      ret = MMCSDP_Write(mmcsdctr, (void *)((appsection + i)->imageaddr),
-                         ((APPSETCTION * ) & (header->appsec1))[i] .imageaddr,
-                               ((APPSETCTION * ) & (header->appsec1))[i].imageSize) ;
+   if (apppackhead->secflag & 0x01) {
+      ret = MMCSDP_Write(mmcsdctr, (void *)(buf + appsection1->imageaddr), header->appsec1.imageaddr, header->appsec1.imageSize);
+      if (FALSE == ret) {
+         errorcode = BURNAPP_WRITEERROR;
+         goto ERROR;
+      }
+      header->magic = APP_MAGIC_OK;
+   }
+   if (apppackhead->secflag & 0x02) {
+      ret = MMCSDP_Write(mmcsdctr, (void *)(buf + appsection2->imageaddr), header->appsec2.imageaddr, header->appsec2.imageSize);
       if (FALSE == ret) {
          errorcode = BURNAPP_WRITEERROR;
          goto ERROR;
       }
    }
-   header->magic = APP_MAGIC_OK;
    MMCSDP_Write(mmcsdctr, headbuf, APP_HEAD_SECTOR, 1);
    return 0;
 ERROR:
@@ -312,6 +318,6 @@ BOOL burnFont(const TCHAR *path) {
    if (FR_OK != r) {
       return  FALSE;
    }
-   return TRUE;
+   return TRUE; 
 }
 
