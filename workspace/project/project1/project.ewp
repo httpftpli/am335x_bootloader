@@ -2066,6 +2066,9 @@
       <group>
         <name>include</name>
         <file>
+          <name>$PROJ_DIR$\..\..\..\lib\platform\include\pf_eeprom.h</name>
+        </file>
+        <file>
           <name>$PROJ_DIR$\..\..\..\lib\platform\include\pf_platform_cfg.h</name>
         </file>
       </group>
@@ -2140,6 +2143,9 @@
       </file>
       <file>
         <name>$PROJ_DIR$\..\..\..\lib\platform\pf_rx8025.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\lib\platform\pf_spi.c</name>
       </file>
       <file>
         <name>$PROJ_DIR$\..\..\..\lib\platform\pf_sysdelay.c</name>

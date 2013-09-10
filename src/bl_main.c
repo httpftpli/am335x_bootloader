@@ -78,18 +78,18 @@ int main(void) {
    }
 
 BOOTLOADER:
-  registKeyHandler(shortcuthandler);
-  LCDRasterStart();
-  LCDBackLightON();
-  TouchCalibrate(0);
-  hmiInit();
-  f_mount(0, &inandfs);
-  while (1) {
-         guiExec();
-         usbMscProcess();
-         probUdisk();
-         displayUdisk();
-         probIdisk_display();
-  }
+   registKeyHandler(shortcuthandler);
+   LCDRasterStart();
+   LCDBackLightON();
+   TouchCalibrate(0);
+   hmiInit();
+   f_mount(0, &inandfs);
+   while (1) {
+      guiExec();
+      usbMscProcess();
+      probUdisk();
+      displayUdisk();
+      probIdisk_display();
+   }
 }
 

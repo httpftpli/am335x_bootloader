@@ -10,8 +10,8 @@ LimitSize=0
 ByteLimit=50
 [JLinkDriver]
 WatchCond=_ 0
-Watch0=_ 0 "0x00000000" 0 "0x00000000" 0 "0x00000000" 0 "0x00000000" 0 4 0 0
-Watch1=_ 0 "0x00000000" 0 "0x00000000" 0 "0x00000000" 0 "0x00000000" 0 4 0 0
+Watch0=_ 0 "" 0 "" 0 "" 0 "" 0 0 0 0
+Watch1=_ 0 "" 0 "" 0 "" 0 "" 0 0 0 0
 CStepIntDis=_ 0
 [InterruptLog]
 LogEnabled=0
@@ -39,7 +39,7 @@ ActionState=1
 Enabled=0
 ShowSource=1
 [DebugChecksum]
-Checksum=2016466695
+Checksum=-719173299
 [Exceptions]
 StopOnUncaught=_ 0
 StopOnThrow=_ 0
@@ -48,25 +48,13 @@ ShowArgs=0
 [Disassembly]
 MixedMode=1
 [struct_types]
-Fmt0=FILINFO-fattrib	4	0
-Fmt1=GUI_CONTEXT-BkColor	4	0
-Fmt2=GUI_CONTEXT-Color	4	0
-Fmt3=KEYTOUCHMSG-tscval	4	0
+Fmt0=KEYTOUCHMSG-tscval	4	0
 [array_types]
-Fmt0=unsigned int[4]	4	0
+Fmt0=char[256]	4	0
+Fmt1=char[512]	4	0
+Fmt2=unsigned int[4]	4	0
 [watch_formats]
 Fmt0={W}0:g_keycode	3	0
-[Disassemble mode]
-mode=0
-[Breakpoints2]
-Bp0=_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\..\..\lib\usblib\host\usbhostenum.c}.567.17" 0 0 1 "" 0 "" 0
-Bp1=_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\..\..\lib\fatfs\src\ff_ext.c}.40.4" 0 0 1 "" 0 "" 0
-Bp2=_ 0 "EMUL_CODE" "0x402F0400" 0 0 1 "" 0 "" 0
-Bp3=_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\..\..\lib\platform\pf_key_touchpad.c}.331.10" 0 0 1 "" 0 "" 0
-Bp4=_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\..\..\lib\utils\include\atomic.h}.69.5" 0 0 1 "" 0 "" 0
-Bp5=_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\..\..\lib\platform\pf_tsc.c}.51.41" 0 0 1 "" 0 "" 0
-Bp6=_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\..\..\lib\platform\pf_dmtimer.c}.157.1" 0 0 1 "" 0 "" 0
-Count=7
 [Log file]
 LoggingEnabled=_ 0
 LogFile=_ ""
@@ -74,9 +62,6 @@ Category=_ 0
 [TermIOLog]
 LoggingEnabled=_ 0
 LogFile=_ ""
-[Aliases]
-Count=0
-SuppressDialog=0
 [CallStackLog]
 Enabled=0
 [DriverProfiling]
@@ -85,3 +70,10 @@ Mode=0
 Graph=0
 Symbiont=0
 Exclusions=
+[Disassemble mode]
+mode=0
+[Breakpoints2]
+Count=0
+[Aliases]
+Count=0
+SuppressDialog=0

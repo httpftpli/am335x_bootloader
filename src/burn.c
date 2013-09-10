@@ -3,6 +3,7 @@
 #include "stdio.h"
 #include "bl.h"
 #include "platform.h"
+#include "pf_eeprom.h"
 
 
 #define BOOTLOADER_BEGIN_SECTOR   256
@@ -87,6 +88,7 @@ extern void statBarPrint(unsigned int error, TEXTCHAR *buf);
 int burnAPP(TCHAR *path) {
    int errorcode = 0;
    unsigned char *buf = (unsigned char *)0x80000000;
+   unsigned char *buftemp = buf;
    unsigned char headbuf[512];
    unsigned int rdlen;
    APPHEADER *header = (APPHEADER * )headbuf;
@@ -94,7 +96,6 @@ int burnAPP(TCHAR *path) {
    FRESULT fret;
    int ret;
    char disbuf[32];
-   unsigned short crc16;
    unsigned int  percent = 0, percentold = 0;
    unsigned int  filesize, count;
    APPPACKHEAD *apppackhead = (APPPACKHEAD * )(buf + 32);
@@ -115,24 +116,25 @@ int burnAPP(TCHAR *path) {
    memset(headbuf, 0, sizeof headbuf);
    statBarPrint(0, "reading");
    delay(300);
-   for (int i = 0; i < count; i++) {
-      fret = f_read(&file, buf, 512, &rdlen);
+   for (int i = 0; i < count; i++, buftemp+=512) {
+      fret = f_read(&file, buftemp, 512, &rdlen);
       if (fret != FR_OK)  goto ERROR;
       for (int j = 0; j < 256; j++) {
-         buf[j] ^= ProgramTable[j];
-         buf[j + 256] ^= ProgramTable[j];
+         buftemp[j] ^= ProgramTable[j];
+         buftemp[j + 256] ^= ProgramTable[j];
       }
-      buf += 512;
       if (i == 0) {
-         if ((buf[0] != 'T') || (buf[1] != 'H') || (buf[2] != 'J')) {
+        /*
+         if ((buftemp[0] != 'T') || (buftemp[1] != 'H') || (buftemp[2] != 'J')) {
             errorcode = BURNAPP_FILE_ERROR;
             goto ERROR;
          }
-         if ((buf[10] != 'A') || (buf[11] != 'R') || (buf[12] != 'A')) {
+         if ((buftemp[10] != 'A') || (buftemp[11] != 'R') || (buftemp[12] != 'A')) {
             errorcode = BURNAPP_FILE_ERROR;
             goto ERROR;
          }
-         apppackhead = (APPPACKHEAD * )(buf + 32);
+        */
+         apppackhead = (APPPACKHEAD * )(buftemp + 32);
          appsection1 = &(apppackhead->appsec1);
          appsection2 = &(apppackhead->appsec2);
          if ((apppackhead->secflag & 0x01) &&
@@ -145,9 +147,6 @@ int burnAPP(TCHAR *path) {
             errorcode = BURNAPP_FILE_ERROR;
             goto ERROR;
          }
-
-
-         count--;
       } else {
          percent = i * 100 / count;
          if (percent / 5 != percentold / 5) {
@@ -163,7 +162,7 @@ int burnAPP(TCHAR *path) {
    MD5Init(& md5context);
    MD5Update(& md5context, buf, filesize-16);
    MD5Final(& md5context, decrypt);
-   if (!memcmp(buf + filesize - 16, decrypt, 16)) {
+   if (memcmp(buf + filesize - 16, decrypt, 16)) {
       errorcode = BURNAPP_FILE_ERROR;
       goto ERROR;
    }
@@ -180,7 +179,7 @@ int burnAPP(TCHAR *path) {
       header->appsec1.imageMinRev = appsection1->imageMinRev;
    }
    if (apppackhead->secflag & 0x02) {
-      header->appsec2.imageaddr = APP_BEGIN_SECTOR;
+      header->appsec2.imageaddr = BAG_BEGIN_SETCTOR;
       header->appsec2.imageSize = DIVUP(appsection2->imageSize, 512);
       header->appsec2.imageRevPrefix = appsection2->imageRevPrefix;
       header->appsec2.imageMainRev = appsection2->imageMainRev;
@@ -283,6 +282,7 @@ BOOL burnBootloader(const TCHAR *path) {
    if (file.fsize > 109 * 1024) { //109KB
       goto ERROR;
    }
+  
    memset(buf, 0, 512);
    memcpy(buf, emmcheader, sizeof emmcheader);
    *(unsigned int *)(buf + 512) = file.fsize;
@@ -294,10 +294,57 @@ BOOL burnBootloader(const TCHAR *path) {
    if (rdlen != file.fsize) {
       goto ERROR;
    }
-   ret = MMCSDP_Write(mmcsdctr, buf, BOOTLOADER_BEGIN_SECTOR, (file.fsize + 8 + 511) / 512 + 1);
+   //memset(buf,0,file.fsize+8+512);
+   ret = MMCSDP_Write(mmcsdctr, buf, BOOTLOADER_BEGIN_SECTOR, DIVUP(file.fsize + 8 + 512,512));
    if (FALSE == ret) {
       goto ERROR;
    }
+   
+   long long flashid;
+   spiFlashReadId(&flashid);
+   if ((flashid!=0)&&(flashid!=-1L)){
+      unsigned char flashstatus = spiFlashReadStatus();
+      if(!(flashstatus & 0x01)){
+         spiFlashSwitch256PageSize();
+         flashstatus = spiFlashReadStatus();
+         if(!(flashstatus & 0x01)){
+           goto ERROR;
+         }
+      }
+   }
+   unsigned int flashwcont = DIVUP(file.fsize+8,256);
+   unsigned int byteswapcont = DIVUP(file.fsize+8,4);
+   if ((flashid!=0)&&(flashid!=-1L)) {
+      statBarPrint(0, "found dataflash chip ,burn to dataflash");
+      for(int i=0;i<byteswapcont;i++){
+         *(unsigned int *)(buf+512+4*i) = htonl(*(unsigned int *)(buf+512+4*i));
+      }
+      delay(500);
+      unsigned char percent1 = 0,percent2 = 0;
+      char checkbuf[256];
+      for (int i=0;i<flashwcont;i++) {
+         ret = spiFlashPageWrite(256*i,(void *)(buf + 512+256*i),256 );
+         percent1 = (i+1)*100/flashwcont;
+         if(percent1/5 != percent2/5){
+            percent2 = percent1;
+            char  printbuf[200]; 
+            sprintf(printbuf,"dataflash write percent %d%%",percent2);
+            statBarPrint(0, printbuf);
+         }
+         if (FALSE==ret) {
+            statBarPrint(1, "data flash write  error");
+            delay(1000);
+            goto ERROR;
+         }
+         delay(45);
+         spiFlashRead(256*i,checkbuf,256);
+         if(memcmp(checkbuf,(void *)(buf + 512+256*i),256)!=0){
+           statBarPrint(1, "data flash write check error");
+           delay(500);
+           goto ERROR;
+         }
+      } 
+   } 
    f_close(&file);
    return TRUE;
 ERROR:

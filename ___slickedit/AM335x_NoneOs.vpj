@@ -382,7 +382,6 @@
                 <F N="../lib/platform/pf_timertick.c"/>
                 <F N="../lib/platform/pf_tsc.c"/>
                 <F N="../lib/platform/pf_uart.c"/>
-                <F N="../lib/platform/pf_uartConsole.c"/>
                 <F N="../lib/platform/pf_usb.c"/>
                 <F N="../lib/platform/pf_usbmsc.c"/>
                 <F N="../lib/platform/pf_watchdog.c"/>
@@ -446,7 +445,6 @@
                     <F N="../lib/utils/include/mem.h"/>
                     <F N="../lib/utils/include/misc.h"/>
                     <F N="../lib/utils/include/mmath.h"/>
-                    <F N="../lib/utils/include/perf.h"/>
                     <F N="../lib/utils/include/type.h"/>
                     <F N="../lib/utils/include/uartstdio.h"/>
                 </Folder>
@@ -454,7 +452,6 @@
                 <F N="../lib/utils/cmdline.c"/>
                 <F N="../lib/utils/mem.c"/>
                 <F N="../lib/utils/misc.c"/>
-                <F N="../lib/utils/perf.c"/>
                 <F N="../lib/utils/uartStdio.c"/>
             </Folder>
         </Folder>

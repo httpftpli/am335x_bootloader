@@ -275,9 +275,9 @@ void buttonRedraw(const BUTTON *button, unsigned int force) {
       if (button->caption != NULL) {
          char shortcut[20];
          sprintf(shortcut,"%s%s%s","[",key2keycaption(button->shortkey),"]");
-         drawStringAligenEx(shortcut, ALIGN_RIGHT, button->x, button->y, button->width, button->height, &GUI_Fontascii_16, colorframe, C_TRANSPARENT);
+         drawStringAlignEx(shortcut, ALIGN_RIGHT, button->x, button->y, button->width, button->height, &GUI_Fontascii_16, colorframe, C_TRANSPARENT);
          unsigned int shortcutwidth = getStringMetricWidth(shortcut);
-         drawStringAligenEx(button->caption, ALIGN_MIDDLE, button->x, button->y, button->width-shortcutwidth, button->height, &GUI_Fontascii_16, colorframe, C_TRANSPARENT);
+         drawStringAlignEx(button->caption, ALIGN_MIDDLE, button->x, button->y, button->width-shortcutwidth, button->height, &GUI_Fontascii_16, colorframe, C_TRANSPARENT);
       }
    }
 }
@@ -348,7 +348,7 @@ void labelRedraw(LABEL *label, unsigned int force) {
          }
       }
       if (label->caption != NULL) {
-         drawStringAligenEx(label->caption, ALIGN_MIDDLE, label->x, label->y, label->width, label->height, &GUI_Fontascii_16, C_WHITE, C_TRANSPARENT);
+         drawStringAlignEx(label->caption, ALIGN_MIDDLE, label->x, label->y, label->width, label->height, &GUI_Fontascii_16, C_WHITE, C_TRANSPARENT);
       }
       label->statChanged = 0;
    }
