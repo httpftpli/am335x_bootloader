@@ -35,11 +35,8 @@ UseAuto=0
 TypeViolation=1
 UnspecRange=1
 ActionState=1
-[Trace1]
-Enabled=0
-ShowSource=1
 [DebugChecksum]
-Checksum=-719173299
+Checksum=89360153
 [Exceptions]
 StopOnUncaught=_ 0
 StopOnThrow=_ 0
@@ -49,6 +46,8 @@ ShowArgs=0
 MixedMode=1
 [struct_types]
 Fmt0=KEYTOUCHMSG-tscval	4	0
+Fmt1=mmcsdCardInfo-ocr	4	0
+Fmt2=mmcsdCmd-arg	4	0
 [array_types]
 Fmt0=char[256]	4	0
 Fmt1=char[512]	4	0
@@ -73,7 +72,13 @@ Exclusions=
 [Disassemble mode]
 mode=0
 [Breakpoints2]
-Count=0
+Bp0=_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\..\..\src\xo2_burn\XO2_ECA\XO2_api.c}.654.2" 0 0 1 "" 0 "" 0
+Bp1=_ 0 "EMUL_CODE" "{E:\work}.103.1" 0 0 1 "" 0 "" 0
+Bp2=_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\..\..\lib\platform\pf_beep.c}.21.19" 0 0 1 "" 0 "" 0
+Bp3=_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\..\..\src\post.c}.13.4" 0 0 1 "" 0 "" 0
+Count=4
 [Aliases]
-Count=0
+A0=_ "E:\md335x_bootloader\lib\cpu\armv7a\ewarm\cp15.S" ""
+A1=_ "E:\md335x_bootloader\lib\cpu\armv7a\ewarm\init.S" ""
+Count=2
 SuppressDialog=0

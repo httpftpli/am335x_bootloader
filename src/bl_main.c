@@ -6,6 +6,7 @@
 
 
 
+
 unsigned int entryPoint = 0;
 unsigned int DspEntryPoint = 0;
 
@@ -41,6 +42,9 @@ extern void displayUdisk(void);
 extern void probIdisk_display(void);
 extern void hmishow(void);
 extern void shortcuthandler(int keycode);
+
+extern mmcsdCtrlInfo mmcsdctr[2];
+
 
 int main(void) {
    BlPlatformConfig();
@@ -79,11 +83,17 @@ int main(void) {
 
 BOOTLOADER:
    registKeyHandler(shortcuthandler);
+   //xo2BurnInit();
    LCDRasterStart();
-   LCDBackLightON();
+   LCDBackLightON(1);
+
+
+
+   //post();
    TouchCalibrate(0);
    hmiInit();
    f_mount(0, &inandfs);
+
    while (1) {
       guiExec();
       usbMscProcess();
@@ -92,4 +102,6 @@ BOOTLOADER:
       probIdisk_display();
    }
 }
+
+
 

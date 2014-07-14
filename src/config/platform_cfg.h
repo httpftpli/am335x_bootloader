@@ -19,7 +19,7 @@
 #define INT_PRIORITY_USER_NORMAL  (0x30)
 #define INT_PRIORITY_USER_PRI     (0x10)
 #define INT_PRIORITY_DMA_COMP     (INT_PRIORITY_USER_NORMAL - 3)
-#define INT_PRIORITY_DMA_ERROR    (INT_PRIORITY_USER_NORMAL - 4) 
+#define INT_PRIORITY_DMA_ERROR    (INT_PRIORITY_USER_NORMAL - 4)
 #define INT_PRIORITY_MMCSD0       (INT_PRIORITY_USER_NORMAL-2)
 #define INT_PRIORITY_MMCSD1       (INT_PRIORITY_USER_NORMAL-1)
 #define INT_PRIORITY_ADCTSC       (INT_PRIORITY_USER_NORMAL-1)
@@ -34,6 +34,7 @@
 #define INT_PRIORITY_TIMER5       (INT_PRIORITY_USER_NORMAL-7)
 #define INT_PRIORITY_TIMER6       (INT_PRIORITY_USER_NORMAL-7)
 #define INT_PRIORITY_TIMER7       (INT_PRIORITY_USER_NORMAL-7)
+#define INT_PRIORITY_EQEP0       (INT_PRIORITY_USER_NORMAL-8)
 #define INT_PRIORITY_EQEP2         (INT_PRIORITY_USER_NORMAL-8)
 #define INT_PRIORITY_USB0        (INT_PRIORITY_USER_NORMAL-9)
 #define INT_PRIORITY_USB1        (INT_PRIORITY_USER_NORMAL-10)
@@ -64,11 +65,11 @@
 
 //config whitch cs to be usbed
 //bit map of CS use ,bit0 for CS0;bit1 for CS1;BIT6 for CS6
-#define CS_USE   0x7f 
+#define CS_USE   0x7f
 
 /*config cs bank baseAddr ,baseaddr  decoder from
  to A29, A28, A27, A26, A25, and A24 ,so baseAddr should 24 bit align*/
-static const unsigned int CS_BASEADDR[7]= {1<<24,2<<24,3<<24,4<<24,5<<24,6<<24,7<<24}; 
+static const unsigned int CS_BASEADDR[7]= {1<<24,2<<24,3<<24,4<<24,5<<24,6<<24,7<<24};
 /*config address line width ,7 demeasion for 7 CS*/
 static const unsigned int CS_ADDRLINE_BIT[7] = {24,24,24,24,24,24,24};
 
@@ -77,17 +78,28 @@ static const unsigned int CS_ADDRLINE_BIT[7] = {24,24,24,24,24,24,24};
 #define TIMER_TIMERTICK   MODULE_ID_TIMER2
 
 
+
+
 //config LCD backlight control gpio
 #define GPIO_LCDBACKLIGHT_BASE   SOC_GPIO_0_REGS
 #define GPIO_LCDBACKLIGHT_PIN    30
-#define LCD_BACKLIG_ON           0  
+#define LCD_BACKLIG_ON           0
 #define LCD_BACKLIG_OFF          1
+
+
+#define UART_LCDBACKLIGHT_MODULE  MODULE_ID_UART4
+
+#define LCD_PIX_SIZE     4
 
 #define TFT_AT080TN52    0
 #define TFT_AT070TN92    1
 #define TFT_LSA40AT9001  2
-//select TFT panel 
-#define TFT_PANEL    TFT_LSA40AT9001  
+//select TFT panel
+#define TFT_PANEL    TFT_AT070TN92
+
+// touch pad calibration torerance(UNIT pix)
+#define TS_CALIBRATION_X_TOLERANCE   10
+#define TS_CALIBRATION_Y_TOLERANCE   40
 
 
 #define UCS16_CODEC  1
@@ -99,8 +111,6 @@ static const unsigned int CS_ADDRLINE_BIT[7] = {24,24,24,24,24,24,24};
 #define ASCII_FONT16_IN_SOURCE     1
 #define ASCII_FONT20_IN_SOURCE     0
 
-
-#define BEEP_OFF() (void)0
 
 
 #endif

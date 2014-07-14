@@ -336,6 +336,9 @@
                 <Folder Name="include">
                     <F N="../lib/platform/include/delay.h"/>
                     <F N="../lib/platform/include/module.h"/>
+                    <F N="../lib/platform/include/pf_beep.h"/>
+                    <F N="../lib/platform/include/pf_bootloader.h"/>
+                    <F N="../lib/platform/include/pf_can.h"/>
                     <F N="../lib/platform/include/pf_ecap.h"/>
                     <F N="../lib/platform/include/pf_edma.h"/>
                     <F N="../lib/platform/include/pf_eeprom.h"/>
@@ -345,17 +348,21 @@
                     <F N="../lib/platform/include/pf_key_touchpad.h"/>
                     <F N="../lib/platform/include/pf_lcd.h"/>
                     <F N="../lib/platform/include/pf_mainloop.h"/>
+                    <F N="../lib/platform/include/pf_misc.h"/>
                     <F N="../lib/platform/include/pf_platform_cfg.h"/>
                     <F N="../lib/platform/include/pf_qep.h"/>
                     <F N="../lib/platform/include/pf_rx8025.h"/>
                     <F N="../lib/platform/include/pf_timertick.h"/>
                     <F N="../lib/platform/include/pf_tsc.h"/>
+                    <F N="../lib/platform/include/pf_uart.h"/>
                     <F N="../lib/platform/include/pf_usbmsc.h"/>
                     <F N="../lib/platform/include/platform.h"/>
                     <F N="../lib/platform/include/tft.h"/>
                 </Folder>
                 <F N="../lib/platform/am335x_clock_data.c"/>
                 <F N="../lib/platform/am335x_module_data.c"/>
+                <F N="../lib/platform/pf_beep.c"/>
+                <F N="../lib/platform/pf_bootloader.c"/>
                 <F N="../lib/platform/pf_cpsw.c"/>
                 <F N="../lib/platform/pf_dcan.c"/>
                 <F N="../lib/platform/pf_dmtimer.c"/>
@@ -370,6 +377,7 @@
                 <F N="../lib/platform/pf_int.c"/>
                 <F N="../lib/platform/pf_key_touchpad.c"/>
                 <F N="../lib/platform/pf_lcd.c"/>
+                <F N="../lib/platform/pf_misc.c"/>
                 <F N="../lib/platform/pf_module.c"/>
                 <F N="../lib/platform/pf_mux.h"/>
                 <F N="../lib/platform/pf_norflash.c"/>
@@ -465,12 +473,29 @@
                 <F N="../src/include/bl_copy.h"/>
                 <F N="../src/include/bl_platform.h"/>
             </Folder>
+            <Folder Name="xo2_burn">
+                <Folder Name="oc_i2c_port">
+                    <F N="../src/xo2_burn/oc_i2c_port/oc_i2c_port.c"/>
+                    <F N="../src/xo2_burn/oc_i2c_port/oc_i2c_port.h"/>
+                </Folder>
+                <Folder Name="XO2_ECA">
+                    <F N="../src/xo2_burn/XO2_ECA/ECA_drvr.h"/>
+                    <F N="../src/xo2_burn/XO2_ECA/XO2_api.c"/>
+                    <F N="../src/xo2_burn/XO2_ECA/XO2_api.h"/>
+                    <F N="../src/xo2_burn/XO2_ECA/XO2_cmds.c"/>
+                    <F N="../src/xo2_burn/XO2_ECA/XO2_cmds.h"/>
+                    <F N="../src/xo2_burn/XO2_ECA/XO2_dev.c"/>
+                    <F N="../src/xo2_burn/XO2_ECA/XO2_dev.h"/>
+                </Folder>
+            </Folder>
             <F N="../src/bl_copy.c"/>
             <F N="../src/bl_main.c"/>
             <F N="../src/bl_platform.c"/>
             <F N="../src/burn.c"/>
             <F N="../src/emmc_header.c"/>
+            <F N="../src/post.c"/>
             <F N="../src/ui.c"/>
+            <F N="../src/xo2_burn.c"/>
         </Folder>
         <Folder Name="../workspace">
             <Folder Name="tool">

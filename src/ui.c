@@ -86,15 +86,15 @@ LABEL titleLabel = {
 };
 
 LABEL pageLabel = {
-   .x = 0,.y = 20,.width=800,.height=560,.haveFrame=1,
+   .x = 0,.y = 20,.width=800,.height=440,.haveFrame=1,
 };
 
 LABEL statLabel = {
-  .x = 0,.y = 580,.width=60,.height=20,.haveFrame=1,.haveFrame=1,.caption = "status"
+  .x = 0,.y = 460,.width=60,.height=20,.haveFrame=1,.haveFrame=1,.caption = "status"
 };
 
 LABEL statLabel1 = {
-   .x = 60,.y = 580,.width=740,.height=20,.haveFrame=1,
+   .x = 60,.y = 460,.width=740,.height=20,.haveFrame=1,
 };
  
 
@@ -104,31 +104,33 @@ LABEL frametitles[] = {
 };
 
 LABEL frames[] = {
-   [0]={.x = 230,.y = 55,.width=220,.height=482,.haveFrame=1,},
-   [1]={.x = 450,.y = 55,.width=220,.height=482,.haveFrame=1,.focus=1},
+   [0]={.x = 230,.y = 55,.width=220,.height=362,.haveFrame=1,},
+   [1]={.x = 450,.y = 55,.width=220,.height=362,.haveFrame=1,.focus=1},
 };
 
 BUTTON burnpagebuttons[] = {
-   [0]={.x = 680,.y = 140,.width=110,.height=40,.enable=1,.tabId=0,.caption = "ts cal",.shortkey = KEY_F1},
-   [1]={.x = 680,.y = 240,.width=110,.height=40,.enable=1,.tabId=1,.caption = "iformat",.shortkey = KEY_F2},
-   [2]={.x = 680,.y = 290,.width=110,.height=40,.enable=1,.tabId=2,.caption = "burn app",.shortkey = KEY_F3},
-   [3]={.x = 680,.y = 340,.width=110,.height=40,.enable=1,.tabId=3,.caption = "burn font",.shortkey = KEY_F4},
-   [4]={.x = 680,.y = 490,.width=110,.height=40,.enable=1,.tabId=6,.caption = "run app",.shortkey = KEY_OK},
+   [0]={.x = 680,.y = 40,.width=110,.height=40,.enable=1,.tabId=0,.caption = "ts cal",.shortkey = KEY_F1},
+   [1]={.x = 680,.y = 120,.width=110,.height=40,.enable=1,.tabId=1,.caption = "iformat",.shortkey = KEY_F2},
+   [2]={.x = 680,.y = 170,.width=110,.height=40,.enable=1,.tabId=2,.caption = "burn app",.shortkey = KEY_F3},
+   [3]={.x = 680,.y = 220,.width=110,.height=40,.enable=1,.tabId=3,.caption = "burn font",.shortkey = KEY_F4},
+   [4]={.x = 680,.y = 370,.width=110,.height=40,.enable=1,.tabId=6,.caption = "run app",.shortkey = KEY_OK},
 #ifdef INNERBOOT
-   [5]={.x = 680,.y = 390,.width=110,.height=40,.enable=1,.tabId=4,.caption = "burn boot",.shortkey = KEY_F5},
-   [6]={.x = 680,.y = 440,.width=110,.height=40,.enable=1,.tabId=5,.caption = "burn auto",.colorIndex = 1,.shortkey = KEY_F6},
+   [5]={.x = 680,.y = 270,.width=110,.height=40,.enable=1,.tabId=4,.caption = "burn boot",.shortkey = KEY_F5},
+   [6]={.x = 680,.y = 320,.width=110,.height=40,.enable=1,.tabId=5,.caption = "burn auto",.colorIndex = 1,.shortkey = KEY_F6},
 #endif
 };
 
 BUTTON pagebuttons[2][2] ={
-  {{.x = 240,.y = 540,.width=80,.height=35,.enable=1,.tabId=-1,.caption = "up",.shortkey = KEY_PU},
-  {.x = 350,.y = 540,.width=80,.height=35,.enable=1,.tabId=-1,.caption = "down",.shortkey = KEY_PD},},
-  {{.x = 470,.y = 540,.width=80,.height=35,.enable=1,.tabId=-1,.caption = "up",.shortkey = KEY_PU},
-  {.x = 580,.y = 540,.width=80,.height=35,.enable=1,.tabId=-1,.caption = "down",.shortkey = KEY_PD},},
+  {{.x = 240,.y = 420,.width=80,.height=35,.enable=1,.tabId=-1,.caption = "up",.shortkey = KEY_PU},
+  {.x = 350,.y = 420,.width=80,.height=35,.enable=1,.tabId=-1,.caption = "down",.shortkey = KEY_PD},},
+  {{.x = 470,.y = 420,.width=80,.height=35,.enable=1,.tabId=-1,.caption = "up",.shortkey = KEY_PU},
+  {.x = 580,.y = 420,.width=80,.height=35,.enable=1,.tabId=-1,.caption = "down",.shortkey = KEY_PD},},
 };
 
-BUTTON inandButtons[12]; 
-BUTTON udiskButtons[12];
+#define INAND_UDISK_BUTTON_COUNT  6 
+
+BUTTON inandButtons[INAND_UDISK_BUTTON_COUNT]; 
+BUTTON udiskButtons[INAND_UDISK_BUTTON_COUNT];
 
 
 static const char * key2keycaption(unsigned int key){
@@ -356,7 +358,7 @@ void labelRedraw(LABEL *label, unsigned int force) {
 
 
 void labelSetFocus(LABEL * label,BOOL focus) {
-   if (label->focus == focus) {
+   if ((bool)(label->focus) == focus) {
       return;
    }
    label->focus = focus;
@@ -478,7 +480,7 @@ void hmishow(){
 
 void tscalhandler(void *button,unsigned int stat){
    if (1==stat) {
-      while (!TouchCalibrate(1)) ;
+       TouchCalibrate(1);
    } 
    hmishow();
 }
@@ -513,7 +515,7 @@ static void idiskbuttonhandler(void *button, unsigned int stat) {
      ifileindex = -1;
    }
    if(ifileindex!=-1){
-        statBarPrint(0,idiskfileinfolist[ifilegroupindex*12+ifileindex].filename);
+        statBarPrint(0,idiskfileinfolist[ifilegroupindex*INAND_UDISK_BUTTON_COUNT+ifileindex].filename);
    }else{
         statBarPrint(0,NULL);    
    } 
@@ -546,12 +548,12 @@ void probUdisk(){
 void displayUdisk() {
    if (ufilestatchagned == 1) {
       ufilestatchagned = 0;
-      for (unsigned int i = 0; i < 12; i++) {
-         if ((ufilegroupindex * 12 + i) >= udiskFileCount) {
+      for (unsigned int i = 0; i < INAND_UDISK_BUTTON_COUNT; i++) {
+         if ((ufilegroupindex * INAND_UDISK_BUTTON_COUNT + i) >= udiskFileCount) {
             buttonSetCaption(&udiskButtons[i], NULL);
             buttonDisable(&udiskButtons[i]);
          } else {
-           buttonSetCaption(&udiskButtons[i],udiskfileinfolist[ufilegroupindex * 12 + i].filename);
+           buttonSetCaption(&udiskButtons[i],udiskfileinfolist[ufilegroupindex * INAND_UDISK_BUTTON_COUNT + i].filename);
            buttonEnable(&udiskButtons[i]);
          }
       }
@@ -566,12 +568,12 @@ void probIdisk_display(){
       idiskFileCount = NARRAY(idiskfileinfolist);
       scan_files("0:/",idiskfileinfolist,&idiskFileCount);
       ifilestatchagned = 0 ; 
-      for (unsigned int i = 0; i < 12; i++) {
-         if (((ifilegroupindex * 12 + i) >= idiskFileCount)) {
+      for (unsigned int i = 0; i < INAND_UDISK_BUTTON_COUNT; i++) {
+         if (((ifilegroupindex * INAND_UDISK_BUTTON_COUNT + i) >= idiskFileCount)) {
             buttonSetCaption(&inandButtons[i], NULL);
             buttonDisable(&inandButtons[i]);
          } else {
-           buttonSetCaption(&inandButtons[i],idiskfileinfolist[ifilegroupindex * 12 + i].filename);
+           buttonSetCaption(&inandButtons[i],idiskfileinfolist[ifilegroupindex * INAND_UDISK_BUTTON_COUNT + i].filename);
            buttonEnable(&inandButtons[i]);
          }
       }
@@ -622,7 +624,7 @@ static void udiskbuttonhandler(void *button, unsigned int stat) {
       ufileindex = -1;
    }
    if(ufileindex!=-1){
-        statBarPrint(0,udiskfileinfolist[ufilegroupindex*12+ufileindex].filename);
+        statBarPrint(0,udiskfileinfolist[ufilegroupindex*INAND_UDISK_BUTTON_COUNT+ufileindex].filename);
    }else{
         statBarPrint(0,NULL);    
    }  
@@ -663,12 +665,12 @@ static void burnboothandler(void *button, unsigned int stat) {
    }
    char pathbuf[30];
    memcpy(pathbuf, "2:/", 4);
-   strcat(pathbuf, udiskfileinfolist[ufilegroupindex*12+ufileindex].filename);
+   strcat(pathbuf, udiskfileinfolist[ufilegroupindex*INAND_UDISK_BUTTON_COUNT+ufileindex].filename);
    burnboot_ui(pathbuf);
 }
 
 
-extern int burnAPP(TCHAR *path);
+extern BURN_RET burnAPP(TCHAR *path);
 extern BOOL burnFont(const TCHAR *path );
 static  void burnautohandler(void *button, unsigned int stat) {
    statBarPrint(0,"format idisk");
@@ -749,15 +751,17 @@ static void burnapphandler(void *button, unsigned int stat){
       return;
    }
    char pathbuf[20] = "2:/";
-   int ret = burnAPP(strcat(pathbuf, udiskfileinfolist[ufilegroupindex*12+ufileindex].filename));
-   if (BURNAPP_FILE_ERROR == ret) {
+   BURN_RET ret = burnAPP(strcat(pathbuf, udiskfileinfolist[ufilegroupindex*INAND_UDISK_BUTTON_COUNT+ufileindex].filename));
+   if (BURN_OK==ret) {
+       statBarPrint(0,"burn bootloader success");
+   }else if(BURN_FILE_ERROR == ret) {
       statBarPrint(1,"app file error,burn bootloader fail");
-   }else if(BURNAPP_READERROR==ret){
+   }else if(BURN_SRC_ERROR==ret){
       statBarPrint(1,"read app file error ,burn bootloader fail");
-   }else if(BURNAPP_WRITEERROR == ret){
+   }else if(BURN_DES_ERROR == ret){
       statBarPrint(1,"write app error ,burn bootloader fail");
-   }else if(0==ret){
-      statBarPrint(0,"burn bootloader success");
+   }else{
+      statBarPrint(0,"burn app error");
    }
    return;
 }
@@ -768,7 +772,7 @@ static void burnfonthandler(void *button,unsigned int stat){
       statBarPrint(1,"please select a file");
       return;
    }
-   unsigned int index = ufilegroupindex*12+ufileindex;
+   unsigned int index = ufilegroupindex*INAND_UDISK_BUTTON_COUNT+ufileindex;
    if (!strendwith(udiskfileinfolist[index].filename,".FNT")){
       statBarPrint(1,"unknow font file");
       return;
@@ -817,7 +821,7 @@ static void ufileuphandler(void *button,unsigned int stat){
 
 
 static void ufiledownhandler(void *button ,unsigned int stat){
-   if ((udiskFileCount+11)/12-1 > ufilegroupindex) {
+   if ((udiskFileCount+11)/INAND_UDISK_BUTTON_COUNT-1 > ufilegroupindex) {
        ufilegroupindex++;
        if(ufileindex!=-1){
          buttonSetStat(&udiskButtons[ufileindex],0);
