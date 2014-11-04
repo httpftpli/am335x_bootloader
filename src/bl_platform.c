@@ -13,7 +13,7 @@
 #include "bl.h"
 #include "gpmc.h"
 #include "bl_copy.h"
-#include "pf_platform_cfg.h"  
+#include "pf_platform_cfg.h"
 #include "bl_platform.h"
 #include "uartStdio.h"
 #include "watchdog.h"
@@ -160,7 +160,7 @@
                                                        //CL = 2 (CAS latency = 5)
                                                        //ROWSIZE = 5 (14 row bits)
                                                        //PAGESIZE = 2 (10 column bits)
-													   
+
 /* DDR2 init values */
 
 #define DDR2_CMD0_SLAVE_RATIO_0            (0x80)
@@ -185,7 +185,7 @@
 #define DDR2_DATA0_RD_DQS_SLAVE_RATIO_1    (0x40 >> 2)
 #define DDR2_DATA0_WR_DQS_SLAVE_RATIO_0    (( 0x00 << 30)|( 0x00 << 20)|(0x00 << 10)|(0x00 << 0))
 #define DDR2_DATA0_WR_DQS_SLAVE_RATIO_1    (0x00 >> 2)
-#define DDR2_DATA0_WRLVL_INIT_RATIO_0      ((0x00 << 30)|(0x00 << 20)|(0x00 << 10)|(0x00 << 0)) 
+#define DDR2_DATA0_WRLVL_INIT_RATIO_0      ((0x00 << 30)|(0x00 << 20)|(0x00 << 10)|(0x00 << 0))
 #define DDR2_DATA0_WRLVL_INIT_RATIO_1      (0x00 >> 2)
 #define DDR2_DATA0_GATELVL_INIT_RATIO_0    ((0x00 << 30)|(0x00 << 20)|(0x00 << 10)|(0x00 << 0))
 #define DDR2_DATA0_GATELVL_INIT_RATIO_1    (0x00 >> 2)
@@ -199,7 +199,7 @@
 #define DDR2_DATA1_RD_DQS_SLAVE_RATIO_1    (0x40 >> 2)
 #define DDR2_DATA1_WR_DQS_SLAVE_RATIO_0    (( 0x00 << 30)|( 0x00 << 20)|(0x00 << 10)|(0x00 << 0))
 #define DDR2_DATA1_WR_DQS_SLAVE_RATIO_1    (0x00 >> 2)
-#define DDR2_DATA1_WRLVL_INIT_RATIO_0      ((0x00 << 30)|(0x00 << 20)|(0x00 << 10)|(0x00 << 0)) 
+#define DDR2_DATA1_WRLVL_INIT_RATIO_0      ((0x00 << 30)|(0x00 << 20)|(0x00 << 10)|(0x00 << 0))
 #define DDR2_DATA1_WRLVL_INIT_RATIO_1      (0x00 >> 2)
 #define DDR2_DATA1_GATELVL_INIT_RATIO_0    ((0x00 << 30)|(0x00 << 20)|(0x00 << 10)|(0x00 << 0))
 #define DDR2_DATA1_GATELVL_INIT_RATIO_1    (0x00 >> 2)
@@ -229,8 +229,8 @@
 #define DDR2_EMIF_SDRAM_TIM_2_SHDW	   (0x143731DA)
 #define DDR2_EMIF_SDRAM_TIM_3              (0x00000347)
 #define DDR2_EMIF_SDRAM_TIM_3_SHDM         (0x00000347)
-//CAS Latency:4 Row Size:15 Bank:8 Page Size:1024(word)   
-#define DDR2_EMIF_SDRAM_CONFIG             (0x41805332) 
+//CAS Latency:4 Row Size:15 Bank:8 Page Size:1024(word)
+#define DDR2_EMIF_SDRAM_CONFIG             (0x41805332)
 #define DDR2_EMIF_SDRAM_REF_CTRL_VAL1	   (0x00004650)
 #define DDR2_EMIF_SDRAM_REF_CTRL_SHDW_VAL1 (0x00004650)
 
@@ -241,8 +241,8 @@
 
 
 
-/* \brief This function initializes the CORE PLL 
- * 
+/* \brief This function initializes the CORE PLL
+ *
  * \param none
  *
  * \return none
@@ -300,7 +300,7 @@ void CorePLLInit(void)
 }
 
 /* \brief This function initializes the DISPLAY PLL
- * 
+ *
  * \param none
  *
  * \return none
@@ -348,7 +348,7 @@ void DisplayPLLInit(void)
 }
 
 /* \brief This function initializes the PER PLL
- * 
+ *
  * \param none
  *
  * \return none
@@ -398,7 +398,7 @@ void PerPLLInit(void)
 }
 
 /* \brief This function initializes the DDR PLL
- * 
+ *
  * \param none
  *
  * \return none
@@ -477,7 +477,7 @@ void MPUPLLInit(void)
     /* Set the multiplier and divider values for the PLL */
     HWREG(SOC_CM_WKUP_REGS + CM_WKUP_CM_CLKSEL_DPLL_MPU) |=
        ((MPUPLL_M << CM_WKUP_CM_CLKSEL_DPLL_MPU_DPLL_MULT_SHIFT) |
-           (MPUPLL_N << CM_WKUP_CM_CLKSEL_DPLL_MPU_DPLL_DIV_SHIFT)); 
+           (MPUPLL_N << CM_WKUP_CM_CLKSEL_DPLL_MPU_DPLL_DIV_SHIFT));
 
 
     regVal = HWREG(SOC_CM_WKUP_REGS + CM_WKUP_CM_DIV_M2_DPLL_MPU);
@@ -498,8 +498,8 @@ void MPUPLLInit(void)
                              CM_WKUP_CM_IDLEST_DPLL_MPU_ST_DPLL_CLK));
 }
 
-/* \brief This function initializes the interface clock 
- * 
+/* \brief This function initializes the interface clock
+ *
  * \param none
  *
  * \return none
@@ -547,7 +547,7 @@ void InterfaceClkInit(void)
 }
 
 /* \brief This function initializes the power domain transition.
- * 
+ *
  * \param none
  *
  * \return none
@@ -572,7 +572,7 @@ void PowerDomainTransitionInit(void)
 }
 
 /*
- * \brief This function sets up various PLLs  
+ * \brief This function sets up various PLLs
  *
  * \param  none
  *
@@ -672,7 +672,7 @@ BOOL TPS65217RegWrite(unsigned char regOffset,
    }
    return FALSE;
 }
-    
+
 
 
 /**
@@ -697,7 +697,7 @@ void TPS65217VoltageUpdate(unsigned char dc_cntrl_reg, unsigned char volt_sel)
 
 
 /*
- * \brief Configures the VDD OP voltage. 
+ * \brief Configures the VDD OP voltage.
  *
  * \param  none.
  *
@@ -705,7 +705,7 @@ void TPS65217VoltageUpdate(unsigned char dc_cntrl_reg, unsigned char volt_sel)
  */
 
 void ConfigVddOpVoltage(void)
-{    
+{
     unsigned char vol_sel = DCDC_VOLT_SEL_1100MV;
 #if (OPP == OPP_SR_TURBO)
     vol_sel = DCDC_VOLT_SEL_1275MV;
@@ -794,8 +794,134 @@ void EMIFPinMuxSetup(unsigned int instance)
 }
 
 
-
 static void PinMuxSetup(void){
+#ifdef YUANJI
+MUX_VAL(CONTROL_PADCONF_GPMC_AD0, (IEN | PD | MODE0)) /* gpmc_ad0 */\
+	MUX_VAL(CONTROL_PADCONF_GPMC_AD1, (IEN | PD | MODE0)) /* gpmc_ad1 */\
+	MUX_VAL(CONTROL_PADCONF_GPMC_AD2, (IEN | PD | MODE0)) /* gpmc_ad2 */\
+	MUX_VAL(CONTROL_PADCONF_GPMC_AD3, (IEN | PD | MODE0)) /* gpmc_ad3 */\
+	MUX_VAL(CONTROL_PADCONF_GPMC_AD4, (IEN | PD | MODE0)) /* gpmc_ad4 */\
+	MUX_VAL(CONTROL_PADCONF_GPMC_AD5, (IEN | PD | MODE0)) /* gpmc_ad5 */\
+	MUX_VAL(CONTROL_PADCONF_GPMC_AD6, (IEN | PD | MODE0)) /* gpmc_ad6 */\
+	MUX_VAL(CONTROL_PADCONF_GPMC_AD7, (IEN | PD | MODE0)) /* gpmc_ad7 */\
+	MUX_VAL(CONTROL_PADCONF_GPMC_AD8, (IDIS | PD | MODE1)) /* lcd_data23 */\
+	MUX_VAL(CONTROL_PADCONF_GPMC_AD9, (IDIS | PD | MODE1)) /* lcd_data22 */\
+	MUX_VAL(CONTROL_PADCONF_GPMC_AD10, (IDIS | PD | MODE1)) /* lcd_data21 */\
+	MUX_VAL(CONTROL_PADCONF_GPMC_AD11, (IDIS | PD | MODE1)) /* lcd_data20 */\
+	MUX_VAL(CONTROL_PADCONF_GPMC_AD12, (IDIS | PD | MODE1)) /* lcd_data19 */\
+	MUX_VAL(CONTROL_PADCONF_GPMC_AD13, (IDIS | PD | MODE1)) /* lcd_data18 */\
+	MUX_VAL(CONTROL_PADCONF_GPMC_AD14, (IDIS | PD | MODE1)) /* lcd_data17 */\
+	MUX_VAL(CONTROL_PADCONF_GPMC_AD15, (IDIS | PD | MODE1)) /* lcd_data16 */\
+	MUX_VAL(CONTROL_PADCONF_GPMC_A0, (IDIS | PD | MODE0)) /* gpmc_a0_mux0 */\
+	MUX_VAL(CONTROL_PADCONF_GPMC_A1, (IDIS | PD | MODE0)) /* gpmc_a1_mux0 */\
+	MUX_VAL(CONTROL_PADCONF_GPMC_A2, (IDIS | PD | MODE0)) /* gpmc_a2_mux0 */\
+	MUX_VAL(CONTROL_PADCONF_GPMC_A3, (IDIS | PD | MODE0)) /* gpmc_a3_mux0 */\
+	MUX_VAL(CONTROL_PADCONF_GPMC_A4, (IDIS | PD | MODE0)) /* gpmc_a4_mux0 */\
+	MUX_VAL(CONTROL_PADCONF_GPMC_A5, (IDIS | PD | MODE0)) /* gpmc_a5_mux0 */\
+	MUX_VAL(CONTROL_PADCONF_GPMC_A6, (IDIS | PD | MODE0)) /* gpmc_a6_mux0 */\
+	MUX_VAL(CONTROL_PADCONF_GPMC_A7, (IDIS | PD | MODE0)) /* gpmc_a7_mux0 */\
+	MUX_VAL(CONTROL_PADCONF_GPMC_A8, (IDIS | PD | MODE0)) /* gpmc_a8_mux0 */\
+	MUX_VAL(CONTROL_PADCONF_GPMC_A9, (IDIS | PD | MODE0)) /* gpmc_a9_mux0 */\
+	MUX_VAL(CONTROL_PADCONF_GPMC_A10, (IDIS | PD | MODE0)) /* gpmc_a10 */\
+	MUX_VAL(CONTROL_PADCONF_GPMC_A11, (IDIS | PD | MODE0)) /* gpmc_a11 */\
+	MUX_VAL(CONTROL_PADCONF_GPMC_WAIT0, (IDIS | PU | MODE2)) /* gpmc_csn4 */\
+	MUX_VAL(CONTROL_PADCONF_GPMC_WPN, (IDIS | PU | MODE2)) /* gpmc_csn5 */\
+	MUX_VAL(CONTROL_PADCONF_GPMC_BEN1, (IDIS | PU | MODE2)) /* gpmc_csn6 */\
+	MUX_VAL(CONTROL_PADCONF_GPMC_CSN0, (IDIS | PU | MODE0)) /* gpmc_csn0 */\
+	MUX_VAL(CONTROL_PADCONF_GPMC_CSN1, (IDIS | PU | MODE0)) /* gpmc_csn1 */\
+	MUX_VAL(CONTROL_PADCONF_GPMC_CSN2, (IDIS | PU | MODE0)) /* gpmc_csn2 */\
+	MUX_VAL(CONTROL_PADCONF_GPMC_CSN3, (IDIS | PU | MODE0)) /* gpmc_csn3 */\
+	MUX_VAL(CONTROL_PADCONF_GPMC_CLK, (IEN | PD | MODE7)) /* gpio2[1] */\
+	MUX_VAL(CONTROL_PADCONF_GPMC_ADVN_ALE, (IEN | PU | MODE7)) /* gpio2[2] */\
+	MUX_VAL(CONTROL_PADCONF_GPMC_OEN_REN, (IDIS | PU | MODE0)) /* gpmc_oen_ren */\
+	MUX_VAL(CONTROL_PADCONF_GPMC_WEN, (IDIS | PU | MODE0)) /* gpmc_wen */\
+	MUX_VAL(CONTROL_PADCONF_GPMC_BEN0_CLE, (IEN | PU | MODE7)) /* gpio2[5] */\
+	MUX_VAL(CONTROL_PADCONF_LCD_DATA0, (IEN | OFF | MODE0)) /* lcd_data0 */\
+	MUX_VAL(CONTROL_PADCONF_LCD_DATA1, (IEN | OFF | MODE0)) /* lcd_data1 */\
+	MUX_VAL(CONTROL_PADCONF_LCD_DATA2, (IEN | OFF | MODE0)) /* lcd_data2 */\
+	MUX_VAL(CONTROL_PADCONF_LCD_DATA3, (IEN | OFF | MODE0)) /* lcd_data3 */\
+	MUX_VAL(CONTROL_PADCONF_LCD_DATA4, (IEN | OFF | MODE0)) /* lcd_data4 */\
+	MUX_VAL(CONTROL_PADCONF_LCD_DATA5, (IEN | OFF | MODE0)) /* lcd_data5 */\
+	MUX_VAL(CONTROL_PADCONF_LCD_DATA6, (IEN | OFF | MODE0)) /* lcd_data6 */\
+	MUX_VAL(CONTROL_PADCONF_LCD_DATA7, (IEN | OFF | MODE0)) /* lcd_data7 */\
+	MUX_VAL(CONTROL_PADCONF_LCD_DATA8, (IEN | OFF | MODE0)) /* lcd_data8 */\
+	MUX_VAL(CONTROL_PADCONF_LCD_DATA9, (IEN | OFF | MODE0)) /* lcd_data9 */\
+	MUX_VAL(CONTROL_PADCONF_LCD_DATA10, (IEN | OFF | MODE0)) /* lcd_data10 */\
+	MUX_VAL(CONTROL_PADCONF_LCD_DATA11, (IEN | OFF | MODE0)) /* lcd_data11 */\
+	MUX_VAL(CONTROL_PADCONF_LCD_DATA12, (IEN | OFF | MODE0)) /* lcd_data12 */\
+	MUX_VAL(CONTROL_PADCONF_LCD_DATA13, (IEN | OFF | MODE0)) /* lcd_data13 */\
+	MUX_VAL(CONTROL_PADCONF_LCD_DATA14, (IEN | OFF | MODE0)) /* lcd_data14 */\
+	MUX_VAL(CONTROL_PADCONF_LCD_DATA15, (IEN | OFF | MODE0)) /* lcd_data15 */\
+	MUX_VAL(CONTROL_PADCONF_LCD_VSYNC, (IDIS | OFF | MODE0)) /* lcd_vsync */\
+	MUX_VAL(CONTROL_PADCONF_LCD_HSYNC, (IDIS | OFF | MODE0)) /* lcd_hsync */\
+	MUX_VAL(CONTROL_PADCONF_LCD_PCLK, (IDIS | OFF | MODE0)) /* lcd_pclk */\
+	MUX_VAL(CONTROL_PADCONF_LCD_AC_BIAS_EN, (IDIS | OFF | MODE0)) /* lcd_ac_bias_en */\
+	MUX_VAL(CONTROL_PADCONF_MMC0_DAT3, (IEN | PU | MODE0)) /* mmc0_dat3 */\
+	MUX_VAL(CONTROL_PADCONF_MMC0_DAT2, (IEN | PU | MODE0)) /* mmc0_dat2 */\
+	MUX_VAL(CONTROL_PADCONF_MMC0_DAT1, (IEN | PU | MODE0)) /* mmc0_dat1 */\
+	MUX_VAL(CONTROL_PADCONF_MMC0_DAT0, (IEN | PU | MODE0)) /* mmc0_dat0 */\
+	MUX_VAL(CONTROL_PADCONF_MMC0_CLK, (IEN | PU | MODE0)) /* mmc0_clk */\
+	MUX_VAL(CONTROL_PADCONF_MMC0_CMD, (IEN | PU | MODE0)) /* mmc0_cmd */\
+	MUX_VAL(CONTROL_PADCONF_MII1_COL, (IEN | PD | MODE7)) /* gpio3[0] */\
+	MUX_VAL(CONTROL_PADCONF_MII1_CRS, (IEN | PD | MODE1)) /* rmii1_crs_dv */\
+	MUX_VAL(CONTROL_PADCONF_MII1_RX_ER, (IEN | PD | MODE1)) /* rmii1_rxer */\
+	MUX_VAL(CONTROL_PADCONF_MII1_TX_EN, (IDIS | PD | MODE1)) /* rmii1_txen */\
+	MUX_VAL(CONTROL_PADCONF_MII1_RX_DV, (IEN | PD | MODE7)) /* gpio3[4] */\
+	MUX_VAL(CONTROL_PADCONF_MII1_TXD3, (IEN | PD | MODE7)) /* gpio0[16] */\
+	MUX_VAL(CONTROL_PADCONF_MII1_TXD2, (IEN | PD | MODE7)) /* gpio0[17] */\
+	MUX_VAL(CONTROL_PADCONF_MII1_TXD1, (IDIS | PD | MODE1)) /* rmii1_txd1 */\
+	MUX_VAL(CONTROL_PADCONF_MII1_TXD0, (IDIS | PD | MODE1)) /* rmii1_txd0 */\
+	MUX_VAL(CONTROL_PADCONF_MII1_TX_CLK, (IEN | PD | MODE7)) /* gpio3[9] */\
+	MUX_VAL(CONTROL_PADCONF_MII1_RX_CLK, (IEN | PD | MODE7)) /* gpio3[10] */\
+	MUX_VAL(CONTROL_PADCONF_MII1_RXD3, (IEN | PD | MODE1)) /* uart3_rxd_mux0 */\
+	MUX_VAL(CONTROL_PADCONF_MII1_RXD2, (IDIS | PD | MODE1)) /* uart3_txd_mux0 */\
+	MUX_VAL(CONTROL_PADCONF_MII1_RXD1, (IEN | PD | MODE1)) /* rmii1_rxd1 */\
+	MUX_VAL(CONTROL_PADCONF_MII1_RXD0, (IEN | PD | MODE1)) /* rmii1_rxd0 */\
+	MUX_VAL(CONTROL_PADCONF_RMII1_REF_CLK, (IEN | PD | MODE0)) /* rmii1_refclk */\
+	MUX_VAL(CONTROL_PADCONF_MDIO, (IEN | PU | MODE0)) /* mdio_data */\
+	MUX_VAL(CONTROL_PADCONF_MDC, (IDIS | PU | MODE0)) /* mdio_clk */\
+	MUX_VAL(CONTROL_PADCONF_SPI0_SCLK, (IEN | OFF | MODE7)) /* gpio0[2] */\
+	MUX_VAL(CONTROL_PADCONF_SPI0_D0, (IEN | OFF | MODE7)) /* gpio0[3] */\
+	MUX_VAL(CONTROL_PADCONF_SPI0_D1, (IEN | OFF | MODE7)) /* gpio0[4] */\
+	MUX_VAL(CONTROL_PADCONF_SPI0_CS0, (IEN | OFF | MODE7)) /* gpio0[5] */\
+	MUX_VAL(CONTROL_PADCONF_SPI0_CS1, (IEN | OFF | MODE7)) /* gpio0[6] */\
+	MUX_VAL(CONTROL_PADCONF_ECAP0_IN_PWM0_OUT, (IEN | OFF | MODE7)) /* gpio0[7] */\
+	MUX_VAL(CONTROL_PADCONF_UART0_CTSN, (IEN | OFF | MODE7)) /* gpio1[8] */\
+	MUX_VAL(CONTROL_PADCONF_UART0_RTSN, (IEN | OFF | MODE7)) /* gpio1[9] */\
+	MUX_VAL(CONTROL_PADCONF_UART0_RXD, (IEN | OFF | MODE0)) /* uart0_rxd */\
+	MUX_VAL(CONTROL_PADCONF_UART0_TXD, (IDIS | OFF | MODE0)) /* uart0_txd */\
+	MUX_VAL(CONTROL_PADCONF_UART1_CTSN, (IDIS | OFF | MODE2)) /* dcan0_tx_mux2 */\
+	MUX_VAL(CONTROL_PADCONF_UART1_RTSN, (IEN | OFF | MODE2)) /* dcan0_rx_mux2 */\
+	MUX_VAL(CONTROL_PADCONF_UART1_RXD, (IDIS | OFF | MODE2)) /* dcan1_tx_mux1 */\
+	MUX_VAL(CONTROL_PADCONF_UART1_TXD, (IEN | OFF | MODE2)) /* dcan1_rx_mux1 */\
+	MUX_VAL(CONTROL_PADCONF_I2C0_SDA, (IEN | OFF | MODE0)) /* I2C0_SDA */\
+	MUX_VAL(CONTROL_PADCONF_I2C0_SCL, (IEN | OFF | MODE0)) /* I2C0_SCL */\
+	MUX_VAL(CONTROL_PADCONF_MCASP0_ACLKX, (IEN | PD | MODE7)) /* gpio3[14] */\
+	MUX_VAL(CONTROL_PADCONF_MCASP0_FSX, (IEN | PD | MODE7)) /* gpio3[15] */\
+	MUX_VAL(CONTROL_PADCONF_MCASP0_AXR0, (IEN | PD | MODE7)) /* gpio3[16] */\
+	MUX_VAL(CONTROL_PADCONF_MCASP0_AHCLKR, (IEN | PD | MODE7)) /* gpio3[17] */\
+	MUX_VAL(CONTROL_PADCONF_MCASP0_ACLKR, (IEN | PD | MODE1)) /* eQEP0A_in_mux0 */\
+	MUX_VAL(CONTROL_PADCONF_MCASP0_FSR, (IEN | PD | MODE1)) /* eQEP0B_in_mux0 */\
+	MUX_VAL(CONTROL_PADCONF_MCASP0_AXR1, (IEN | PD | MODE1)) /* eQEP0_index_mux0 */\
+	MUX_VAL(CONTROL_PADCONF_MCASP0_AHCLKX, (IEN | PD | MODE1)) /* eQEP0_strobe_mux0 */\
+	MUX_VAL(CONTROL_PADCONF_XDMA_EVENT_INTR0, (IEN | OFF | MODE7)) /* gpio0[19] */\
+	MUX_VAL(CONTROL_PADCONF_XDMA_EVENT_INTR1, (IEN | OFF | MODE7)) /* gpio0[20] */\
+	MUX_VAL(CONTROL_PADCONF_WARMRSTN, (IEN | OFF | MODE0)) /* nRESETIN_OUT */\
+	MUX_VAL(CONTROL_PADCONF_EXTINTN, (IEN | OFF | MODE0)) /* nNMI */\
+	MUX_VAL(CONTROL_PADCONF_TMS, (IEN | PU | MODE0)) /* TMS */\
+	MUX_VAL(CONTROL_PADCONF_TDI, (IEN | PU | MODE0)) /* TDI */\
+	MUX_VAL(CONTROL_PADCONF_TDO, (IDIS | PU | MODE0)) /* TDO */\
+	MUX_VAL(CONTROL_PADCONF_TCK, (IEN | PU | MODE0)) /* TCK */\
+	MUX_VAL(CONTROL_PADCONF_TRSTN, (IEN | PD | MODE0)) /* nTRST */\
+	MUX_VAL(CONTROL_PADCONF_EMU0, (IEN | PU | MODE7)) /* gpio3[7] */\
+	MUX_VAL(CONTROL_PADCONF_EMU1, (IEN | PU | MODE7)) /* gpio3[8] */\
+	MUX_VAL(CONTROL_PADCONF_RTC_PWRONRSTN, (IEN | OFF | MODE0)) /* RTC_porz */\
+	MUX_VAL(CONTROL_PADCONF_PMIC_POWER_EN, (IDIS | PU | MODE0)) /* PMIC_POWER_EN */\
+	MUX_VAL(CONTROL_PADCONF_EXT_WAKEUP, (IEN | PD | MODE0)) /* EXT_WAKEUP */\
+	MUX_VAL(CONTROL_PADCONF_RTC_KALDO_ENN, (IEN | OFF | MODE0)) /* ENZ_KALDO_1P8V */\
+	MUX_VAL(CONTROL_PADCONF_USB1_DRVVBUS, (IDIS | PD | MODE0)) /* USB1_DRVVBUS */\
+          ;
+#else
   MUX_VAL(CONTROL_PADCONF_MMC0_DAT3, (IEN | PU | MODE0 )) /* MMC0_DAT3 */\
   MUX_VAL(CONTROL_PADCONF_MMC0_DAT2, (IEN | PU | MODE0 )) /* MMC0_DAT2 */\
   MUX_VAL(CONTROL_PADCONF_MMC0_DAT1, (IEN | PU | MODE0 )) /* MMC0_DAT1 */\
@@ -838,7 +964,9 @@ MUX_VAL(CONTROL_PADCONF_LCD_VSYNC, (IDIS | OFF | MODE0 )) /* LCD_VSYNC */\
 MUX_VAL(CONTROL_PADCONF_LCD_HSYNC, (IDIS | OFF | MODE0 )) /* LCD_HSYNC */\
 MUX_VAL(CONTROL_PADCONF_LCD_PCLK, (IDIS | OFF | MODE0 )) /* LCD_PCLK */\
 MUX_VAL(CONTROL_PADCONF_LCD_AC_BIAS_EN, (IDIS | OFF | MODE0 )) /* LCD_AC_BIAS_EN */\
+MUX_VAL(CONTROL_PADCONF_USB0_DRVVBUS, (IDIS | PD | MODE0 )) /* USB0_DRVVBUS */\
 ;
+#endif
 }
 
 /*
@@ -917,7 +1045,7 @@ static void DDR2PhyInit(void)
 
 
 /* \brief This function initializes the DDR2
- * 
+ *
  * \param none
  *
  * \return none
@@ -970,8 +1098,8 @@ void DDR2Init(void)
                                                  DDR2_EMIF_SDRAM_REF_CTRL_SHDW_VAL2;
 
     HWREG(SOC_EMIF_0_REGS + EMIF_SDRAM_CONFIG)   = DDR2_EMIF_SDRAM_CONFIG;
-	
-    /* The CONTROL_SECURE_EMIF_SDRAM_CONFIG register exports SDRAM configuration 
+
+    /* The CONTROL_SECURE_EMIF_SDRAM_CONFIG register exports SDRAM configuration
        information to the EMIF */
     HWREG(SOC_CONTROL_REGS + CONTROL_SECURE_EMIF_SDRAM_CONFIG) = DDR2_EMIF_SDRAM_CONFIG;
 
@@ -979,7 +1107,7 @@ void DDR2Init(void)
 
 
 /* \brief This function initializes the EMIF
- * 
+ *
  * \param none
  *
  * \return none
@@ -1033,7 +1161,7 @@ static void L3L4ClockInit(void){
                                CM_PER_L3_INSTR_CLKCTRL_MODULEMODE) !=
                                    CM_PER_L3_INSTR_CLKCTRL_MODULEMODE_ENABLE);
 
-    HWREG(SOC_CM_PER_REGS + CM_PER_L3_CLKCTRL) =    
+    HWREG(SOC_CM_PER_REGS + CM_PER_L3_CLKCTRL) =
                              CM_PER_L3_CLKCTRL_MODULEMODE_ENABLE;//L3_interconnect
 
     while((HWREG(SOC_CM_PER_REGS + CM_PER_L3_CLKCTRL) &
@@ -1067,7 +1195,7 @@ static void L3L4ClockInit(void){
 
     while(!(HWREG(SOC_CM_PER_REGS + CM_PER_OCPWP_L3_CLKSTCTRL) &
            (CM_PER_OCPWP_L3_CLKSTCTRL_CLKACTIVITY_OCPWP_L3_GCLK |
-            CM_PER_OCPWP_L3_CLKSTCTRL_CLKACTIVITY_OCPWP_L4_GCLK))); 
+            CM_PER_OCPWP_L3_CLKSTCTRL_CLKACTIVITY_OCPWP_L4_GCLK)));
 
     while(!(HWREG(SOC_CM_PER_REGS + CM_PER_L4LS_CLKSTCTRL) &
            (CM_PER_L4LS_CLKSTCTRL_CLKACTIVITY_L4LS_GCLK |
@@ -1095,7 +1223,7 @@ void BlPlatformConfig(void)
 {
     /* Enable the control module */
     HWREG(SOC_CM_WKUP_REGS + CM_WKUP_CONTROL_CLKCTRL) =
-            CM_WKUP_CONTROL_CLKCTRL_MODULEMODE_ENABLE; 
+            CM_WKUP_CONTROL_CLKCTRL_MODULEMODE_ENABLE;
     PinMuxSetup();
     IntAINTCInit();
     IntMasterIRQEnable();
@@ -1110,29 +1238,39 @@ void BlPlatformConfig(void)
     PLLInit();
     L3L4ClockInit();
     /* EMIF Initialization */
-    EMIFInit(); 
+    EMIFInit();
     /* DDR Initialization */
     DDR2Init();
-    
-    EDMAInit();
-    UARTStdioInit();
-    uartInit(MODULE_ID_UART4, 38400, 8,UART_PARITY_NONE,
-            UART_FRAME_NUM_STB_1, UART_INT_RHR_CTI,UART_FCR_RX_TRIG_LVL_8,UART_FCR_RX_TRIG_LVL_8); //for keyboard 
 
-    SPIMasterInit(MODULE_ID_SPI0, 0, 12000000, 1, 1, 0,8);
-    
-    TimerTickConfigure(MODULE_ID_TIMER2);    
+    EDMAInit();
+    TimerTickConfigure(MODULE_ID_TIMER2);
     TimerTickStart();
+    usbMscInit();
+
+    UARTStdioInit();
+#ifdef YUANJI
+    GPMCInitForNOR();
+    USBIntConfigure(1);
+    TouchScreenInit();
+#else
+    uartInit(MODULE_ID_UART4, 38400, 8,UART_PARITY_NONE,
+            UART_FRAME_NUM_STB_1, UART_INT_RHR_CTI,UART_FCR_RX_TRIG_LVL_8,UART_FCR_RX_TRIG_LVL_8); //for keyboard
+    USBIntConfigure(0);
+#endif
+
+    //SPIMasterInit(MODULE_ID_SPI0, 0, 12000000, 1, 1, 0,8);
+    SPIMasterInit_poll(MODULE_ID_SPI0,0,12000000,0,0,0,8);
     LCDRasterInit();
     tsEnalbe();
-
-    usbMscInit(); 
-    USBIntConfigure(0);
-    MMCSDP_CtrlInfoInit(&mmcsdctr[0], MODULE_ID_MMCSD0, 24000000, MMCSD_BUSWIDTH_4BIT, 0,
+    MMCSDP_CtrlInfoInit(&mmcsdctr[0], MODULE_ID_MMCSD0, 48000000, MMCSD_BUSWIDTH_4BIT, 0,
                        &card, NULL,NULL, NULL);
     MMCSDP_CtrlInit(&mmcsdctr[0]);
     MMCSDP_CardInit(&mmcsdctr[0],MMCSD_CARD_MMC);
+    RTCInit();
 }
+
+
+
 
 
 

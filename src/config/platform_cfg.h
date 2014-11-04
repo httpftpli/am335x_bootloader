@@ -4,12 +4,56 @@
 #include "soc_AM335x.h"
 #include "module.h"
 
-//set witch usb instance use for udist : 0 or 1
+#ifdef YUANJI
+#define USB_INSTANCE_FOR_USBDISK   1
+#else
 #define USB_INSTANCE_FOR_USBDISK   0
+#endif
 //define USBDISK logic volume
 #define FatFS_Drive_Index          2
 //set if use use dma or pull
 #define USB_USE_CPPI41DMA          0
+
+
+
+
+//define peripheral to use
+
+
+#define  MODULE_USE_EDMA   0
+#define  MODULE_USE_ECAP   0
+#define  MODULE_USE_EPWM   0
+#define  MODULE_USE_GPIO   1
+#define  MODULE_USE_EQEP   0
+#define  MODULE_USE_DCAN   0
+#ifndef  YUANJI
+#define  MODULE_USE_ADCTSC  0
+#else
+#define  MODULE_USE_ADCTSC  1
+#endif
+#define  MODULE_USE_UART0   1
+#define  MODULE_USE_UART1   0
+#define  MODULE_USE_UART2   0
+#define  MODULE_USE_UART3   0
+#ifndef  YUANJI
+#define  MODULE_USE_UART4   1
+#else
+#define  MODULE_USE_UART4   0
+#endif
+#define  MODULE_USE_UART5   0
+#define  MODULE_USE_TIMER   1
+#ifndef  YUANJI
+#define  MODULE_USE_GPMC   0
+#else
+#define  MODULE_USE_GPMC   1
+#endif
+#define  MODULE_USE_I2C   1
+#define  MODULE_USE_SPI   1
+#define  MODULE_USE_3GPSW   0
+
+#define  USE_TASK_DELAYDO  0
+
+
 
 
 //bellow config interrupt priority
@@ -94,8 +138,18 @@ static const unsigned int CS_ADDRLINE_BIT[7] = {24,24,24,24,24,24,24};
 #define TFT_AT080TN52    0
 #define TFT_AT070TN92    1
 #define TFT_LSA40AT9001  2
+#define TFT_EJ080NA      4
 //select TFT panel
+#ifdef YUANJI
+#define TFT_PANEL    TFT_EJ080NA
+#else
 #define TFT_PANEL    TFT_AT070TN92
+#endif
+
+
+#ifdef YUANJI
+#define AM335X_ADC_TSC
+#endif
 
 // touch pad calibration torerance(UNIT pix)
 #define TS_CALIBRATION_X_TOLERANCE   10

@@ -36,7 +36,7 @@ TypeViolation=1
 UnspecRange=1
 ActionState=1
 [DebugChecksum]
-Checksum=89360153
+Checksum=1902291956
 [Exceptions]
 StopOnUncaught=_ 0
 StopOnThrow=_ 0
@@ -45,15 +45,28 @@ ShowArgs=0
 [Disassembly]
 MixedMode=1
 [struct_types]
-Fmt0=KEYTOUCHMSG-tscval	4	0
-Fmt1=mmcsdCardInfo-ocr	4	0
-Fmt2=mmcsdCmd-arg	4	0
+Fmt0=APPHEADER-magic	4	0
+Fmt1=APPSETCTION-descriptOffset	4	0
+Fmt2=APPSETCTION-imageCheck	4	0
+Fmt3=APPSETCTION-imageSize	4	0
+Fmt4=KEYTOUCHMSG-tscval	4	0
+Fmt5=RUNIMAGE-imageCheck	4	0
+Fmt6=RUNIMAGE-imageaddr	4	0
+Fmt7=mmcsdCardInfo-busWidthSupport	4	0
+Fmt8=mmcsdCardInfo-nBlks	4	0
+Fmt9=mmcsdCardInfo-ocr	4	0
+Fmt10=mmcsdCardInfo-size	4	0
+Fmt11=mmcsdCmd-arg	4	0
+Fmt12=tUSBInstanceObject-uiBaseAddr	4	0
 [array_types]
 Fmt0=char[256]	4	0
 Fmt1=char[512]	4	0
-Fmt2=unsigned int[4]	4	0
+Fmt2=unsigned char[16]	4	0
+Fmt3=unsigned char[256]	4	0
+Fmt4=unsigned int[4]	4	0
 [watch_formats]
 Fmt0={W}0:g_keycode	3	0
+Fmt1={W}1:timemark	3	0
 [Log file]
 LoggingEnabled=_ 0
 LogFile=_ ""
@@ -75,10 +88,24 @@ mode=0
 Bp0=_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\..\..\src\xo2_burn\XO2_ECA\XO2_api.c}.654.2" 0 0 1 "" 0 "" 0
 Bp1=_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\..\..\..\..}.103.1" 0 0 1 "" 0 "" 0
 Bp2=_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\..\..\lib\platform\pf_beep.c}.21.19" 0 0 1 "" 0 "" 0
-Bp3=_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\..\..\src\post.c}.13.4" 0 0 1 "" 0 "" 0
-Count=4
+Bp3=_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\..\..\lib\platform\pf_rtc.c}.165.5" 0 0 1 "" 0 "" 0
+Bp4=_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\..\..\lib\platform\pf_bootloader.c}.155.1" 0 0 1 "" 0 "" 0
+Bp5=_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\..\..\lib\platform\pf_bootloader.c}.155.1" 0 0 1 "" 0 "" 0
+Bp6=_ 1 "EMUL_CODE" "{$PROJ_DIR$\..\..\..\lib\platform\pf_bootloader.c}.139.5" 0 0 1 "" 0 "" 0
+Bp7=_ 1 "EMUL_CODE" "{$PROJ_DIR$\..\..\..\src\post.c}.24.7" 0 0 1 "" 0 "" 0
+Bp8=_ 1 "EMUL_CODE" "{$PROJ_DIR$\..\..\..\src\post.c}.32.7" 0 0 1 "" 0 "" 0
+Bp9=_ 1 "EMUL_CODE" "{$PROJ_DIR$\..\..\..\src\post.c}.13.4" 0 0 1 "" 0 "" 0
+Bp10=_ 1 "EMUL_CODE" "{$PROJ_DIR$\..\..\..\src\post.c}.43.9" 0 0 1 "" 0 "" 0
+Bp11=_ 1 "EMUL_CODE" "{$PROJ_DIR$\..\..\..\src\post.c}.48.10" 0 0 1 "" 0 "" 0
+Count=12
 [Aliases]
 A0=_ "E:\md335x_bootloader\lib\cpu\armv7a\ewarm\cp15.S" ""
 A1=_ "E:\md335x_bootloader\lib\cpu\armv7a\ewarm\init.S" ""
-Count=2
+A2=_ "E:\softwareProject\md335x_bootloader\lib\cpu\armv7a\ewarm\cp15.S" ""
+A3=_ "E:\softwareProject\md335x_bootloader\lib\cpu\armv7a\ewarm\cpu.S" ""
+A4=_ "E:\softwareProject\md335x_bootloader\lib\cpu\armv7a\ewarm\init.S" ""
+A5=_ "E:\softwareProject\md335x_bootloader\lib\cpu\ewarm\exceptionhandler.S" ""
+A6=_ "E:\softwareProject\md335x_bootloader\lib\fatfs\src\ff_ext.c" ""
+A7=_ "E:\softwareProject\md335x_bootloader\lib\utils\mem.c" ""
+Count=8
 SuppressDialog=0

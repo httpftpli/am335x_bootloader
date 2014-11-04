@@ -351,7 +351,9 @@
                     <F N="../lib/platform/include/pf_misc.h"/>
                     <F N="../lib/platform/include/pf_platform_cfg.h"/>
                     <F N="../lib/platform/include/pf_qep.h"/>
+                    <F N="../lib/platform/include/pf_rtc.h"/>
                     <F N="../lib/platform/include/pf_rx8025.h"/>
+                    <F N="../lib/platform/include/pf_spi.h"/>
                     <F N="../lib/platform/include/pf_timertick.h"/>
                     <F N="../lib/platform/include/pf_tsc.h"/>
                     <F N="../lib/platform/include/pf_uart.h"/>
@@ -458,7 +460,7 @@
                 </Folder>
                 <F N="../lib/utils/algorithm.c"/>
                 <F N="../lib/utils/cmdline.c"/>
-                <F N="../lib/utils/mem.c"/>
+                <F N="../lib/utils/memery.c"/>
                 <F N="../lib/utils/misc.c"/>
                 <F N="../lib/utils/uartStdio.c"/>
             </Folder>
@@ -472,6 +474,7 @@
                 <F N="../src/include/bl.h"/>
                 <F N="../src/include/bl_copy.h"/>
                 <F N="../src/include/bl_platform.h"/>
+                <F N="../src/include/cpld.h"/>
             </Folder>
             <Folder Name="xo2_burn">
                 <Folder Name="oc_i2c_port">
