@@ -5,7 +5,7 @@
 #include "bl_platform.h"
 #include "bl_copy.h"
 #include "string.h"
-#include "platform.h"
+#include "pf_platform.h"
 #include "pf_bootloader.h"
 
 extern void BootAbort(void);
@@ -48,7 +48,6 @@ int bootCopy() {
     } else {
         reval =  APP_COPY_ERROR;
     }
-
     return reval;
 }
 
@@ -60,7 +59,7 @@ BOOL isIDvailable() {
     mac[1] = ~HWREG(SOC_CONTROL_REGS + CONTROL_MAC_ID_HI(0));
     mac[2] = ~HWREG(SOC_CONTROL_REGS + CONTROL_MAC_ID_LO(1));
     mac[3] = ~HWREG(SOC_CONTROL_REGS + CONTROL_MAC_ID_HI(1));
-    MMCSDP_Read(mmcsdctr, buf, 641, 1);
+    MMCSDP_Read(mmcsdctr, buf, UID_SAVE_SECTOR, 1);
     if ((buf[0] != mac[0]) || (buf[1] != mac[1]) || (buf[2] != mac[2]) || (buf[3] != mac[3])) {
         return FALSE;
     }

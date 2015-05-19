@@ -128,8 +128,7 @@
     <CustomFolders>
         <Folder
             Name="Source Files"
-            Filters="*.c;*.C;*.cc;*.cpp;*.cp;*.cxx;*.c++;*.prg;*.pas;*.dpr;*.asm;*.s;*.bas;*.java;*.cs;*.sc;*.e;*.cob;*.html;*.rc;*.tcl;*.py;*.pl;*.d;*.m;*.mm">
-        </Folder>
+            Filters="*.c;*.C;*.cc;*.cpp;*.cp;*.cxx;*.c++;*.prg;*.pas;*.dpr;*.asm;*.s;*.bas;*.java;*.cs;*.sc;*.e;*.cob;*.html;*.rc;*.tcl;*.py;*.pl;*.d;*.m;*.mm"></Folder>
         <Folder
             Name="Header Files"
             Filters="*.h;*.H;*.hh;*.hpp;*.hxx;*.inc;*.sh;*.cpy;*.if"/>
@@ -141,8 +140,7 @@
             Filters="*.bmp"/>
         <Folder
             Name="Other Files"
-            Filters="">
-        </Folder>
+            Filters=""></Folder>
     </CustomFolders>
     <Files AutoFolders="DirectoryView">
         <Folder Name="../lib">
@@ -194,15 +192,14 @@
                     <F N="../lib/fatfs/src/ff.h"/>
                     <F N="../lib/fatfs/src/ff_ext.c"/>
                     <F N="../lib/fatfs/src/ff_ext.h"/>
-                    <F N="../lib/fatfs/src/ffconf.h"/>
                     <F N="../lib/fatfs/src/integer.h"/>
                 </Folder>
             </Folder>
             <Folder Name="gui">
                 <F N="../lib/gui/ascii_16.c"/>
                 <F N="../lib/gui/ascii_20.c"/>
+                <F N="../lib/gui/ascii_24_fix.c"/>
                 <F N="../lib/gui/font.c"/>
-                <F N="../lib/gui/font.h"/>
                 <F N="../lib/gui/GUI_draw.c"/>
                 <F N="../lib/gui/GUI_font.h"/>
                 <F N="../lib/gui/GUI_SIF_Prop.c"/>
@@ -349,6 +346,8 @@
                     <F N="../lib/platform/include/pf_lcd.h"/>
                     <F N="../lib/platform/include/pf_mainloop.h"/>
                     <F N="../lib/platform/include/pf_misc.h"/>
+                    <F N="../lib/platform/include/pf_mux.h"/>
+                    <F N="../lib/platform/include/pf_platform.h"/>
                     <F N="../lib/platform/include/pf_platform_cfg.h"/>
                     <F N="../lib/platform/include/pf_qep.h"/>
                     <F N="../lib/platform/include/pf_rtc.h"/>
@@ -358,7 +357,6 @@
                     <F N="../lib/platform/include/pf_tsc.h"/>
                     <F N="../lib/platform/include/pf_uart.h"/>
                     <F N="../lib/platform/include/pf_usbmsc.h"/>
-                    <F N="../lib/platform/include/platform.h"/>
                     <F N="../lib/platform/include/tft.h"/>
                 </Folder>
                 <F N="../lib/platform/am335x_clock_data.c"/>
@@ -466,6 +464,10 @@
             </Folder>
         </Folder>
         <Folder Name="../src">
+            <Folder Name="board_siwaji_yt">
+                <F N="../src/board_siwaji_yt/board.c"/>
+                <F N="../src/board_siwaji_yt/cfg.h"/>
+            </Folder>
             <Folder Name="config">
                 <F N="../src/config/ffconf.h"/>
                 <F N="../src/config/platform_cfg.h"/>
@@ -474,6 +476,7 @@
                 <F N="../src/include/bl.h"/>
                 <F N="../src/include/bl_copy.h"/>
                 <F N="../src/include/bl_platform.h"/>
+                <F N="../src/include/bl_post.h"/>
                 <F N="../src/include/cpld.h"/>
             </Folder>
             <Folder Name="xo2_burn">

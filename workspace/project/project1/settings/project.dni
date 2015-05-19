@@ -36,7 +36,7 @@ TypeViolation=1
 UnspecRange=1
 ActionState=1
 [DebugChecksum]
-Checksum=1902291956
+Checksum=1972141636
 [Exceptions]
 StopOnUncaught=_ 0
 StopOnThrow=_ 0
@@ -57,7 +57,8 @@ Fmt8=mmcsdCardInfo-nBlks	4	0
 Fmt9=mmcsdCardInfo-ocr	4	0
 Fmt10=mmcsdCardInfo-size	4	0
 Fmt11=mmcsdCmd-arg	4	0
-Fmt12=tUSBInstanceObject-uiBaseAddr	4	0
+Fmt12=struct __softtimer-tick	3	0
+Fmt13=tUSBInstanceObject-uiBaseAddr	4	0
 [array_types]
 Fmt0=char[256]	4	0
 Fmt1=char[512]	4	0
@@ -86,18 +87,14 @@ Exclusions=
 mode=0
 [Breakpoints2]
 Bp0=_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\..\..\src\xo2_burn\XO2_ECA\XO2_api.c}.654.2" 0 0 1 "" 0 "" 0
-Bp1=_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\..\..\..\..}.103.1" 0 0 1 "" 0 "" 0
+Bp1=_ 0 "EMUL_CODE" "{E:\work}.103.1" 0 0 1 "" 0 "" 0
 Bp2=_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\..\..\lib\platform\pf_beep.c}.21.19" 0 0 1 "" 0 "" 0
-Bp3=_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\..\..\lib\platform\pf_rtc.c}.165.5" 0 0 1 "" 0 "" 0
+Bp3=_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\..\..\lib\platform\pf_bootloader.c}.155.1" 0 0 1 "" 0 "" 0
 Bp4=_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\..\..\lib\platform\pf_bootloader.c}.155.1" 0 0 1 "" 0 "" 0
-Bp5=_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\..\..\lib\platform\pf_bootloader.c}.155.1" 0 0 1 "" 0 "" 0
-Bp6=_ 1 "EMUL_CODE" "{$PROJ_DIR$\..\..\..\lib\platform\pf_bootloader.c}.139.5" 0 0 1 "" 0 "" 0
-Bp7=_ 1 "EMUL_CODE" "{$PROJ_DIR$\..\..\..\src\post.c}.24.7" 0 0 1 "" 0 "" 0
-Bp8=_ 1 "EMUL_CODE" "{$PROJ_DIR$\..\..\..\src\post.c}.32.7" 0 0 1 "" 0 "" 0
-Bp9=_ 1 "EMUL_CODE" "{$PROJ_DIR$\..\..\..\src\post.c}.13.4" 0 0 1 "" 0 "" 0
-Bp10=_ 1 "EMUL_CODE" "{$PROJ_DIR$\..\..\..\src\post.c}.43.9" 0 0 1 "" 0 "" 0
-Bp11=_ 1 "EMUL_CODE" "{$PROJ_DIR$\..\..\..\src\post.c}.48.10" 0 0 1 "" 0 "" 0
-Count=12
+Bp5=_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\..\..\lib\cpu\clock.c}.615.4" 0 0 1 "" 0 "" 0
+Bp6=_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\..\..\lib\platform\pf_key_touchpad.c}.582.1" 0 0 1 "" 0 "" 0
+Bp7=_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\..\..\src\board_siwaji_yt\board.c}.1294.1" 0 0 1 "" 0 "" 0
+Count=8
 [Aliases]
 A0=_ "E:\md335x_bootloader\lib\cpu\armv7a\ewarm\cp15.S" ""
 A1=_ "E:\md335x_bootloader\lib\cpu\armv7a\ewarm\init.S" ""

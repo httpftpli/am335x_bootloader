@@ -2,19 +2,18 @@
 #include "bl_platform.h"
 #include "bl.h"
 #include "type.h"
-#include "platform.h"
+#include "pf_platform.h"
 #include "usblib.h"
 #include "usbhost.h"
 #include "pf_rtc.h"
 #include <time.h>
 #include "cpld.h"
 #include "pf_timertick.h"
+#include "bl_post.h"
 
 
 #define FORCEBOOT_WAITTIME  2000
 #define FORCEBOOT_FILENAME  "forboot.dat"
-#define UDISK_USBINDEX      0
-
 
 
 
@@ -22,30 +21,45 @@ unsigned int entryPoint = 0;
 unsigned int DspEntryPoint = 0;
 
 extern tUSBHCD g_sUSBHCD[];
-static BOOL forceEnterBoot() {
+
+
+#define BOOT_BOOT  0x01
+#define BOOT_POST  0x02
+#define BOOT_TS_CAL 0x04
+
+static uint32 getbootparam() {
     FIL file;
-    delay(350);
-    if ((g_sUSBHCD[UDISK_USBINDEX].ulUSBHIntEvents & 0x02) == 0) {
-        return false;
-    } else {
-        unsigned int timemark = TimerTickGet();
-        while (1) {
-            usbMscProcess();
-            if ((TimerTickGet() - timemark) > FORCEBOOT_WAITTIME) {
-                return false;
+    unsigned int timemark;
+    uint32 val, br;
+    for (timemark = TimerTickGet();;) {
+        if ((g_sUSBHCD[USB_INSTANCE_FOR_USBDISK].ulUSBHIntEvents & 0x02) != 0) {
+            break;
+        }
+        if (TimerTickGet() >= timemark + 800) return 0;
+    }
+
+    timemark = TimerTickGet();
+    while (1) {
+        usbMscProcess();
+        if ((TimerTickGet() - timemark) > FORCEBOOT_WAITTIME) {
+            return 0;
+        }
+        if (g_usbMscState == USBMSC_DEVICE_READY) {
+            FRESULT fret = f_open(&file, "2:/"FORCEBOOT_FILENAME, FA_READ);
+            if (fret != FR_OK) {
+                return 0;
             }
-            if (g_usbMscState == USBMSC_DEVICE_READY) {
-                FRESULT fret = f_open(&file, "2:/"FORCEBOOT_FILENAME, FA_READ);
-                if (fret == FR_OK) {
-                    f_close(&file);
-                    return true;
-                } else {
-                    return false;
-                }
+            fret = f_read(&file, &val, sizeof val,&br);
+            if ((fret != FR_OK) || (br != sizeof val)) {
+                f_close(&file);
+                return BOOT_BOOT;
             }
+            f_close(&file);
+            return  val | BOOT_BOOT;
         }
     }
 }
+
 
 
 
@@ -63,42 +77,31 @@ extern void shortcuthandler(int keycode);
 
 extern mmcsdCtrlInfo mmcsdctr[2];
 
-#ifdef YUANJI
-void __lcd_back_ligth_ctr(unsigned char lightpwm)
-{
-	LCD_REG->LCD_PWM = lightpwm;
-}
-#else
-void __lcd_back_ligth_ctr(unsigned char lightpwm) {
-    unsigned char buf[8] = { 0xbb, 0x07, 0x00, 0x00, 0x00, 0x00, 0x00, 0x0d };
-    buf[2] = lightpwm;
-    while (!UARTSendNoBlock(UART_LCDBACKLIGHT_MODULE, buf, sizeof buf));
-}
-#endif
 
 int main(void) {
     BlPlatformConfig();
     UARTPuts("Minde bootloader \n\r ", -1);
     int val = 0;
+    uint32 bootparam = 0;
     isIDok = isIDvailable();
-    if(!isIDok){
-       UARTPuts("ID error...\r\n\n", -1);
-       goto BOOTLOADER;
+    if (!isIDok) {
+        UARTPuts("ID error...\r\n\n", -1);
+        goto BOOTLOADER;
     }
 
     //goto BOOTLOADER;
-
-    if (forceEnterBoot()) {
+    bootparam = getbootparam();
+    if (bootparam & BOOT_BOOT) {
         goto BOOTLOADER;
     }
 
 
-#ifndef INNERBOOT
+//#ifndef INNERBOOT
     val = bootCopy();
     if (0 == val) {
         jumptoApp();
     }
-#endif
+//#endif
 
     if (APP_COPY_ERROR == val) {
         UARTPuts("Application copy error...\r\n\n", -1);
@@ -117,13 +120,16 @@ int main(void) {
         goto BOOTLOADER;
     }
 
-    BOOTLOADER:
+BOOTLOADER:
     registKeyHandler(shortcuthandler);
     //xo2BurnInit();
     LCDRasterStart();
     LCDBackLightON(255);
-    post();
-    TouchCalibrate(0);
+    if (bootparam & BOOT_POST) {
+        post();
+    }
+    TouchCalibrate(!!(bootparam & BOOT_TS_CAL));
+    //TouchCalibrate(0);
     hmiInit();
     f_mount(0, &inandfs);
     while (1) {

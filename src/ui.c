@@ -5,9 +5,13 @@
 #include "hw_types.h"
 #include "bl.h"
 #include "bl_copy.h"
-#include "platform.h"
+#include "pf_platform.h"
+#include "pf_bootloader.h"
 #include "time.h"
 #include "misc.h"
+#include "bl_platform.h"
+#include <time.h>
+#include "pf_lcd.h"
 
 
 #define MAX_BUTTON_CAPTION   30
@@ -15,17 +19,17 @@
 
 #define BTR_VERSION  "V1.1"
 
-#ifdef YUANJI
+#if  defined(LCD_RES_800_600)
 #define PAGELABEL_H  560
 #define STATLABEL_Y  580
 #define STATLABELTIME_Y 580
 #define FRAME_H    482
 #define BUTTON_Y   150
-#define BUTTON_I 60
+#define BUTTON_I   60
 #define BUTTON2_Y  540
 #define INAND_UDISK_BUTTON_COUNT  11
 
-#else
+#elif defined(LCD_RES_800_480)
 #define PAGELABEL_H  440
 #define STATLABEL_Y  460
 #define STATLABELTIME_Y 460
@@ -34,6 +38,8 @@
 #define BUTTON_I 50
 #define BUTTON2_Y  420
 #define INAND_UDISK_BUTTON_COUNT  9
+#else
+#error "must define lcd res"
 #endif
 
 
@@ -43,11 +49,8 @@ extern BOOL idiskFdisk();
 extern BOOL idiskFormat();
 
 
-typedef struct __fileinfo {
-    char filename[13];
-} MYFILEINFO;
 
-MYFILEINFO udiskfileinfolist[300], idiskfileinfolist[20];
+MYFILEINFO udiskfileinfolist[200], idiskfileinfolist[20];
 unsigned int udiskFileCount, idiskFileCount;
 unsigned int ufileindex = -1, ufilegroupindex = 0;
 unsigned int ifileindex = -1, ifilegroupindex = 0;
@@ -56,23 +59,6 @@ unsigned int ufilestatchagned = 0, ifilestatchagned = 1;
 
 
 typedef void BUTTON_CLICK_HANDLER(void *button, unsigned int stat);
-
-typedef struct __button {
-    unsigned short x,y,width,height;
-    unsigned char pushed:1;
-    unsigned char statChanged:1;
-    unsigned char checkable:1;
-    unsigned char haveFrame:1;
-    unsigned char enable:1;
-    unsigned char show:1;
-    unsigned char colorIndex:2;
-    unsigned char shortkey:8;
-    unsigned short tabId;
-    unsigned int   group;
-    void *parent;
-    TEXTCHAR *caption;
-    BUTTON_CLICK_HANDLER *handler;
-}BUTTON;
 
 typedef struct {
     unsigned short x,y,width,height;
@@ -89,14 +75,25 @@ typedef struct {
     void *parent;
     TEXTCHAR *caption;
     BUTTON_CLICK_HANDLER *handler;
-    void (*paint)(void *button);
-}SWITCH_BUTTON;
+}BUTTON;
 
 
-void switchbutton_paint(void *button){
-    SWITCH_BUTTON *b = (SWITCH_BUTTON *)button;
+typedef struct {
+    unsigned short x,y,width,height;
+    bool val;
+    unsigned char statChanged:1;
+    unsigned char enable:1;
+    unsigned char show:1;
+    unsigned char colorIndex:2;
+    unsigned char shortkey:8;
+    unsigned short tabId;
+    unsigned int   group;
+    void *parent;
+    TEXTCHAR *oncaption[10];
+    TEXTCHAR *offcaption[10];
+    BUTTON_CLICK_HANDLER *handler;
+}SWITCHBUTTON;
 
-}
 
 typedef struct __label {
     unsigned short x,y,width,height;
@@ -197,7 +194,7 @@ BUTTON pagebuttons[2][2] = {
 
 
 BUTTON tscTestButton = {
-    .x = 70, .y = BUTTON2_Y, .width = 80, .height = 35, .show = 1, .enable = 1, .haveFrame=1, .caption = "clear",.shortkey = KEY_NO,.statChanged=1
+    .x = 70, .y = BUTTON2_Y, .width = 80, .height = 35, .show = 1, .enable = 1, .haveFrame = 1, .caption = "clear", .shortkey = KEY_NO, .statChanged = 1
 };
 
 
@@ -360,7 +357,7 @@ void buttonRedraw(BUTTON *button, unsigned int force) {
         char shortcut[20];
         const char *shortkeycap = key2keycaption(button->shortkey);
         unsigned int shortcutwidth = 0;
-        if (NULL!=shortkeycap) {
+        if (NULL != shortkeycap) {
             sprintf(shortcut, "%s%s%s", "[", key2keycaption(button->shortkey), "]");
             drawStringAlignEx(shortcut, ALIGN_RIGHT_MIDDLE, button->x, button->y, button->width, button->height, &GUI_Fontascii_16, colorframe, C_TRANSPARENT);
             shortcutwidth = getStringMetricWidth(shortcut);
@@ -414,7 +411,7 @@ void labelSetCaption(LABEL *label, TEXTCHAR *caption) {
 
 void labelRedraw(LABEL *label, unsigned int force);
 void statBarPrint(unsigned int error, TEXTCHAR *buf) {
-    static TEXTCHAR caption[100];
+    static TEXTCHAR caption[120];
     if (NULL == buf) {
         statLabel1.caption = NULL;
     } else {
@@ -429,22 +426,10 @@ void statBarPrint(unsigned int error, TEXTCHAR *buf) {
 void labelCapRedraw(LABEL *label);
 void statLabelShowTime() {
     static char buf[30];
-    /*static time_t oldtime = 0;
-    time_t nowtime = time(NULL);
-    if(nowtime!=oldtime){
-        oldtime  = nowtime;
-        struct tm *now = localtime(&nowtime);
-        sprintf(buf, "%04d-%02d-%02d %02d:%02d:%02d", now->tm_year, now->tm_mon + 1,
+    everydiffdo(time_t, t, time(NULL)) {
+        struct tm *now = gmtime(&t);
+        sprintf(buf, "%04d-%02d-%02d %02d:%02d:%02d", now->tm_year + 1900, now->tm_mon + 1,
                 now->tm_mday, now->tm_hour, now->tm_min, now->tm_sec);
-        //labelSetCaption(&statLabelTime,buf);
-        statLabelTime.caption = buf;
-        labelCapRedraw(&statLabelTime);
-    }*/
-    everydiffdo(time_t,t,time(NULL)){
-        struct tm *now = localtime(&t);
-        sprintf(buf, "%04d-%02d-%02d %02d:%02d:%02d", now->tm_year, now->tm_mon + 1,
-                now->tm_mday, now->tm_hour, now->tm_min, now->tm_sec);
-        //labelSetCaption(&statLabelTime,buf);
         statLabelTime.caption = buf;
         labelCapRedraw(&statLabelTime);
     }
@@ -525,14 +510,14 @@ static unsigned int touch2buttonindex() {
 
 void (*touchedhandler)(POINT_16 *point) = NULL;
 
-void regestTouchedHandler(void (*handler)(POINT_16 *point)){
+void regestTouchedHandler(void (*handler)(POINT_16 *point)) {
     touchedhandler = handler;
 }
 
-void touchedHandler(POINT_16 *point){
-    if ((point->x>tsTestLabel1.x )&& (point->x<(tsTestLabel1.x+tsTestLabel1.width))&&
-        (point->y>tsTestLabel1.y )&& (point->y<(tsTestLabel1.y+tsTestLabel1.height))){
-        drawPix(point->x,point->y,C_WHITE);
+void touchedHandler(POINT_16 *point) {
+    if ((point->x > tsTestLabel1.x) && (point->x < (tsTestLabel1.x + tsTestLabel1.width)) &&
+        (point->y > tsTestLabel1.y) && (point->y < (tsTestLabel1.y + tsTestLabel1.height))) {
+        drawPix(point->x, point->y, C_WHITE);
     }
 }
 
@@ -548,7 +533,7 @@ void guiExec(void) {
     switch (stat) {
     case STAT_NO:
         if (atomicTestClear(&g_touched)) {
-            if (touchedHandler != NULL) {
+            if (NULL != touchedhandler) {
                 POINT_16 point;
                 point.x = g_ts.x;
                 point.y = g_ts.y;
@@ -620,12 +605,12 @@ void hmishow() {
     for (int i = 0; i < NARRAY(frames); i++) {
         labelShow(frames + i);
     }
-    for(int i=0;i<NARRAY(burnpagebuttons);i++){
-      buttonShow(&burnpagebuttons[i]);
+    for (int i = 0; i < NARRAY(burnpagebuttons); i++) {
+        buttonShow(&burnpagebuttons[i]);
     }
 
-    for(int i=0;i<NARRAY(pagebuttons);i++){
-        for(int j=0;j<NARRAY(pagebuttons[0]);j++){
+    for (int i = 0; i < NARRAY(pagebuttons); i++) {
+        for (int j = 0; j < NARRAY(pagebuttons[0]); j++) {
             buttonShow(&pagebuttons[i][j]);
         }
     }
@@ -649,6 +634,7 @@ static void idiskbuttonhandler(void *button, unsigned int stat) {
     BUTTON *b = (BUTTON *)button;
     BUTTON **grop;
     unsigned int index;
+    char strbuf[100];
     if (stat == 1) {
         grop = (BUTTON **)(b->group);
         for (int i = 0;; i++) {
@@ -669,11 +655,18 @@ static void idiskbuttonhandler(void *button, unsigned int stat) {
         ifileindex = -1;
     }
     if (ifileindex != -1) {
-        statBarPrint(0, idiskfileinfolist[ifilegroupindex * INAND_UDISK_BUTTON_COUNT + ifileindex].filename);
+        time_t time = idiskfileinfolist[ifilegroupindex * INAND_UDISK_BUTTON_COUNT + ifileindex].modtime;
+        struct tm *tm_time = gmtime(&time);
+        sprintf(strbuf, "%s     %04d-%02d-%02d %02d:%02d:%02d",
+                idiskfileinfolist[ifilegroupindex * INAND_UDISK_BUTTON_COUNT + ifileindex].filename,
+                tm_time->tm_year + 1900, tm_time->tm_mon + 1,
+                tm_time->tm_mday, tm_time->tm_hour, tm_time->tm_min, tm_time->tm_sec);
+        statBarPrint(0, strbuf);
     } else {
         statBarPrint(0, NULL);
     }
 }
+
 
 
 extern FRESULT scan_files(TCHAR *path, MYFILEINFO *fileinfolist, unsigned int *nfiles);
@@ -789,8 +782,15 @@ static void udiskbuttonhandler(void *button, unsigned int stat) {
     } else {
         ufileindex = -1;
     }
+    char strbuf[120];
     if (ufileindex != -1) {
-        statBarPrint(0, udiskfileinfolist[ufilegroupindex * INAND_UDISK_BUTTON_COUNT + ufileindex].filename);
+        time_t time = udiskfileinfolist[ufilegroupindex * INAND_UDISK_BUTTON_COUNT + ufileindex].modtime;
+        struct tm *tm_time = gmtime(&time);
+        sprintf(strbuf, "%s     %04d-%02d-%02d %02d:%02d:%02d",
+                udiskfileinfolist[ufilegroupindex * INAND_UDISK_BUTTON_COUNT + ufileindex].filename,
+                tm_time->tm_year + 1900, tm_time->tm_mon + 1,
+                tm_time->tm_mday, tm_time->tm_hour, tm_time->tm_min, tm_time->tm_sec);
+        statBarPrint(0, strbuf);
     } else {
         statBarPrint(0, NULL);
     }
@@ -807,7 +807,7 @@ static BOOL burnboot_ui(char *path) {
     buf[1] = ~HWREG(SOC_CONTROL_REGS + CONTROL_MAC_ID_HI(0));
     buf[2] = ~HWREG(SOC_CONTROL_REGS + CONTROL_MAC_ID_LO(1));
     buf[3] = ~HWREG(SOC_CONTROL_REGS + CONTROL_MAC_ID_HI(1));
-    ret = MMCSDP_Write(mmcsdctr, buf, 641, 1);
+    ret = MMCSDP_Write(mmcsdctr, buf, UID_SAVE_SECTOR, 1);
     if (ret == FALSE) {
         goto ERROR;
     }
@@ -823,8 +823,8 @@ ERROR:
 }
 
 
-static void  tscClearHandler(void *button,unsigned int stat){
-     labelRedraw(&tsTestLabel1,1);
+static void  tscClearHandler(void *button, unsigned int stat) {
+    labelRedraw(&tsTestLabel1, 1);
 }
 
 static void burnboothandler(void *button, unsigned int stat) {
@@ -973,7 +973,9 @@ static void runapphandler(void *button, unsigned int stat) {
     if (0 == ret) {
         LCDBackLightOFF();
         LCDRasterEnd();
+        //LCDReset();
         registKeyHandler(NULL);
+        //EDMA3Deinit(SOC_EDMA30CC_0_REGS,0);
         jumptoApp();
     }
 }
@@ -1014,13 +1016,13 @@ void hmiInit() {
     buttonRegistHandler(burnpagebuttons + 6, burnautohandler);
     buttonRegistHandler(&pagebuttons[1][0], ufileuphandler);
     buttonRegistHandler(&pagebuttons[1][1], ufiledownhandler);
-    buttonRegistHandler(&tscTestButton,tscClearHandler);
+    buttonRegistHandler(&tscTestButton, tscClearHandler);
 
     registLabel(&statLabel1);
     registLabel(&statLabelTime);
     registLabel(&frametitles[0]);
 
-    registButton(&tscTestButton,NULL);
+    registButton(&tscTestButton, NULL);
     for (int i = 0; i < NARRAY(burnpagebuttons); i++) {
         burnpagebuttons[i].haveFrame = 1;
         registButton(burnpagebuttons + i, NULL);

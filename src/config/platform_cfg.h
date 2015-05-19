@@ -1,14 +1,17 @@
 #ifndef __PLATFORM_CFG_H___
 #define __PLATFORM_CFG_H___
 
+#if defined(YUANJI)
+#include "board_siwaji_yt\cfg.h"
+#elif defined(WAJI)
+#include "board_waji_m\cfg.h"
+#elif defined(YITI)
+#include "board_siwaji_yt\cfg.h"
+#endif
+
 #include "soc_AM335x.h"
 #include "module.h"
 
-#ifdef YUANJI
-#define USB_INSTANCE_FOR_USBDISK   1
-#else
-#define USB_INSTANCE_FOR_USBDISK   0
-#endif
 //define USBDISK logic volume
 #define FatFS_Drive_Index          2
 //set if use use dma or pull
@@ -26,27 +29,12 @@
 #define  MODULE_USE_GPIO   1
 #define  MODULE_USE_EQEP   0
 #define  MODULE_USE_DCAN   0
-#ifndef  YUANJI
-#define  MODULE_USE_ADCTSC  0
-#else
-#define  MODULE_USE_ADCTSC  1
-#endif
 #define  MODULE_USE_UART0   1
 #define  MODULE_USE_UART1   0
 #define  MODULE_USE_UART2   0
 #define  MODULE_USE_UART3   0
-#ifndef  YUANJI
-#define  MODULE_USE_UART4   1
-#else
-#define  MODULE_USE_UART4   0
-#endif
 #define  MODULE_USE_UART5   0
 #define  MODULE_USE_TIMER   1
-#ifndef  YUANJI
-#define  MODULE_USE_GPMC   0
-#else
-#define  MODULE_USE_GPMC   1
-#endif
 #define  MODULE_USE_I2C   1
 #define  MODULE_USE_SPI   1
 #define  MODULE_USE_3GPSW   0
@@ -139,17 +127,7 @@ static const unsigned int CS_ADDRLINE_BIT[7] = {24,24,24,24,24,24,24};
 #define TFT_AT070TN92    1
 #define TFT_LSA40AT9001  2
 #define TFT_EJ080NA      4
-//select TFT panel
-#ifdef YUANJI
-#define TFT_PANEL    TFT_EJ080NA
-#else
-#define TFT_PANEL    TFT_AT070TN92
-#endif
 
-
-#ifdef YUANJI
-#define AM335X_ADC_TSC
-#endif
 
 // touch pad calibration torerance(UNIT pix)
 #define TS_CALIBRATION_X_TOLERANCE   10
@@ -164,6 +142,7 @@ static const unsigned int CS_ADDRLINE_BIT[7] = {24,24,24,24,24,24,24};
 
 #define ASCII_FONT16_IN_SOURCE     1
 #define ASCII_FONT20_IN_SOURCE     0
+#define ASCII_FIX_FONT24_IN_SOURCE  0
 
 
 

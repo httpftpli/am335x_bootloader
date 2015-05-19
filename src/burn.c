@@ -2,14 +2,11 @@
 #include "bl_copy.h"
 #include "stdio.h"
 #include "bl.h"
-#include "platform.h"
+#include "pf_platform.h"
 #include "pf_eeprom.h"
 #include "pf_bootloader.h"
+#include <time.h>
 
-
-typedef struct __fileinfo {
-    char filename[13];
-} MYFILEINFO;
 
 
 FRESULT scan_files(TCHAR *path, MYFILEINFO *fileinfolist, unsigned int *nfiles) {
@@ -34,6 +31,17 @@ FRESULT scan_files(TCHAR *path, MYFILEINFO *fileinfolist, unsigned int *nfiles) 
         }
         if (fno.fattrib & AM_DIR) continue;
         memcpy(fileinfolist[i].filename, fno.fname, sizeof(fno.fname));
+        unsigned short day = fno.fdate;
+        unsigned short time = fno.ftime;
+        struct tm tm_time;
+        tm_time.tm_sec = (time & 0x1f)*2 ;
+        tm_time.tm_min = (time & 0x3f<<5)>>5;
+        tm_time.tm_hour = (time & 0x1f<<11)>>11;
+        tm_time.tm_mday = day & 0x1f;
+        tm_time.tm_mon = (day & 0x0f<<5)>>5;
+        tm_time.tm_year = ((day & 0x7f<<9)>>9)+80;
+        tm_time.tm_isdst = 0;
+        fileinfolist[i].modtime = mktime(&tm_time);
         i++;
     }
     *nfiles = i;
@@ -46,7 +54,7 @@ BOOL idiskFormat() {
     int r;
     DWORD plist[] = { FIRST_PARTITION_SIZE, -1UL, 0, 0 };  /* Divide drive into two partitions */
     BYTE work[_MAX_SS];
-    unsigned int beginLBA = FS_BEGIN_SECTOR;  //64M BYTE BEGIN
+    unsigned int beginLBA = FS_BEGIN_SECTOR;
     r =  f_fdiskEx(0, beginLBA, plist, work);  /* Divide physical drive 0 */
     if (FR_OK != r) {
         return FALSE;
@@ -61,7 +69,7 @@ BOOL idiskFormat() {
 
 extern void statBarPrint(unsigned int error, TEXTCHAR *buf);
 BURN_RET burnAPP(TCHAR *path) {
-    unsigned char *buf = (unsigned char *)(0x80000000+1024*3);
+    unsigned char *buf = (unsigned char *)(0x80000000 + 1024 * 3);
     unsigned char *buftemp = buf;
     unsigned int rdlen;
     FIL file;
@@ -76,7 +84,7 @@ BURN_RET burnAPP(TCHAR *path) {
         return ret;
     }
     filesize = file.fsize;
-    if (filesize > APP_BAK_MAX_SIZE*512 || filesize <= 1024 || filesize%512 != 16) {
+    if (filesize > APP_BAK_MAX_SIZE * 512 || filesize <= 1024 || filesize % 512 != 16) {
         ret = BURN_FILE_ERROR;
         goto ERROR;
     }
@@ -101,21 +109,21 @@ BURN_RET burnAPP(TCHAR *path) {
     MD5_CTX context;
     unsigned char  digest[16];
     MD5Init(&context);
-    MD5Update(&context,buf,filesize-16);
-    MD5Final(&context,digest);
-    if (memcmp(digest,buf+filesize-16,16)!=0) {
+    MD5Update(&context, buf, filesize - 16);
+    MD5Final(&context, digest);
+    if (memcmp(digest, buf + filesize - 16, 16) != 0) {
         ret = BURN_FILE_ERROR;
         goto ERROR;
     }
     statBarPrint(0, "burning,please wait");
-    ret = burnAppFormBuf(buf,filesize-16);
-    if (ret!=BURN_OK) {
+    ret = burnAppFormBuf(buf, filesize - 16);
+    if (ret != BURN_OK) {
         goto ERROR;
     }
-    if (burnRunAPP((void *)0x8000000,1024*3)){
+    if (burnRunAPP((void *)0x8000000, 1024 * 3)) {
         statBarPrint(0, "success");
     }
-ERROR:
+    ERROR:
     f_close(&file);
     return ret;
 }
@@ -163,7 +171,7 @@ BOOL f_copy_disp(const TCHAR *scrpath, const TCHAR *despath) {
             statBarPrint(0, disbuf);
         }
     }
-ERROR:
+    ERROR:
     f_close(&scrfile);
     f_close(&desfile);
     return res;
@@ -208,7 +216,7 @@ BOOL burnBootloader(const TCHAR *path) {
     }
 
     long long flashid;
-    spiFlashReadId(&flashid,sizeof flashid);
+    spiFlashReadId(&flashid, sizeof flashid);
     if ((flashid == 0) || (flashid == -1UL)) goto FINISH;
 
     statBarPrint(0, "found dataflash chip ,burn to dataflash");
@@ -253,9 +261,9 @@ BOOL burnBootloader(const TCHAR *path) {
         }
     }
 
-FINISH:  f_close(&file);
+    FINISH:  f_close(&file);
     return TRUE;
-ERROR:
+    ERROR:
     f_close(&file);
     return FALSE;
 }

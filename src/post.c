@@ -1,9 +1,7 @@
-#include "platform.h"
+#include "pf_platform.h"
+#include "pf_bootloader.h"
 #include "string.h"
 #include <stdio.h>
-
-
-#define INAND_TEST_SECTOR   768
 
 
 
@@ -11,7 +9,7 @@ void post(void){
    char dispbuf[100];
    unsigned char buf[512];
    drawRectEx(0,0,lcdCtrl.panel->width,lcdCtrl.panel->height,C_BLACK);
-   drawStringEx("power on self test (post) begin",10,10,FONT_ASCII_16,C_WHITE,C_BLACK);
+   drawStringEx("power on self test (post) begin,touch screen to skip",10,10,FONT_ASCII_16,C_WHITE,C_BLACK);
 
 
    drawStringEx("nand flash test",30,30,FONT_ASCII_16,C_WHITE,C_BLACK);
@@ -36,6 +34,7 @@ void post(void){
    //memery check
    drawStringEx("scan ddr memery",30,50,FONT_ASCII_16,C_WHITE,C_BLACK);
    char *ddr = (char *)0x80000000;
+   atomicClear(&g_touched);
    for (int i=0;i<17*1024;i++) {
       memset32(ddr+i*4096,0x55555555,1024);
       if (!memis_32(ddr+i*4096,0x55555555,1024)){
@@ -52,6 +51,9 @@ void post(void){
             drawStringAlignEx(dispbuf,ALIGN_RIGHT_MIDDLE,250,50,80,20,FONT_ASCII_16,C_WHITE,C_BLACK);
          }
       }
+      if(atomicTestClear(&g_touched) || atomicTestClear(&g_keyPushed)){
+         break;
+      }
    }
    //lcd check
 
@@ -61,12 +63,11 @@ void post(void){
        drawVLineEx(i,LCD_YSize/4*2,LCD_YSize/4,RGB(0,0,0xff*i/LCD_XSize));
        drawVLineEx(i,LCD_YSize/4*3,LCD_YSize/4,RGB(0xff*i/LCD_XSize,0xff*i/LCD_XSize,0xff*i/LCD_XSize));
    }
-   /*unsigned int timerindex = StartTimer(5000);
-   while((atomicTestClear(g_touched)||atomicTestClear(g_keyPushed)
-         ||IsTimerElapsed(timerindex))==0);*/
+   unsigned int timerindex = StartTimer(10000);
+   atomicClear(&g_touched);
+   while(!atomicTestClear(&g_touched) && !atomicTestClear(&g_keyPushed)
+         && !IsTimerElapsed(timerindex));
 
-
-   delay(5000);
 }
 
 

@@ -6,12 +6,13 @@
 
 
 /******************************************************************************
-**                        Macro Definitions 
+**                        Macro Definitions
 *******************************************************************************/
 #ifndef __BL_H__
 #define __BL_H__
 
 #include "pf_bootloader.h"
+#include <time.h>
 
 
 /******************************************************************************
@@ -25,6 +26,15 @@ extern unsigned int DspEntryPoint;
 /******************************************************************************
 **                    Global Function Declarations
 *******************************************************************************/
+
+
+
+
+typedef struct __fileinfo {
+    char filename[13];
+    time_t modtime;
+} MYFILEINFO;
+
 
 extern void BootAbort(void);
 extern void Entry (void);
