@@ -339,6 +339,7 @@
                     <F N="../lib/platform/include/pf_ecap.h"/>
                     <F N="../lib/platform/include/pf_edma.h"/>
                     <F N="../lib/platform/include/pf_eeprom.h"/>
+                    <F N="../lib/platform/include/pf_gpio.h"/>
                     <F N="../lib/platform/include/pf_hs_mmcsd.h"/>
                     <F N="../lib/platform/include/pf_hsi2c.h"/>
                     <F N="../lib/platform/include/pf_int.h"/>
@@ -349,6 +350,7 @@
                     <F N="../lib/platform/include/pf_mux.h"/>
                     <F N="../lib/platform/include/pf_platform.h"/>
                     <F N="../lib/platform/include/pf_platform_cfg.h"/>
+                    <F N="../lib/platform/include/pf_pwmss.h"/>
                     <F N="../lib/platform/include/pf_qep.h"/>
                     <F N="../lib/platform/include/pf_rtc.h"/>
                     <F N="../lib/platform/include/pf_rx8025.h"/>

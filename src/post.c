@@ -8,7 +8,7 @@
 void post(void){
    char dispbuf[100];
    unsigned char buf[512];
-   drawRectEx(0,0,lcdCtrl.panel->width,lcdCtrl.panel->height,C_BLACK);
+   drawRectFillEx(0,0,lcdCtrl.panel->width,lcdCtrl.panel->height,C_BLACK);
    drawStringEx("power on self test (post) begin,touch screen to skip",10,10,FONT_ASCII_16,C_WHITE,C_BLACK);
 
 

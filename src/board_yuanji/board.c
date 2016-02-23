@@ -13,28 +13,21 @@
 #include "bl.h"
 #include "gpmc.h"
 #include "bl_copy.h"
-#include "pf_platform_cfg.h"
 #include "bl_platform.h"
 #include "uartStdio.h"
 #include "watchdog.h"
 #include "hsi2c.h"
 #include "gpio_v2.h"
-#include "platform.h"
+#include "pf_mux.h"
+#include "pf_platform.h"
 #include "hw_tps65217.h"
 #include "uartstdio.h"
 #include "soc_AM335X.h"
-#include "pf_hsi2c.h"
-#include "pf_usbmsc.h"
-#include "pf_timertick.h"
-#include "pf_mux.h"
 #include "interrupt.h"
-#include "pf_int.h"
-#include "pf_uart.h"
-#include "pf_lcd.h"
 #include "mmcsd_proto.h"
-#include "pf_tsc.h"
 #include "module.h"
 #include "mmath.h"
+#include "cpld.h"
 
 
 /******************************************************************************
@@ -709,9 +702,9 @@ void ConfigVddOpVoltage(void)
     unsigned char vol_sel = DCDC_VOLT_SEL_1100MV;
 #if (OPP == OPP_SR_TURBO)
     vol_sel = DCDC_VOLT_SEL_1275MV;
-#elif (OPP == OPP120)
+#elif (OPP == OPP_120)
     vol_sel = DCDC_VOLT_SEL_1200MV;
-#elif (OPP == OPP100)
+#elif (OPP == OPP_100)
     vol_sel = DCDC_VOLT_SEL_1100MV;
 #endif
     /* Set DCDC2 (MPU) voltage to 1.275V */
@@ -862,6 +855,10 @@ MUX_VAL(CONTROL_PADCONF_GPMC_AD0, (IEN | PD | MODE0)) /* gpmc_ad0 */\
 	MUX_VAL(CONTROL_PADCONF_MMC0_DAT0, (IEN | PU | MODE0)) /* mmc0_dat0 */\
 	MUX_VAL(CONTROL_PADCONF_MMC0_CLK, (IEN | PU | MODE0)) /* mmc0_clk */\
 	MUX_VAL(CONTROL_PADCONF_MMC0_CMD, (IEN | PU | MODE0)) /* mmc0_cmd */\
+        MUX_VAL(CONTROL_PADCONF_SPI0_SCLK, (IEN | OFF | MODE0 )) /* SPI0_SCLK */\
+        MUX_VAL(CONTROL_PADCONF_SPI0_D0, (IEN | OFF | MODE0 )) /* SPI0_D0 */\
+        MUX_VAL(CONTROL_PADCONF_SPI0_D1, (IEN | OFF | MODE0 )) /* SPI0_D1 */\
+        MUX_VAL(CONTROL_PADCONF_SPI0_CS0, (IEN | PU | MODE0 )) /* SPI0_CS0 */\
 	MUX_VAL(CONTROL_PADCONF_MII1_COL, (IEN | PD | MODE7)) /* gpio3[0] */\
 	MUX_VAL(CONTROL_PADCONF_MII1_CRS, (IEN | PD | MODE1)) /* rmii1_crs_dv */\
 	MUX_VAL(CONTROL_PADCONF_MII1_RX_ER, (IEN | PD | MODE1)) /* rmii1_rxer */\
@@ -873,52 +870,19 @@ MUX_VAL(CONTROL_PADCONF_GPMC_AD0, (IEN | PD | MODE0)) /* gpmc_ad0 */\
 	MUX_VAL(CONTROL_PADCONF_MII1_TXD0, (IDIS | PD | MODE1)) /* rmii1_txd0 */\
 	MUX_VAL(CONTROL_PADCONF_MII1_TX_CLK, (IEN | PD | MODE7)) /* gpio3[9] */\
 	MUX_VAL(CONTROL_PADCONF_MII1_RX_CLK, (IEN | PD | MODE7)) /* gpio3[10] */\
-	MUX_VAL(CONTROL_PADCONF_MII1_RXD3, (IEN | PD | MODE1)) /* uart3_rxd_mux0 */\
-	MUX_VAL(CONTROL_PADCONF_MII1_RXD2, (IDIS | PD | MODE1)) /* uart3_txd_mux0 */\
 	MUX_VAL(CONTROL_PADCONF_MII1_RXD1, (IEN | PD | MODE1)) /* rmii1_rxd1 */\
 	MUX_VAL(CONTROL_PADCONF_MII1_RXD0, (IEN | PD | MODE1)) /* rmii1_rxd0 */\
 	MUX_VAL(CONTROL_PADCONF_RMII1_REF_CLK, (IEN | PD | MODE0)) /* rmii1_refclk */\
 	MUX_VAL(CONTROL_PADCONF_MDIO, (IEN | PU | MODE0)) /* mdio_data */\
 	MUX_VAL(CONTROL_PADCONF_MDC, (IDIS | PU | MODE0)) /* mdio_clk */\
-	MUX_VAL(CONTROL_PADCONF_SPI0_SCLK, (IEN | OFF | MODE7)) /* gpio0[2] */\
-	MUX_VAL(CONTROL_PADCONF_SPI0_D0, (IEN | OFF | MODE7)) /* gpio0[3] */\
-	MUX_VAL(CONTROL_PADCONF_SPI0_D1, (IEN | OFF | MODE7)) /* gpio0[4] */\
-	MUX_VAL(CONTROL_PADCONF_SPI0_CS0, (IEN | OFF | MODE7)) /* gpio0[5] */\
-	MUX_VAL(CONTROL_PADCONF_SPI0_CS1, (IEN | OFF | MODE7)) /* gpio0[6] */\
-	MUX_VAL(CONTROL_PADCONF_ECAP0_IN_PWM0_OUT, (IEN | OFF | MODE7)) /* gpio0[7] */\
-	MUX_VAL(CONTROL_PADCONF_UART0_CTSN, (IEN | OFF | MODE7)) /* gpio1[8] */\
-	MUX_VAL(CONTROL_PADCONF_UART0_RTSN, (IEN | OFF | MODE7)) /* gpio1[9] */\
 	MUX_VAL(CONTROL_PADCONF_UART0_RXD, (IEN | OFF | MODE0)) /* uart0_rxd */\
 	MUX_VAL(CONTROL_PADCONF_UART0_TXD, (IDIS | OFF | MODE0)) /* uart0_txd */\
-	MUX_VAL(CONTROL_PADCONF_UART1_CTSN, (IDIS | OFF | MODE2)) /* dcan0_tx_mux2 */\
-	MUX_VAL(CONTROL_PADCONF_UART1_RTSN, (IEN | OFF | MODE2)) /* dcan0_rx_mux2 */\
-	MUX_VAL(CONTROL_PADCONF_UART1_RXD, (IDIS | OFF | MODE2)) /* dcan1_tx_mux1 */\
-	MUX_VAL(CONTROL_PADCONF_UART1_TXD, (IEN | OFF | MODE2)) /* dcan1_rx_mux1 */\
 	MUX_VAL(CONTROL_PADCONF_I2C0_SDA, (IEN | OFF | MODE0)) /* I2C0_SDA */\
 	MUX_VAL(CONTROL_PADCONF_I2C0_SCL, (IEN | OFF | MODE0)) /* I2C0_SCL */\
-	MUX_VAL(CONTROL_PADCONF_MCASP0_ACLKX, (IEN | PD | MODE7)) /* gpio3[14] */\
-	MUX_VAL(CONTROL_PADCONF_MCASP0_FSX, (IEN | PD | MODE7)) /* gpio3[15] */\
-	MUX_VAL(CONTROL_PADCONF_MCASP0_AXR0, (IEN | PD | MODE7)) /* gpio3[16] */\
-	MUX_VAL(CONTROL_PADCONF_MCASP0_AHCLKR, (IEN | PD | MODE7)) /* gpio3[17] */\
-	MUX_VAL(CONTROL_PADCONF_MCASP0_ACLKR, (IEN | PD | MODE1)) /* eQEP0A_in_mux0 */\
-	MUX_VAL(CONTROL_PADCONF_MCASP0_FSR, (IEN | PD | MODE1)) /* eQEP0B_in_mux0 */\
-	MUX_VAL(CONTROL_PADCONF_MCASP0_AXR1, (IEN | PD | MODE1)) /* eQEP0_index_mux0 */\
-	MUX_VAL(CONTROL_PADCONF_MCASP0_AHCLKX, (IEN | PD | MODE1)) /* eQEP0_strobe_mux0 */\
-	MUX_VAL(CONTROL_PADCONF_XDMA_EVENT_INTR0, (IEN | OFF | MODE7)) /* gpio0[19] */\
-	MUX_VAL(CONTROL_PADCONF_XDMA_EVENT_INTR1, (IEN | OFF | MODE7)) /* gpio0[20] */\
-	MUX_VAL(CONTROL_PADCONF_WARMRSTN, (IEN | OFF | MODE0)) /* nRESETIN_OUT */\
-	MUX_VAL(CONTROL_PADCONF_EXTINTN, (IEN | OFF | MODE0)) /* nNMI */\
 	MUX_VAL(CONTROL_PADCONF_TMS, (IEN | PU | MODE0)) /* TMS */\
 	MUX_VAL(CONTROL_PADCONF_TDI, (IEN | PU | MODE0)) /* TDI */\
 	MUX_VAL(CONTROL_PADCONF_TDO, (IDIS | PU | MODE0)) /* TDO */\
 	MUX_VAL(CONTROL_PADCONF_TCK, (IEN | PU | MODE0)) /* TCK */\
-	MUX_VAL(CONTROL_PADCONF_TRSTN, (IEN | PD | MODE0)) /* nTRST */\
-	MUX_VAL(CONTROL_PADCONF_EMU0, (IEN | PU | MODE7)) /* gpio3[7] */\
-	MUX_VAL(CONTROL_PADCONF_EMU1, (IEN | PU | MODE7)) /* gpio3[8] */\
-	MUX_VAL(CONTROL_PADCONF_RTC_PWRONRSTN, (IEN | OFF | MODE0)) /* RTC_porz */\
-	MUX_VAL(CONTROL_PADCONF_PMIC_POWER_EN, (IDIS | PU | MODE0)) /* PMIC_POWER_EN */\
-	MUX_VAL(CONTROL_PADCONF_EXT_WAKEUP, (IEN | PD | MODE0)) /* EXT_WAKEUP */\
-	MUX_VAL(CONTROL_PADCONF_RTC_KALDO_ENN, (IEN | OFF | MODE0)) /* ENZ_KALDO_1P8V */\
 	MUX_VAL(CONTROL_PADCONF_USB1_DRVVBUS, (IDIS | PD | MODE0)) /* USB1_DRVVBUS */\
           ;
 #else
@@ -1213,11 +1177,279 @@ static void EDMAInit(){
    }
 }
 
+#define KEYSCANCODE_0		20
+#define KEYSCANCODE_1		8
+#define KEYSCANCODE_2		9
+#define KEYSCANCODE_3		10
+#define KEYSCANCODE_4		11
+#define KEYSCANCODE_5		12
+#define KEYSCANCODE_6		16
+#define KEYSCANCODE_7		17
+#define KEYSCANCODE_8		18
+#define KEYSCANCODE_9		19
+#define KEYSCANCODE_DOT	   50
+#define KEYSCANCODE_ZF		51
+#define KEYSCANCODE_A		24
+#define KEYSCANCODE_B		26
+#define KEYSCANCODE_C		52
+#define KEYSCANCODE_D		53
+#define KEYSCANCODE_E		54
+#define KEYSCANCODE_F		55
+#define KEYSCANCODE_F1		0
+#define KEYSCANCODE_F2		1
+#define KEYSCANCODE_F3		2
+#define KEYSCANCODE_F4		3
+#define KEYSCANCODE_F5		4
+#define KEYSCANCODE_F6		5
+#define KEYSCANCODE_RIGHT	29
+#define KEYSCANCODE_LEFT	27
+#define KEYSCANCODE_UP		25
+#define KEYSCANCODE_DOWN	21
+#define KEYSCANCODE_QUK	28
+#define KEYSCANCODE_ESC	32
+#define KEYSCANCODE_ENTER	33
+#define KEYSCANCODE_PU		35
+#define KEYSCANCODE_PD		36
+#define KEYSCANCODE_USB	56
+#define KEYSCANCODE_MEM	30
+#define KEYSCANCODE_CE		14
+#define KEYSCANCODE_POP	31
+
+static unsigned char keyCode(int scancode) {
+   unsigned int key;
+   switch (scancode) {
+   case KEYSCANCODE_0 :
+      key =  KEY_0;
+      break;
+   case KEYSCANCODE_1 :
+      key =   KEY_1;
+      break;
+   case KEYSCANCODE_2 :
+      key =   KEY_2;
+      break;
+   case KEYSCANCODE_3 :
+      key =   KEY_3;
+      break;
+   case KEYSCANCODE_4  :
+      key =   KEY_4;
+      break;
+   case KEYSCANCODE_5  :
+      key =   KEY_5;
+      break;
+   case KEYSCANCODE_6  :
+      key =   KEY_6;
+      break;
+   case KEYSCANCODE_7 :
+      key =   KEY_7;
+      break;
+   case KEYSCANCODE_8 :
+      key =   KEY_8;
+      break;
+   case KEYSCANCODE_9 :
+      key =   KEY_9;
+      break;
+   case KEYSCANCODE_DOT:
+      key =   KEY_POINT;
+      break;
+   case KEYSCANCODE_ZF :
+      key =   KEY_ZF;
+      break;
+   case KEYSCANCODE_A  :
+      key =   KEY_A;
+      break;
+   case KEYSCANCODE_B :
+      key =   KEY_B;
+      break;
+   case KEYSCANCODE_C  :
+      key =   KEY_C;
+      break;
+   case KEYSCANCODE_D :
+      key =   KEY_D;
+      break;
+   case KEYSCANCODE_E :
+      key =   KEY_E;
+      break;
+   case KEYSCANCODE_F :
+      key =  KEY_F;
+      break;
+   case KEYSCANCODE_F1:
+      key =   KEY_F1;
+      break;
+   case KEYSCANCODE_F2 :
+      key =   KEY_F2;
+      break;
+   case KEYSCANCODE_F3 :
+      key =   KEY_F3;
+      break;
+   case KEYSCANCODE_F4 :
+      key =  KEY_F4;
+      break;
+   case KEYSCANCODE_F5 :
+      key = KEY_F5;
+      break;
+   case KEYSCANCODE_F6:
+      key = KEY_F6;
+      break;
+   case KEYSCANCODE_RIGHT:
+      key =   KEY_RIGHT;
+      break;
+   case KEYSCANCODE_LEFT :
+      key =   KEY_LEFT;
+      break;
+   case KEYSCANCODE_UP :
+      key = KEY_UP;
+      break;
+   case KEYSCANCODE_DOWN:
+      key =   KEY_DOWN;
+      break;
+   case KEYSCANCODE_QUK :
+      key =   KEY_QUK;
+      break;
+   case KEYSCANCODE_ESC :
+      key =   KEY_ESC;
+      break;
+   case KEYSCANCODE_ENTER:
+      key =   KEY_OK;
+      break;
+   case KEYSCANCODE_PU :
+      key =   KEY_PU;
+      break;
+   case KEYSCANCODE_PD :
+      key =   KEY_PD;
+      break;
+   case KEYSCANCODE_USB:
+      key =   KEY_USB;
+      break;
+   case KEYSCANCODE_CE :
+      key =   KEY_CE;
+      break;
+   case KEYSCANCODE_MEM :
+      key =   KEY_MEM;
+      break;
+   case KEYSCANCODE_POP :
+      key =   KEY_POP;
+      break;
+   default:
+      key =   KEY_NO;
+      break;
+   }
+   return key;
+}
+
+
+
 
 extern mmcsdCtrlInfo mmcsdctr[2];
 mmcsdCardInfo card;
 
+extern void USBIntConfigure(int instatance);
 
+
+void PinMuxSetup(void){
+MUX_VAL(CONTROL_PADCONF_GPMC_AD0, (IEN | PD | MODE0)) /* gpmc_ad0 */\
+	MUX_VAL(CONTROL_PADCONF_GPMC_AD1, (IEN | PD | MODE0)) /* gpmc_ad1 */\
+	MUX_VAL(CONTROL_PADCONF_GPMC_AD2, (IEN | PD | MODE0)) /* gpmc_ad2 */\
+	MUX_VAL(CONTROL_PADCONF_GPMC_AD3, (IEN | PD | MODE0)) /* gpmc_ad3 */\
+	MUX_VAL(CONTROL_PADCONF_GPMC_AD4, (IEN | PD | MODE0)) /* gpmc_ad4 */\
+	MUX_VAL(CONTROL_PADCONF_GPMC_AD5, (IEN | PD | MODE0)) /* gpmc_ad5 */\
+	MUX_VAL(CONTROL_PADCONF_GPMC_AD6, (IEN | PD | MODE0)) /* gpmc_ad6 */\
+	MUX_VAL(CONTROL_PADCONF_GPMC_AD7, (IEN | PD | MODE0)) /* gpmc_ad7 */\
+	MUX_VAL(CONTROL_PADCONF_GPMC_AD8, (IDIS | PD | MODE1)) /* lcd_data23 */\
+	MUX_VAL(CONTROL_PADCONF_GPMC_AD9, (IDIS | PD | MODE1)) /* lcd_data22 */\
+	MUX_VAL(CONTROL_PADCONF_GPMC_AD10, (IDIS | PD | MODE1)) /* lcd_data21 */\
+	MUX_VAL(CONTROL_PADCONF_GPMC_AD11, (IDIS | PD | MODE1)) /* lcd_data20 */\
+	MUX_VAL(CONTROL_PADCONF_GPMC_AD12, (IDIS | PD | MODE1)) /* lcd_data19 */\
+	MUX_VAL(CONTROL_PADCONF_GPMC_AD13, (IDIS | PD | MODE1)) /* lcd_data18 */\
+	MUX_VAL(CONTROL_PADCONF_GPMC_AD14, (IDIS | PD | MODE1)) /* lcd_data17 */\
+	MUX_VAL(CONTROL_PADCONF_GPMC_AD15, (IDIS | PD | MODE1)) /* lcd_data16 */\
+	MUX_VAL(CONTROL_PADCONF_GPMC_A0, (IDIS | PD | MODE0)) /* gpmc_a0_mux0 */\
+	MUX_VAL(CONTROL_PADCONF_GPMC_A1, (IDIS | PD | MODE0)) /* gpmc_a1_mux0 */\
+	MUX_VAL(CONTROL_PADCONF_GPMC_A2, (IDIS | PD | MODE0)) /* gpmc_a2_mux0 */\
+	MUX_VAL(CONTROL_PADCONF_GPMC_A3, (IDIS | PD | MODE0)) /* gpmc_a3_mux0 */\
+	MUX_VAL(CONTROL_PADCONF_GPMC_A4, (IDIS | PD | MODE0)) /* gpmc_a4_mux0 */\
+	MUX_VAL(CONTROL_PADCONF_GPMC_A5, (IDIS | PD | MODE0)) /* gpmc_a5_mux0 */\
+	MUX_VAL(CONTROL_PADCONF_GPMC_A6, (IDIS | PD | MODE0)) /* gpmc_a6_mux0 */\
+	MUX_VAL(CONTROL_PADCONF_GPMC_A7, (IDIS | PD | MODE0)) /* gpmc_a7_mux0 */\
+	MUX_VAL(CONTROL_PADCONF_GPMC_A8, (IDIS | PD | MODE0)) /* gpmc_a8_mux0 */\
+	MUX_VAL(CONTROL_PADCONF_GPMC_A9, (IDIS | PD | MODE0)) /* gpmc_a9_mux0 */\
+	MUX_VAL(CONTROL_PADCONF_GPMC_A10, (IDIS | PD | MODE0)) /* gpmc_a10 */\
+	MUX_VAL(CONTROL_PADCONF_GPMC_A11, (IDIS | PD | MODE0)) /* gpmc_a11 */\
+	MUX_VAL(CONTROL_PADCONF_GPMC_WAIT0, (IDIS | PU | MODE2)) /* gpmc_csn4 */\
+	MUX_VAL(CONTROL_PADCONF_GPMC_WPN, (IDIS | PU | MODE2)) /* gpmc_csn5 */\
+	MUX_VAL(CONTROL_PADCONF_GPMC_BEN1, (IDIS | PU | MODE2)) /* gpmc_csn6 */\
+	MUX_VAL(CONTROL_PADCONF_GPMC_CSN0, (IDIS | PU | MODE0)) /* gpmc_csn0 */\
+	MUX_VAL(CONTROL_PADCONF_GPMC_CSN1, (IDIS | PU | MODE0)) /* gpmc_csn1 */\
+	MUX_VAL(CONTROL_PADCONF_GPMC_CSN2, (IDIS | PU | MODE0)) /* gpmc_csn2 */\
+	MUX_VAL(CONTROL_PADCONF_GPMC_CSN3, (IDIS | PU | MODE0)) /* gpmc_csn3 */\
+	MUX_VAL(CONTROL_PADCONF_GPMC_CLK, (IEN | PD | MODE7)) /* gpio2[1] */\
+	MUX_VAL(CONTROL_PADCONF_GPMC_ADVN_ALE, (IEN | PU | MODE7)) /* gpio2[2] */\
+	MUX_VAL(CONTROL_PADCONF_GPMC_OEN_REN, (IDIS | PU | MODE0)) /* gpmc_oen_ren */\
+	MUX_VAL(CONTROL_PADCONF_GPMC_WEN, (IDIS | PU | MODE0)) /* gpmc_wen */\
+	MUX_VAL(CONTROL_PADCONF_GPMC_BEN0_CLE, (IEN | PU | MODE7)) /* gpio2[5] */\
+	MUX_VAL(CONTROL_PADCONF_LCD_DATA0, (IEN | OFF | MODE0)) /* lcd_data0 */\
+	MUX_VAL(CONTROL_PADCONF_LCD_DATA1, (IEN | OFF | MODE0)) /* lcd_data1 */\
+	MUX_VAL(CONTROL_PADCONF_LCD_DATA2, (IEN | OFF | MODE0)) /* lcd_data2 */\
+	MUX_VAL(CONTROL_PADCONF_LCD_DATA3, (IEN | OFF | MODE0)) /* lcd_data3 */\
+	MUX_VAL(CONTROL_PADCONF_LCD_DATA4, (IEN | OFF | MODE0)) /* lcd_data4 */\
+	MUX_VAL(CONTROL_PADCONF_LCD_DATA5, (IEN | OFF | MODE0)) /* lcd_data5 */\
+	MUX_VAL(CONTROL_PADCONF_LCD_DATA6, (IEN | OFF | MODE0)) /* lcd_data6 */\
+	MUX_VAL(CONTROL_PADCONF_LCD_DATA7, (IEN | OFF | MODE0)) /* lcd_data7 */\
+	MUX_VAL(CONTROL_PADCONF_LCD_DATA8, (IEN | OFF | MODE0)) /* lcd_data8 */\
+	MUX_VAL(CONTROL_PADCONF_LCD_DATA9, (IEN | OFF | MODE0)) /* lcd_data9 */\
+	MUX_VAL(CONTROL_PADCONF_LCD_DATA10, (IEN | OFF | MODE0)) /* lcd_data10 */\
+	MUX_VAL(CONTROL_PADCONF_LCD_DATA11, (IEN | OFF | MODE0)) /* lcd_data11 */\
+	MUX_VAL(CONTROL_PADCONF_LCD_DATA12, (IEN | OFF | MODE0)) /* lcd_data12 */\
+	MUX_VAL(CONTROL_PADCONF_LCD_DATA13, (IEN | OFF | MODE0)) /* lcd_data13 */\
+	MUX_VAL(CONTROL_PADCONF_LCD_DATA14, (IEN | OFF | MODE0)) /* lcd_data14 */\
+	MUX_VAL(CONTROL_PADCONF_LCD_DATA15, (IEN | OFF | MODE0)) /* lcd_data15 */\
+	MUX_VAL(CONTROL_PADCONF_LCD_VSYNC, (IDIS | OFF | MODE0)) /* lcd_vsync */\
+	MUX_VAL(CONTROL_PADCONF_LCD_HSYNC, (IDIS | OFF | MODE0)) /* lcd_hsync */\
+	MUX_VAL(CONTROL_PADCONF_LCD_PCLK, (IDIS | OFF | MODE0)) /* lcd_pclk */\
+	MUX_VAL(CONTROL_PADCONF_LCD_AC_BIAS_EN, (IDIS | OFF | MODE0)) /* lcd_ac_bias_en */\
+	MUX_VAL(CONTROL_PADCONF_MMC0_DAT3, (IEN | PU | MODE0)) /* mmc0_dat3 */\
+	MUX_VAL(CONTROL_PADCONF_MMC0_DAT2, (IEN | PU | MODE0)) /* mmc0_dat2 */\
+	MUX_VAL(CONTROL_PADCONF_MMC0_DAT1, (IEN | PU | MODE0)) /* mmc0_dat1 */\
+	MUX_VAL(CONTROL_PADCONF_MMC0_DAT0, (IEN | PU | MODE0)) /* mmc0_dat0 */\
+	MUX_VAL(CONTROL_PADCONF_MMC0_CLK, (IEN | PU | MODE0)) /* mmc0_clk */\
+	MUX_VAL(CONTROL_PADCONF_MMC0_CMD, (IEN | PU | MODE0)) /* mmc0_cmd */\
+        MUX_VAL(CONTROL_PADCONF_SPI0_SCLK, (IEN | OFF | MODE0 )) /* SPI0_SCLK */\
+        MUX_VAL(CONTROL_PADCONF_SPI0_D0, (IEN | OFF | MODE0 )) /* SPI0_D0 */\
+        MUX_VAL(CONTROL_PADCONF_SPI0_D1, (IEN | OFF | MODE0 )) /* SPI0_D1 */\
+        MUX_VAL(CONTROL_PADCONF_SPI0_CS0, (IEN | PU | MODE0 )) /* SPI0_CS0 */\
+	MUX_VAL(CONTROL_PADCONF_MII1_COL, (IEN | PD | MODE7)) /* gpio3[0] */\
+	MUX_VAL(CONTROL_PADCONF_MII1_CRS, (IEN | PD | MODE1)) /* rmii1_crs_dv */\
+	MUX_VAL(CONTROL_PADCONF_MII1_RX_ER, (IEN | PD | MODE1)) /* rmii1_rxer */\
+	MUX_VAL(CONTROL_PADCONF_MII1_TX_EN, (IDIS | PD | MODE1)) /* rmii1_txen */\
+	MUX_VAL(CONTROL_PADCONF_MII1_RX_DV, (IEN | PD | MODE7)) /* gpio3[4] */\
+	MUX_VAL(CONTROL_PADCONF_MII1_TXD3, (IEN | PD | MODE7)) /* gpio0[16] */\
+	MUX_VAL(CONTROL_PADCONF_MII1_TXD2, (IEN | PD | MODE7)) /* gpio0[17] */\
+	MUX_VAL(CONTROL_PADCONF_MII1_TXD1, (IDIS | PD | MODE1)) /* rmii1_txd1 */\
+	MUX_VAL(CONTROL_PADCONF_MII1_TXD0, (IDIS | PD | MODE1)) /* rmii1_txd0 */\
+	MUX_VAL(CONTROL_PADCONF_MII1_TX_CLK, (IEN | PD | MODE7)) /* gpio3[9] */\
+	MUX_VAL(CONTROL_PADCONF_MII1_RX_CLK, (IEN | PD | MODE7)) /* gpio3[10] */\
+	MUX_VAL(CONTROL_PADCONF_MII1_RXD1, (IEN | PD | MODE1)) /* rmii1_rxd1 */\
+	MUX_VAL(CONTROL_PADCONF_MII1_RXD0, (IEN | PD | MODE1)) /* rmii1_rxd0 */\
+	MUX_VAL(CONTROL_PADCONF_RMII1_REF_CLK, (IEN | PD | MODE0)) /* rmii1_refclk */\
+	MUX_VAL(CONTROL_PADCONF_MDIO, (IEN | PU | MODE0)) /* mdio_data */\
+	MUX_VAL(CONTROL_PADCONF_MDC, (IDIS | PU | MODE0)) /* mdio_clk */\
+	MUX_VAL(CONTROL_PADCONF_UART0_RXD, (IEN | OFF | MODE0)) /* uart0_rxd */\
+	MUX_VAL(CONTROL_PADCONF_UART0_TXD, (IDIS | OFF | MODE0)) /* uart0_txd */\
+	MUX_VAL(CONTROL_PADCONF_I2C0_SDA, (IEN | OFF | MODE0)) /* I2C0_SDA */\
+	MUX_VAL(CONTROL_PADCONF_I2C0_SCL, (IEN | OFF | MODE0)) /* I2C0_SCL */\
+	MUX_VAL(CONTROL_PADCONF_TMS, (IEN | PU | MODE0)) /* TMS */\
+	MUX_VAL(CONTROL_PADCONF_TDI, (IEN | PU | MODE0)) /* TDI */\
+	MUX_VAL(CONTROL_PADCONF_TDO, (IDIS | PU | MODE0)) /* TDO */\
+	MUX_VAL(CONTROL_PADCONF_TCK, (IEN | PU | MODE0)) /* TCK */\
+	MUX_VAL(CONTROL_PADCONF_USB1_DRVVBUS, (IDIS | PD | MODE0)) /* USB1_DRVVBUS */\
+          ;
+
+}
+
+
+void __lcd_back_ligth_ctr(unsigned char lightpwm)
+{
+	LCD_REG->LCD_PWM = lightpwm;
+}
 
 void BlPlatformConfig(void)
 {
@@ -1227,7 +1459,7 @@ void BlPlatformConfig(void)
     PinMuxSetup();
     IntAINTCInit();
     IntMasterIRQEnable();
-    I2CInit(MODULE_ID_I2C0,400000, NULL, 0);
+    I2CInit(MODULE_ID_I2C0,100000, NULL, 0);
     ConfigVddOpVoltage();
     HWREG(SOC_WDT_1_REGS + WDT_WSPR) = 0xAAAAu;
     while(HWREG(SOC_WDT_1_REGS + WDT_WWPS) != 0x00);
@@ -1248,15 +1480,10 @@ void BlPlatformConfig(void)
     usbMscInit();
 
     UARTStdioInit();
-#ifdef YUANJI
+
     GPMCInitForNOR();
     USBIntConfigure(1);
     TouchScreenInit();
-#else
-    uartInit(MODULE_ID_UART4, 38400, 8,UART_PARITY_NONE,
-            UART_FRAME_NUM_STB_1, UART_INT_RHR_CTI,UART_FCR_RX_TRIG_LVL_8,UART_FCR_RX_TRIG_LVL_8); //for keyboard
-    USBIntConfigure(0);
-#endif
 
     //SPIMasterInit(MODULE_ID_SPI0, 0, 12000000, 1, 1, 0,8);
     SPIMasterInit_poll(MODULE_ID_SPI0,0,12000000,0,0,0,8);
@@ -1267,10 +1494,7 @@ void BlPlatformConfig(void)
     MMCSDP_CtrlInit(&mmcsdctr[0]);
     MMCSDP_CardInit(&mmcsdctr[0],MMCSD_CARD_MMC);
     RTCInit();
+    registKeyMap(keyCode);
 }
-
-
-
-
 
 

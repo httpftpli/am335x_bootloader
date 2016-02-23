@@ -3,8 +3,6 @@
 
 #if defined(YUANJI)
 #include "board_siwaji_yt\cfg.h"
-#elif defined(WAJI)
-#include "board_waji_m\cfg.h"
 #elif defined(YITI)
 #include "board_siwaji_yt\cfg.h"
 #endif
@@ -90,6 +88,9 @@
 #define INT_PRIORITY_UART5       (INT_PRIORITY_USER_NORMAL-16)
 #define INT_PRIORITY_SPI0        (INT_PRIORITY_USER_NORMAL-17)
 #define INT_PRIORITY_SPI1        (INT_PRIORITY_USER_NORMAL-18)
+#define INT_PRIORITY_ePWM0       (INT_PRIORITY_USER_NORMAL-19)
+#define INT_PRIORITY_ePWM1       (INT_PRIORITY_USER_NORMAL-20)
+#define INT_PRIORITY_ePWM2       (INT_PRIORITY_USER_NORMAL-21)
 
 
 

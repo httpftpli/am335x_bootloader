@@ -37,19 +37,40 @@ int bootCopy() {
                 header->image[header->iimage].imageaddr
                 : header->image[!header->iimage].imageaddr;
     imagelen = header->image[header->iimage].imageCheck == APP_MAGIC_OK ?
-                header->image[header->iimage].imagelen
-                : header->image[!header->iimage].imagelen;
+               header->image[header->iimage].imagelen
+               : header->image[!header->iimage].imagelen;
     if (imageaddr % 512 != 0) {
         return APP_UNAVAILABLE;
     }
     if (SUCCESS == MMCSDP_Read(&mmcsdctr[0], (void *)APP_ENTRY, imageaddr / 512,
                                DIVUP(imagelen, 512))) {
-        reval =  0;
+        reval = 0;
     } else {
-        reval =  APP_COPY_ERROR;
+        reval = APP_COPY_ERROR;
     }
     return reval;
 }
+
+void booFromUsb() {
+    FIL file;
+    drawRectFillEx(0,0,lcdCtrl.panel->width,lcdCtrl.panel->height,C_BLACK);
+    drawStringEx("load app from usb disk",10,10,FONT_ASCII_16,C_WHITE,C_BLACK);
+    FRESULT fret = f_open(&file,"2:/usbboot.bin", FA_READ);
+    if (fret != FR_OK) {
+        return;
+    }
+    uint32 br;
+    fret = f_read(&file, (void *)APP_ENTRY, f_size(&file), &br);
+    if ((fret != FR_OK) || (br != f_size(&file))) {
+        f_close(&file);
+        return;
+    }
+    f_close(&file);
+    drawStringEx("success",30,30,FONT_ASCII_16,C_WHITE,C_BLACK);
+    delay(1000);
+    jumptoApp();
+}
+
 
 BOOL isIDvailable() {
     unsigned int buf[512 / 4];
@@ -69,6 +90,7 @@ BOOL isIDvailable() {
 
 void jumptoApp() {
     UARTPuts("Jumping to application...\r\n\n", -1);
+    drawStringEx("starting ...", LCD_XSize / 2 - 50, LCD_YSize / 2, FONT_ASCII_16, C_WHITE, C_TRANSPARENT);
     ((void (*)())APP_ENTRY)();
 }
 

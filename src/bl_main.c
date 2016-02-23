@@ -12,7 +12,7 @@
 #include "bl_post.h"
 
 
-#define FORCEBOOT_WAITTIME  2000
+#define FORCEBOOT_WAITTIME  2000 //ms
 #define FORCEBOOT_FILENAME  "forboot.dat"
 
 
@@ -26,6 +26,9 @@ extern tUSBHCD g_sUSBHCD[];
 #define BOOT_BOOT  0x01
 #define BOOT_POST  0x02
 #define BOOT_TS_CAL 0x04
+#define BOOT_AUTO_BURN 0x08
+#define BOOT_USB_LOADER 0x10
+
 
 static uint32 getbootparam() {
     FIL file;
@@ -55,12 +58,10 @@ static uint32 getbootparam() {
                 return BOOT_BOOT;
             }
             f_close(&file);
-            return  val | BOOT_BOOT;
+            return val | BOOT_BOOT;
         }
     }
 }
-
-
 
 
 FATFS inandfs;
@@ -80,28 +81,29 @@ extern mmcsdCtrlInfo mmcsdctr[2];
 
 int main(void) {
     BlPlatformConfig();
+    //LCDRasterStart();
+    LCDBackLightON(255);
     UARTPuts("Minde bootloader \n\r ", -1);
     int val = 0;
     uint32 bootparam = 0;
     isIDok = isIDvailable();
+    bootparam = getbootparam();
     if (!isIDok) {
         UARTPuts("ID error...\r\n\n", -1);
         goto BOOTLOADER;
     }
 
-    //goto BOOTLOADER;
-    bootparam = getbootparam();
     if (bootparam & BOOT_BOOT) {
+        UARTPuts("Detect gotoboot flag,Enter to bootloader..\r\n\n", -1);
         goto BOOTLOADER;
     }
 
-
-//#ifndef INNERBOOT
+#ifndef INNERBOOT
     val = bootCopy();
     if (0 == val) {
         jumptoApp();
     }
-//#endif
+#endif
 
     if (APP_COPY_ERROR == val) {
         UARTPuts("Application copy error...\r\n\n", -1);
@@ -120,16 +122,26 @@ int main(void) {
         goto BOOTLOADER;
     }
 
-BOOTLOADER:
-    registKeyHandler(shortcuthandler);
-    //xo2BurnInit();
+    BOOTLOADER:
     LCDRasterStart();
     LCDBackLightON(255);
+    registKeyHandler(shortcuthandler);
     if (bootparam & BOOT_POST) {
+        UARTPuts("Detect POST flag,begin POST..\r\n\n", -1);
         post();
     }
-    TouchCalibrate(!!(bootparam & BOOT_TS_CAL));
-    //TouchCalibrate(0);
+    if (bootparam & BOOT_TS_CAL) {
+        UARTPuts("Detect tscal flag,begin tscal..\r\n\n", -1);
+        TouchCalibrate(1);
+    } else {
+        TouchCalibrate(0);
+    }
+#ifndef INNERBOOT
+    if (bootparam & BOOT_USB_LOADER) {
+        UARTPuts("Detect boot from usb flag, boot form usb file..\r\n\n", -1);
+        booFromUsb();
+    }
+#endif
     hmiInit();
     f_mount(0, &inandfs);
     while (1) {

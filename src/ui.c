@@ -17,7 +17,8 @@
 #define MAX_BUTTON_CAPTION   30
 #define MAX_LABEL_CAPTION    100
 
-#define BTR_VERSION  "V1.1"
+#define BTR_VERSION  "V1.2"
+const char Ver[] = { "SoftVer-A.MWYT.SW-A.01.20.00&"__DATE__ };
 
 #if  defined(LCD_RES_800_600)
 #define PAGELABEL_H  560
@@ -179,7 +180,7 @@ BUTTON burnpagebuttons[] = {
     [0] = { .x = 680, .y = BUTTON_Y-80, .width = 110, .height = 40, .show = 1, .enable = 1, .tabId = 0, .caption = "ts cal", .shortkey = KEY_F1 },
     [1] = { .x = 680, .y = BUTTON_Y, .width = 110, .height = 40, .show = 1, .enable = 1, .tabId = 1, .caption = "iformat", .shortkey = KEY_F2 },
 [2] = { .x = 680, .y = BUTTON_Y+BUTTON_I*1, .width = 110, .height = 40, .show = 1, .enable = 0, .tabId = 2, .caption = "burn app", .shortkey = KEY_F3 },
-[3] = { .x = 680, .y = BUTTON_Y+BUTTON_I*2, .width = 110, .height = 40, .show = 1, .enable = 0, .tabId = 3, .caption = "burn font", .shortkey = KEY_F4 },
+[3] = { .x = 680, .y = BUTTON_Y+BUTTON_I*2, .width = 110, .height = 40, .show = 0, .enable = 0, .tabId = 3, .caption = "burn font", .shortkey = KEY_F4 },
 [4] = { .x = 680, .y = BUTTON_Y+BUTTON_I*5, .width = 110, .height = 40, .show = 1, .enable = 1, .tabId = 6, .caption = "run app", .shortkey = KEY_OK },
 [5] = { .x = 680, .y = BUTTON_Y+BUTTON_I*3, .width = 110, .height = 40, .show = BUTTONSHOW, .enable = 0, .tabId = 4, .caption = "burn boot", .shortkey = KEY_F5 },
 [6] = { .x = 680, .y = BUTTON_Y+BUTTON_I*4, .width = 110, .height = 40, .show = BUTTONSHOW, .enable = 0, .tabId = 5, .caption = "burn auto", .colorIndex = 1, .shortkey = KEY_F6 },
@@ -606,7 +607,8 @@ void hmishow() {
         labelShow(frames + i);
     }
     for (int i = 0; i < NARRAY(burnpagebuttons); i++) {
-        buttonShow(&burnpagebuttons[i]);
+        //buttonShow(&burnpagebuttons[i]);
+        burnpagebuttons[i].statChanged = 1;
     }
 
     for (int i = 0; i < NARRAY(pagebuttons); i++) {
@@ -751,6 +753,7 @@ static void idiskformathandler(void *button, unsigned int stat) {
     if (1 == stat) {
         r = idiskFormat();
         if (r) {
+            eraseRunApp();
             statBarPrint(0, "idisk format success");
         } else {
             statBarPrint(1, "idisk format fail");
@@ -798,10 +801,11 @@ static void udiskbuttonhandler(void *button, unsigned int stat) {
 
 
 extern mmcsdCtrlInfo mmcsdctr[2];
-extern BOOL burnBootloader(const TCHAR *path);
+extern BURN_RET burnBootloader(const TCHAR *path);
 
 static BOOL burnboot_ui(char *path) {
     int ret;
+    BURN_RET retburn;
     unsigned int buf[512 / 4];
     buf[0] = ~HWREG(SOC_CONTROL_REGS + CONTROL_MAC_ID_LO(0));
     buf[1] = ~HWREG(SOC_CONTROL_REGS + CONTROL_MAC_ID_HI(0));
@@ -811,8 +815,8 @@ static BOOL burnboot_ui(char *path) {
     if (ret == FALSE) {
         goto ERROR;
     }
-    ret = burnBootloader(path);
-    if (FALSE == ret) {
+    retburn = burnBootloader(path);
+    if (retburn != BURN_OK) {
         goto ERROR;
     }
     statBarPrint(0, "burn bootloader success");
@@ -846,73 +850,30 @@ static  void burnautohandler(void *button, unsigned int stat) {
     delay(600);
     idiskformathandler(NULL, 1);
     delay(600);
-    int fileindex, bootfilecount = 0, appfilecount = 0;
-    char path[30];
-    char printbuf[50];
     int ret;
     //burn bootloader
-    for (int i = 0; i < udiskFileCount; i++) {
-        if (strendwith(udiskfileinfolist[i].filename, ".MBT")) {
-            fileindex = i;
-            bootfilecount++;
-        }
+    if(!f_fileExit("2:/default.mbt")){
+       statBarPrint(1, "auto burn fail ,not find boot file default.mbt");
+       return;
     }
-    if (bootfilecount == 0) {
-        statBarPrint(1, "auto burn fail ,udisk have none bootloader file");
+    ret = burnboot_ui("2:/default.mbt");
+    if (FALSE == ret) {
         return;
-    } else if (bootfilecount != 1) {
-        statBarPrint(1, "auto burn fail ,udisk have more than one bootloader file");
-        return;
-    } else {
-        strcpy(path, "2:/");
-        strcat(path, udiskfileinfolist[fileindex].filename);
-        ret = burnboot_ui(path);
-        if (FALSE == ret) {
-            return;
-        }
-    }
-    delay(600);
-//burn font
-    for (int i = 0; i < udiskFileCount; i++) {
-        if (strendwith(udiskfileinfolist[i].filename, ".FNT")) {
-            sprintf(printbuf, "burn font file %s ", udiskfileinfolist[i].filename);
-            statBarPrint(0, printbuf);
-            strcpy(path, "2:/");
-            strcat(path, udiskfileinfolist[i].filename);
-            ret = burnFont(path);
-            if (TRUE == ret) {
-                sprintf(printbuf, "burn %s success", udiskfileinfolist[i].filename);
-                statBarPrint(0, printbuf);
-                delay(600);
-                ifilestatchagned = 1;
-            } else {
-                sprintf(printbuf, "burn %s fail", udiskfileinfolist[i].filename);
-                statBarPrint(1, printbuf);
-                return;
-            }
-        }
     }
     delay(600);
 //burn app
-    for (int i = 0; i < udiskFileCount; i++) {
-        if (strendwith(udiskfileinfolist[i].filename, ".ARA")) {
-            fileindex = i;
-            appfilecount++;
-        }
+    if(!f_fileExit("2:/default.out")){
+       return;
     }
-    if (appfilecount != 1) {
-        statBarPrint(1, "auto burn fail ,udisk has more than one app");
-        return;
+    statBarPrint(0, "file APP file default.out ,burn APP");
+    ret = burnAPP("2:/default.out");
+    if (BURN_OK != ret) {
+       statBarPrint(1, "burn APP fail");
     } else {
-        strcpy(path, "2:/");
-        strcat(path, udiskfileinfolist[fileindex].filename);
-        ret = burnAPP(path);
-        if (0 != ret) {
-            statBarPrint(1, "auto burn fail");
-        } else {
-            statBarPrint(0, "auto burn finish");
-        }
+       statBarPrint(0, "burn APP success");
     }
+    delay(600);
+    statBarPrint(0, "auto burn finish");
 }
 
 
@@ -971,11 +932,12 @@ static void runapphandler(void *button, unsigned int stat) {
         statBarPrint(1, "app entry error");
     }
     if (0 == ret) {
-        LCDBackLightOFF();
-        LCDRasterEnd();
+        //LCDBackLightOFF();
+        //LCDRasterEnd();
         //LCDReset();
         registKeyHandler(NULL);
         //EDMA3Deinit(SOC_EDMA30CC_0_REGS,0);
+        LCDFbClear(C_BLACK);
         jumptoApp();
     }
 }
@@ -1005,6 +967,7 @@ static void ufiledownhandler(void *button, unsigned int stat) {
 }
 
 void hmiInit() {
+    UNUSED(Ver);
     GUI_SetBkColor(C_BLUE);
     GUI_SetColor(C_WHITE);
     buttonRegistHandler(burnpagebuttons, tscalhandler);
@@ -1068,7 +1031,7 @@ void hmiInit() {
         registButton(udiskButtons + i, NULL);
     }
     hmishow();
-    regestTouchedHandler(touchedhandler);
+    regestTouchedHandler(touchedHandler);
 }
 
 
