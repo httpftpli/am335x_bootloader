@@ -2,7 +2,7 @@
 #define __PLATFORM_CFG_H___
 
 #if defined(YUANJI)
-#include "board_siwaji_yt\cfg.h"
+#include "board_yuanji\cfg.h"
 #elif defined(YITI)
 #include "board_siwaji_yt\cfg.h"
 #endif
@@ -22,8 +22,8 @@
 
 
 #define  MODULE_USE_EDMA   0
-#define  MODULE_USE_ECAP   0
-#define  MODULE_USE_EPWM   0
+#define  MODULE_USE_ECAP   1
+#define  MODULE_USE_EPWM   1
 #define  MODULE_USE_GPIO   1
 #define  MODULE_USE_EQEP   0
 #define  MODULE_USE_DCAN   0
@@ -35,6 +35,7 @@
 #define  MODULE_USE_TIMER   1
 #define  MODULE_USE_I2C   1
 #define  MODULE_USE_SPI   1
+#define  MODULE_USE_RTC   1
 #define  MODULE_USE_3GPSW   0
 
 #define  USE_TASK_DELAYDO  0
@@ -145,6 +146,10 @@ static const unsigned int CS_ADDRLINE_BIT[7] = {24,24,24,24,24,24,24};
 #define ASCII_FONT20_IN_SOURCE     0
 #define ASCII_FIX_FONT24_IN_SOURCE  0
 
+#define FONT_EXTERN_FILE  0
+
+
+#define DDR_RAM_SIZE  128*1024*1024
 
 
 #endif

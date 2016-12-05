@@ -2,7 +2,7 @@
 #define __CFG__H___
 
 
-#define USB_INSTANCE_FOR_USBDISK   0
+#define  USB_INSTANCE_FOR_USBDISK   0
 
 #define  MODULE_USE_ADCTSC  1
 
@@ -14,8 +14,9 @@
 
 #define  MODULE_USE_GPMC   0
 
-#define TFT_PANEL    TFT_AT070TN92
+#define  TFT_PANEL    TFT_AT070TN92
 
-#define LCD_RES_800_480
+#define  LCD_RES_800_480
+
 
 #endif

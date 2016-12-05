@@ -81,7 +81,8 @@
 /*
 **Setting the DDR2 frequency to 266MHz
 */
-#define DDRPLL_M		           266
+#define DDR2PLL_M		           266
+#define DDR3PLL_M		           303
 #define DDRPLL_N		           23
 #define DDRPLL_M2		           1  //post-divider
 

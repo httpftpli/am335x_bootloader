@@ -356,7 +356,9 @@
                     <F N="../lib/platform/include/pf_rx8025.h"/>
                     <F N="../lib/platform/include/pf_spi.h"/>
                     <F N="../lib/platform/include/pf_timertick.h"/>
+                    <F N="../lib/platform/include/pf_tps65217.h"/>
                     <F N="../lib/platform/include/pf_tsc.h"/>
+                    <F N="../lib/platform/include/pf_tsc2007.h"/>
                     <F N="../lib/platform/include/pf_uart.h"/>
                     <F N="../lib/platform/include/pf_usbmsc.h"/>
                     <F N="../lib/platform/include/tft.h"/>
@@ -390,7 +392,9 @@
                 <F N="../lib/platform/pf_spi.c"/>
                 <F N="../lib/platform/pf_sysperf.c"/>
                 <F N="../lib/platform/pf_timertick.c"/>
+                <F N="../lib/platform/pf_tps65217.c"/>
                 <F N="../lib/platform/pf_tsc.c"/>
+                <F N="../lib/platform/pf_tsc2007.c"/>
                 <F N="../lib/platform/pf_uart.c"/>
                 <F N="../lib/platform/pf_usb.c"/>
                 <F N="../lib/platform/pf_usbmsc.c"/>

@@ -20,6 +20,7 @@
 #include "pf_mux.h"
 #include "pf_platform.h"
 #include "hw_tps65217.h"
+#include "pf_tps65217.h"
 #include "uartstdio.h"
 #include "soc_AM335X.h"
 #include "interrupt.h"
@@ -27,6 +28,9 @@
 #include "module.h"
 #include "mmath.h"
 #include "cpld.h"
+#include "pf_tsc2007.h"
+#include "board.h"
+
 
 
 /******************************************************************************
@@ -393,45 +397,49 @@ void PerPLLInit(void) {
  * \return none
  *
  */
-void DDRPLLInit(void) {
+void DDRPLLInit(unsigned int freqMult)
+{
     volatile unsigned int regVal = 0;
 
     /* Put the PLL in bypass mode */
     regVal = HWREG(SOC_CM_WKUP_REGS + CM_WKUP_CM_CLKMODE_DPLL_DDR) &
-             ~CM_WKUP_CM_CLKMODE_DPLL_DDR_DPLL_EN;
+                 ~CM_WKUP_CM_CLKMODE_DPLL_DDR_DPLL_EN;
 
     regVal |= CM_WKUP_CM_CLKMODE_DPLL_MPU_DPLL_EN_DPLL_MN_BYP_MODE;
 
     HWREG(SOC_CM_WKUP_REGS + CM_WKUP_CM_CLKMODE_DPLL_DDR) = regVal;
 
-    while (!(HWREG(SOC_CM_WKUP_REGS + CM_WKUP_CM_IDLEST_DPLL_DDR) &
-             CM_WKUP_CM_IDLEST_DPLL_DDR_ST_MN_BYPASS));
+    while(!(HWREG(SOC_CM_WKUP_REGS + CM_WKUP_CM_IDLEST_DPLL_DDR) &
+                      CM_WKUP_CM_IDLEST_DPLL_DDR_ST_MN_BYPASS));
 
     HWREG(SOC_CM_WKUP_REGS + CM_WKUP_CM_CLKSEL_DPLL_DDR) &=
-    ~(CM_WKUP_CM_CLKSEL_DPLL_DDR_DPLL_MULT |
-      CM_WKUP_CM_CLKSEL_DPLL_DDR_DPLL_DIV);
+                     ~(CM_WKUP_CM_CLKSEL_DPLL_DDR_DPLL_MULT |
+                           CM_WKUP_CM_CLKSEL_DPLL_DDR_DPLL_DIV);
 
     HWREG(SOC_CM_WKUP_REGS + CM_WKUP_CM_CLKSEL_DPLL_DDR) |=
-    ((DDRPLL_M << CM_WKUP_CM_CLKSEL_DPLL_DDR_DPLL_MULT_SHIFT) |
-     (DDRPLL_N << CM_WKUP_CM_CLKSEL_DPLL_DDR_DPLL_DIV_SHIFT));
+                     ((freqMult << CM_WKUP_CM_CLKSEL_DPLL_DDR_DPLL_MULT_SHIFT) |
+                      (DDRPLL_N << CM_WKUP_CM_CLKSEL_DPLL_DDR_DPLL_DIV_SHIFT));
 
-    HWREG(SOC_CM_WKUP_REGS + CM_WKUP_CM_DIV_M2_DPLL_DDR) &=
-    ~CM_WKUP_CM_DIV_M2_DPLL_DDR_DPLL_CLKOUT_DIV;
+    regVal = HWREG(SOC_CM_WKUP_REGS + CM_WKUP_CM_DIV_M2_DPLL_DDR);
+    regVal = regVal & ~CM_WKUP_CM_DIV_M2_DPLL_DDR_DPLL_CLKOUT_DIV;
+    regVal = regVal | DDRPLL_M2;
 
-    /* Set the CLKOUT divider */
-    HWREG(SOC_CM_WKUP_REGS + CM_WKUP_CM_DIV_M2_DPLL_DDR) |= DDRPLL_M2;
+    /* Set the CLKOUT2 divider */
+    HWREG(SOC_CM_WKUP_REGS + CM_WKUP_CM_DIV_M2_DPLL_DDR) = regVal;
 
     /* Now LOCK the PLL by enabling it */
     regVal = HWREG(SOC_CM_WKUP_REGS + CM_WKUP_CM_CLKMODE_DPLL_DDR) &
-             ~CM_WKUP_CM_CLKMODE_DPLL_DDR_DPLL_EN;
+                ~CM_WKUP_CM_CLKMODE_DPLL_DDR_DPLL_EN;
 
     regVal |= CM_WKUP_CM_CLKMODE_DPLL_DDR_DPLL_EN;
 
     HWREG(SOC_CM_WKUP_REGS + CM_WKUP_CM_CLKMODE_DPLL_DDR) = regVal;
 
-    while (!(HWREG(SOC_CM_WKUP_REGS + CM_WKUP_CM_IDLEST_DPLL_DDR) &
-             CM_WKUP_CM_IDLEST_DPLL_DDR_ST_DPLL_CLK));
+    while(!(HWREG(SOC_CM_WKUP_REGS + CM_WKUP_CM_IDLEST_DPLL_DDR) &
+                           CM_WKUP_CM_IDLEST_DPLL_DDR_ST_DPLL_CLK));
 }
+
+
 
 /*
  * \brief This function initializes the MPU PLL
@@ -563,119 +571,17 @@ void PowerDomainTransitionInit(void) {
  *
  * \return none
  */
-void PLLInit(void) {
+void PLLInit(unsigned int ddrPllMul) {
     MPUPLLInit();
     CorePLLInit();
     PerPLLInit();
-    DDRPLLInit();
+    DDRPLLInit(ddrPllMul);
     InterfaceClkInit();
     PowerDomainTransitionInit();
     //DisplayPLLInit();
 }
 
 
-
-unsigned char TPS65217RegRead(unsigned char regOffset) {
-    unsigned char val;
-    I2CMasterReadEx(SOC_I2C_0_REGS, 0x24, &regOffset, 1, &val, 1);
-    return val;
-}
-
-/**
- *  \brief            - Generic function that can write a TPS65217 PMIC
- *                      register or bit field regardless of protection
- *                      level.
- *
- * \param regOffset:  - Register address to write.
- *
- * \param dest_val    - Value to write.
- *
- * \param mask        - Bit mask (8 bits) to be applied.  Function will only
- *                      change bits that are set in the bit mask.
- *
- * \return:            BOOL.
- */
-BOOL TPS65217RegWrite(unsigned char regOffset,
-                      unsigned char dest_val, unsigned char mask) {
-    unsigned char read_val;
-    unsigned char xor_reg;
-    unsigned char pswreg = 0x55;
-    unsigned char port_level;
-    unsigned char i2cwritebuf[2];
-    unsigned char i2cregaddr;
-    if (regOffset <= 12) {
-        port_level = PROT_LEVEL_NONE;
-    } else if ((regOffset <= 21) && ((regOffset >= 14))) {
-        port_level = PROT_LEVEL_2;
-    } else {
-        port_level = PROT_LEVEL_1;
-    }
-
-    if (mask != MASK_ALL_BITS) {
-        I2CMasterReadEx(SOC_I2C_0_REGS, 0x24, &regOffset, 1, &read_val, 1);
-        read_val &= (~mask);
-        read_val |= (dest_val & mask);
-        dest_val = read_val;
-    }
-    if (port_level == PROT_LEVEL_NONE) {
-        i2cwritebuf[0] = regOffset;
-        i2cwritebuf[1] = dest_val;
-        return I2CMasterWrite(SOC_I2C_0_REGS, 0x24, i2cwritebuf, 2);
-    }
-
-    if (port_level != PROT_LEVEL_NONE) {
-        xor_reg = regOffset ^ PASSWORD_UNLOCK;
-        i2cwritebuf[0] = PASSWORD;
-        i2cwritebuf[1] = xor_reg;
-        I2CMasterWrite(SOC_I2C_0_REGS, 0x24, i2cwritebuf, 2);
-        i2cwritebuf[0] = regOffset;
-        i2cwritebuf[1] = dest_val;
-        I2CMasterWrite(SOC_I2C_0_REGS, 0x24, i2cwritebuf, 2);
-        if (port_level == PROT_LEVEL_1) {
-            i2cregaddr = PASSWORD;
-            I2CMasterReadEx(SOC_I2C_0_REGS, 0x24, &i2cregaddr, 1, &pswreg, 1);
-            if (pswreg == 0) {
-                return TRUE;
-            } else {
-                return FALSE;
-            }
-        }
-        //port_level == 2
-        i2cwritebuf[0] = PASSWORD;
-        i2cwritebuf[1] = xor_reg;
-        I2CMasterWrite(SOC_I2C_0_REGS, 0x24, i2cwritebuf, 2);
-        i2cwritebuf[0] = regOffset;
-        i2cwritebuf[1] = dest_val;
-        I2CMasterWrite(SOC_I2C_0_REGS, 0x24, i2cwritebuf, 2);
-        i2cregaddr = PASSWORD;
-        I2CMasterReadEx(SOC_I2C_0_REGS, 0x24, &i2cregaddr, 1, &pswreg, 1);
-        if (pswreg == 0) {
-            return TRUE;
-        }
-    }
-    return FALSE;
-}
-
-
-
-/**
- *  \brief              - Controls output voltage setting for the DCDC1,
- *                        DCDC2, or DCDC3 control registers in the PMIC.
- *
- * \param  dc_cntrl_reg   DCDC Control Register address.
- *                        Must be DEFDCDC1, DEFDCDC2, or DEFDCDC3.
- *
- * \param  volt_sel       Register value to set.  See PMIC TRM for value set.
- *
- * \return:               None.
- */
-void TPS65217VoltageUpdate(unsigned char dc_cntrl_reg, unsigned char volt_sel) {
-    /* set voltage level */
-    TPS65217RegWrite(dc_cntrl_reg, volt_sel, MASK_ALL_BITS);
-
-    /* set GO bit to initiate voltage transition */
-    TPS65217RegWrite(DEFSLEW, DCDC_GO, DCDC_GO);
-}
 
 
 /*
@@ -686,7 +592,7 @@ void TPS65217VoltageUpdate(unsigned char dc_cntrl_reg, unsigned char volt_sel) {
  * \return none
  */
 
-void ConfigVddOpVoltage(void) {
+bool ConfigVddOpVoltage(void) {
     unsigned char vol_sel = DCDC_VOLT_SEL_1100MV;
 #if (OPP == OPP_SR_TURBO)
     vol_sel = DCDC_VOLT_SEL_1275MV;
@@ -696,7 +602,7 @@ void ConfigVddOpVoltage(void) {
     vol_sel = DCDC_VOLT_SEL_1100MV;
 #endif
     /* Set DCDC2 (MPU) voltage to 1.275V */
-    TPS65217VoltageUpdate(DEFDCDC2, vol_sel);
+    return TPS65217VoltageUpdate(DEFDCDC2, vol_sel);
     /* Set LDO3, LDO4 output voltage to 3.3V */
     //TPS65217RegWrite(DEFLS1, LDO_VOLTAGE_OUT_3_3, LDO_MASK);
     //TPS65217RegWrite(DEFLS2, LDO_VOLTAGE_OUT_3_3, LDO_MASK);
@@ -845,6 +751,47 @@ static void DDR2PhyInit(void) {
 }
 
 
+/*
+ * \brief This function sets up the DDR PHY
+ *
+ * \param  none
+ *
+ * \return none
+ */
+static void DDR3PhyInit(void)
+{
+    /* Enable VTP */
+    HWREG(SOC_CONTROL_REGS + CONTROL_VTP_CTRL) |= CONTROL_VTP_CTRL_ENABLE;
+    HWREG(SOC_CONTROL_REGS + CONTROL_VTP_CTRL) &= ~CONTROL_VTP_CTRL_CLRZ;
+    HWREG(SOC_CONTROL_REGS + CONTROL_VTP_CTRL) |= CONTROL_VTP_CTRL_CLRZ;
+    while((HWREG(SOC_CONTROL_REGS + CONTROL_VTP_CTRL) & CONTROL_VTP_CTRL_READY) !=
+                CONTROL_VTP_CTRL_READY);
+
+    /* DDR PHY CMD0 Register configuration */
+    HWREG(CMD0_SLAVE_RATIO_0)   = DDR3_CMD0_SLAVE_RATIO_0;
+    HWREG(CMD0_INVERT_CLKOUT_0) = DDR3_CMD0_INVERT_CLKOUT_0;
+
+    /* DDR PHY CMD1 Register configuration */
+    HWREG(CMD1_SLAVE_RATIO_0)   = DDR3_CMD1_SLAVE_RATIO_0;
+    HWREG(CMD1_INVERT_CLKOUT_0) = DDR3_CMD1_INVERT_CLKOUT_0;
+
+    /* DDR PHY CMD2 Register configuration */
+    HWREG(CMD2_SLAVE_RATIO_0)   = DDR3_CMD2_SLAVE_RATIO_0;
+    HWREG(CMD2_INVERT_CLKOUT_0) = DDR3_CMD2_INVERT_CLKOUT_0;
+
+    /* DATA macro configuration */
+    HWREG(DATA0_RD_DQS_SLAVE_RATIO_0)  = DDR3_DATA0_RD_DQS_SLAVE_RATIO_0;
+    HWREG(DATA0_WR_DQS_SLAVE_RATIO_0)  = DDR3_DATA0_WR_DQS_SLAVE_RATIO_0;
+    HWREG(DATA0_FIFO_WE_SLAVE_RATIO_0) = DDR3_DATA0_FIFO_WE_SLAVE_RATIO_0;
+    HWREG(DATA0_WR_DATA_SLAVE_RATIO_0) = DDR3_DATA0_WR_DATA_SLAVE_RATIO_0;
+    HWREG(DATA1_RD_DQS_SLAVE_RATIO_0)  = DDR3_DATA0_RD_DQS_SLAVE_RATIO_1;
+    HWREG(DATA1_WR_DQS_SLAVE_RATIO_0)  = DDR3_DATA0_WR_DQS_SLAVE_RATIO_1;
+    HWREG(DATA1_FIFO_WE_SLAVE_RATIO_0) = DDR3_DATA0_FIFO_WE_SLAVE_RATIO_1;
+    HWREG(DATA1_WR_DATA_SLAVE_RATIO_0) = DDR3_DATA0_WR_DATA_SLAVE_RATIO_1;
+
+}
+
+
 
 /* \brief This function initializes the DDR2
  *
@@ -905,6 +852,74 @@ void DDR2Init(void) {
     HWREG(SOC_CONTROL_REGS + CONTROL_SECURE_EMIF_SDRAM_CONFIG) = DDR2_EMIF_SDRAM_CONFIG;
 
 }
+
+
+
+
+
+void DDR3Init(void)
+{
+    /* DDR3 Phy Initialization */
+    DDR3PhyInit();
+    HWREG(SOC_CONTROL_REGS + CONTROL_DDR_CMD_IOCTRL(0)) =
+                                                 DDR3_CONTROL_DDR_CMD_IOCTRL_0;
+    HWREG(SOC_CONTROL_REGS + CONTROL_DDR_CMD_IOCTRL(1)) =
+                                                 DDR3_CONTROL_DDR_CMD_IOCTRL_1;
+    HWREG(SOC_CONTROL_REGS + CONTROL_DDR_CMD_IOCTRL(2)) =
+                                                 DDR3_CONTROL_DDR_CMD_IOCTRL_2;
+    HWREG(SOC_CONTROL_REGS + CONTROL_DDR_DATA_IOCTRL(0)) =
+                                                 DDR3_CONTROL_DDR_DATA_IOCTRL_0;
+    HWREG(SOC_CONTROL_REGS + CONTROL_DDR_DATA_IOCTRL(1)) =
+                                                 DDR3_CONTROL_DDR_DATA_IOCTRL_1;
+
+    /* IO to work for DDR3 */
+    HWREG(SOC_CONTROL_REGS + CONTROL_DDR_IO_CTRL) &= DDR3_CONTROL_DDR_IO_CTRL;
+
+    HWREG(SOC_CONTROL_REGS + CONTROL_DDR_CKE_CTRL) |= CONTROL_DDR_CKE_CTRL_DDR_CKE_CTRL;
+
+    HWREG(SOC_EMIF_0_REGS + EMIF_DDR_PHY_CTRL_1) = DDR3_EMIF_DDR_PHY_CTRL_1;
+
+    /* Dynamic Power Down */
+   /* if((DEVICE_VERSION_2_0 == deviceVersion) ||
+       (DEVICE_VERSION_2_1 == deviceVersion))
+    {
+        HWREG(SOC_EMIF_0_REGS + EMIF_DDR_PHY_CTRL_1) |=
+                                              DDR3_EMIF_DDR_PHY_CTRL_1_DY_PWRDN;
+    } */
+
+    HWREG(SOC_EMIF_0_REGS + EMIF_DDR_PHY_CTRL_1_SHDW) =
+                                                 DDR3_EMIF_DDR_PHY_CTRL_1_SHDW;
+
+    /* Dynamic Power Down */
+    /*if((DEVICE_VERSION_2_0 == deviceVersion) ||
+       (DEVICE_VERSION_2_1 == deviceVersion))
+    {
+        HWREG(SOC_EMIF_0_REGS + EMIF_DDR_PHY_CTRL_1_SHDW) |=
+                                         DDR3_EMIF_DDR_PHY_CTRL_1_SHDW_DY_PWRDN;
+    } */
+
+    HWREG(SOC_EMIF_0_REGS + EMIF_DDR_PHY_CTRL_2) = DDR3_EMIF_DDR_PHY_CTRL_2;
+
+    HWREG(SOC_EMIF_0_REGS + EMIF_SDRAM_TIM_1)      = DDR3_EMIF_SDRAM_TIM_1;
+    HWREG(SOC_EMIF_0_REGS + EMIF_SDRAM_TIM_1_SHDW) = DDR3_EMIF_SDRAM_TIM_1_SHDW;
+    HWREG(SOC_EMIF_0_REGS + EMIF_SDRAM_TIM_2)      = DDR3_EMIF_SDRAM_TIM_2;
+    HWREG(SOC_EMIF_0_REGS + EMIF_SDRAM_TIM_2_SHDW) = DDR3_EMIF_SDRAM_TIM_2_SHDW;
+    HWREG(SOC_EMIF_0_REGS + EMIF_SDRAM_TIM_3)      = DDR3_EMIF_SDRAM_TIM_3;
+    HWREG(SOC_EMIF_0_REGS + EMIF_SDRAM_TIM_3_SHDW) = DDR3_EMIF_SDRAM_TIM_3_SHDM;
+
+    HWREG(SOC_EMIF_0_REGS + EMIF_SDRAM_REF_CTRL)   = DDR3_EMIF_SDRAM_REF_CTRL_VAL1;
+    HWREG(SOC_EMIF_0_REGS + EMIF_SDRAM_REF_CTRL_SHDW) =
+                                                 DDR3_EMIF_SDRAM_REF_CTRL_SHDW_VAL1;
+
+    HWREG(SOC_EMIF_0_REGS + EMIF_ZQ_CONFIG)     = DDR3_EMIF_ZQ_CONFIG_VAL;
+    HWREG(SOC_EMIF_0_REGS + EMIF_SDRAM_CONFIG)     = DDR3_EMIF_SDRAM_CONFIG;
+
+    /* The CONTROL_SECURE_EMIF_SDRAM_CONFIG register exports SDRAM configuration
+       information to the EMIF */
+    HWREG(SOC_CONTROL_REGS + CONTROL_SECURE_EMIF_SDRAM_CONFIG) = DDR3_EMIF_SDRAM_CONFIG;
+}
+
+
 
 
 /* \brief This function initializes the EMIF
@@ -1175,12 +1190,13 @@ static void EDMAInit() {
 
 
 static void lcdBlPwmInit() {
-    /*pwmInitForSimplePwm(MODULE_ID_ePWM0,32000,0,0);
-    pwmStop(MODULE_ID_ePWM0);*/
-    MUX_VAL(CONTROL_PADCONF_MCASP0_FSX, (IDIS | PU | MODE7)) /* gpio_for_lcdbl */\
+    MUX_VAL(CONTROL_PADCONF_MCASP0_FSX, (IDIS | PU | MODE7)) // gpio_for_lcdbl
     GPIOInit(MODULE_ID_GPIO3, 0, 0);
     GPIOPinWr(MODULE_ID_GPIO3, 15, 1);
     GPIODirSet(MODULE_ID_GPIO3, 15, 0);
+    /*MUX_VAL(CONTROL_PADCONF_MCASP0_FSX, (IDIS | PU | MODE1)) //pwm_for_lcdbl
+    PWMSSInit();
+    pwmInitForSimplePwm(MODULE_ID_ePWM0,32000,100,0);*/
 }
 
 
@@ -1193,7 +1209,12 @@ void __lcd_back_ligth_ctr(unsigned char lightpwm) {
     } else {
         GPIOPinWr(MODULE_ID_GPIO3, 15, 1);
     }
+    /*unsigned int val = (255-lightpwm) *100/255;
+    pwmSetFreqDuty(MODULE_ID_ePWM0,32000,val);*/
 }
+
+
+
 
 extern void isr_uart_for_touche_keyboard(unsigned int intNum);
 
@@ -1257,9 +1278,15 @@ static void PinMuxSetup(void) {
     MUX_VAL(CONTROL_PADCONF_USB0_DRVVBUS, (IDIS | PD | MODE0)) /* USB0_DRVVBUS */\
     MUX_VAL(CONTROL_PADCONF_UART0_RXD, (IEN | OFF | MODE0)) /* uart0_rxd */\
     MUX_VAL(CONTROL_PADCONF_UART0_TXD, (IDIS | OFF | MODE0)) /* uart0_txd */\
-    ;
+    MUX_VAL(CONTROL_PADCONF_MII1_CRS, (IEN | OFF | MODE3 )) /* I2C1_SDA_mux0 */\
+    MUX_VAL(CONTROL_PADCONF_MII1_RX_ER, (IEN | OFF | MODE3 )) /* I2C1_SCL_mux0 */\
+    MUX_VAL(CONTROL_PADCONF_MII1_RX_CLK, (IEN | PU | MODE7 )) /* gpio3[10] tsc2007 pen irq */
+   
 }
 
+
+
+unsigned int boardErrFlag = 0;
 
 
 void BlPlatformConfig(void) {
@@ -1270,20 +1297,28 @@ void BlPlatformConfig(void) {
     IntAINTCInit();
     IntMasterIRQEnable();
     I2CInit(MODULE_ID_I2C0, 100000, NULL, 0);
-    ConfigVddOpVoltage();
+    if(!ConfigVddOpVoltage()) boardErrFlag |= BOARD_ERR_PICM;
     HWREG(SOC_WDT_1_REGS + WDT_WSPR) = 0xAAAAu;
     while (HWREG(SOC_WDT_1_REGS + WDT_WWPS) != 0x00);
 
     HWREG(SOC_WDT_1_REGS + WDT_WSPR) = 0x5555u;
     while (HWREG(SOC_WDT_1_REGS + WDT_WWPS) != 0x00);
 
-    PLLInit();
+    unsigned char tps65217chipid = Tps65712ChipId();
+    if (tps65217chipid == 0x0f) {//tps65271b
+       PLLInit(DDR2PLL_M);
+    }else if(tps65217chipid == 0x0e){//tps65217c
+       PLLInit(DDR3PLL_M);
+    }
     L3L4ClockInit();
     /* EMIF Initialization */
     EMIFInit();
-    /* DDR Initialization */
-    DDR2Init();
-
+    /* DDR Initialization */    
+    if (tps65217chipid == 0x0f) {//tps65271b
+        DDR2Init();
+    }else if(tps65217chipid == 0x0e){//tps65217c
+        DDR3Init();
+    }
     EDMAInit();
     TimerTickConfigure(MODULE_ID_TIMER2);
     TimerTickStart();
@@ -1294,6 +1329,8 @@ void BlPlatformConfig(void) {
     LCDRasterInit();
     lcdBlPwmInit();
     tsc_init_uart();
+    I2CInit(MODULE_ID_I2C1,100000, NULL, 0);    
+    tsc2007Init(MODULE_ID_I2C1, 0);
     if (TouchScreenTsPadDetect()){
        TouchScreenInit();
     }
@@ -1301,7 +1338,7 @@ void BlPlatformConfig(void) {
                         &card, NULL, NULL, NULL);
     MMCSDP_CtrlInit(&mmcsdctr[0]);
     MMCSDP_CardInit(&mmcsdctr[0], MMCSD_CARD_MMC);
-    RTCInit();
+    if(RTCInit() == RTC_FLAG_EXTERN_NONE) boardErrFlag |= BOARD_ERR_EXRTC;
     tsEnalbe();
 }
 

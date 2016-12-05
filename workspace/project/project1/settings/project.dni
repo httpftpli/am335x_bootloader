@@ -21,7 +21,7 @@ TypeViolation=1
 UnspecRange=1
 ActionState=1
 [DebugChecksum]
-Checksum=779171185
+Checksum=-1343792606
 [Exceptions]
 StopOnUncaught=_ 0
 StopOnThrow=_ 0
@@ -31,18 +31,24 @@ ShowArgs=0
 MixedMode=1
 [CodeCoverage]
 Enabled=_ 0
+[DriverProfiling]
+Enabled=0
+Mode=1
+Graph=0
+Symbiont=0
+Exclusions=
 [InterruptLog]
 LogEnabled=0
-SumEnabled=0
 GraphEnabled=0
 ShowTimeLog=1
+SumEnabled=0
 ShowTimeSum=1
 SumSortOrder=0
 [DataLog]
 LogEnabled=0
-SumEnabled=0
 GraphEnabled=0
 ShowTimeLog=1
+SumEnabled=0
 ShowTimeSum=1
 [Interrupts]
 Enabled=1
@@ -52,6 +58,9 @@ Manual=0
 Ddf=1
 TypeViol=0
 Stop=1
+[Trace1]
+Enabled=0
+ShowSource=1
 [Simulator]
 Freq=10000000
 MultiCoreRunAll=1
@@ -79,6 +88,7 @@ Fmt4=unsigned int[4]	4	0
 [watch_formats]
 Fmt0={W}0:g_keycode	3	0
 Fmt1={W}1:timemark	3	0
+Fmt2={W}1:z	4	0
 [Log file]
 LoggingEnabled=_ 0
 LogFile=_ ""
@@ -88,17 +98,12 @@ LoggingEnabled=_ 0
 LogFile=_ ""
 [CallStackLog]
 Enabled=0
-[DriverProfiling]
-Enabled=0
-Mode=0
-Graph=0
-Symbiont=0
-Exclusions=
+[CallStackStripe]
+ShowTiming=1
 [Disassemble mode]
 mode=0
 [Breakpoints2]
-Bp0=_ 1 "EMUL_CODE" "{$PROJ_DIR$\..\..\..\src\bl_main.c}.131.9" 0 0 1 "" 0 "" 0
-Count=1
+Count=0
 [Aliases]
 A0=_ "E:\md335x_bootloader\lib\cpu\armv7a\ewarm\cp15.S" ""
 A1=_ "E:\md335x_bootloader\lib\cpu\armv7a\ewarm\init.S" ""

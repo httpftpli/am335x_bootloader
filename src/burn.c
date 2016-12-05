@@ -38,7 +38,7 @@ FRESULT scan_files(TCHAR *path, MYFILEINFO *fileinfolist, unsigned int *nfiles) 
         tm_time.tm_min = (time & 0x3f<<5)>>5;
         tm_time.tm_hour = (time & 0x1f<<11)>>11;
         tm_time.tm_mday = day & 0x1f;
-        tm_time.tm_mon = (day & 0x0f<<5)>>5;
+        tm_time.tm_mon = ((day & 0x0f<<5)>>5)-1;
         tm_time.tm_year = ((day & 0x7f<<9)>>9)+80;
         tm_time.tm_isdst = 0;
         fileinfolist[i].modtime = mktime(&tm_time);

@@ -10,8 +10,8 @@ void post(void){
    unsigned char buf[512];
    drawRectFillEx(0,0,lcdCtrl.panel->width,lcdCtrl.panel->height,C_BLACK);
    drawStringEx("power on self test (post) begin,touch screen to skip",10,10,FONT_ASCII_16,C_WHITE,C_BLACK);
-
-
+   
+   //nand flash
    drawStringEx("nand flash test",30,30,FONT_ASCII_16,C_WHITE,C_BLACK);
    memset(buf,0x55,sizeof buf);
    MMCSDP_Write(mmcsdctr,buf,INAND_TEST_SECTOR,1);
@@ -36,13 +36,13 @@ void post(void){
    char *ddr = (char *)0x80000000;
    atomicClear(&g_touched);
    for (int i=0;i<17*1024;i++) {
-      memset32(ddr+i*4096,0x55555555,1024);
-      if (!memis_32(ddr+i*4096,0x55555555,1024)){
+      memset32(ddr+i*4096,0x55555555,4096);
+      if (!memis_32(ddr+i*4096,0x55555555,4096)){
         drawStringAlignEx("ERROR",ALIGN_RIGHT_MIDDLE,250,50,80,20,FONT_ASCII_16,C_WHITE,C_BLACK);
         while (1);
       }
-      memset32(ddr+i*4096,0xaaaaaaaa,1024);
-      if (!memis_32(ddr+i*4096,0xaaaaaaaa,1024)){
+      memset32(ddr+i*4096,0xaaaaaaaa,4096);
+      if (!memis_32(ddr+i*4096,0xaaaaaaaa,4096)){
          drawStringAlignEx("ERROR",ALIGN_RIGHT_MIDDLE,250,50,80,20,FONT_ASCII_16,C_WHITE,C_BLACK);
          while (1);
       } else{
@@ -50,8 +50,8 @@ void post(void){
             sprintf(dispbuf, "%d%s", i*4, " KB");
             drawStringAlignEx(dispbuf,ALIGN_RIGHT_MIDDLE,250,50,80,20,FONT_ASCII_16,C_WHITE,C_BLACK);
          }
-      }
-      if(atomicTestClear(&g_touched) || atomicTestClear(&g_keyPushed)){
+      }     
+      if(isTouched() || atomicTestClear(&g_keyPushed)){
          break;
       }
    }
@@ -64,8 +64,8 @@ void post(void){
        drawVLineEx(i,LCD_YSize/4*3,LCD_YSize/4,RGB(0xff*i/LCD_XSize,0xff*i/LCD_XSize,0xff*i/LCD_XSize));
    }
    unsigned int timerindex = StartTimer(10000);
-   atomicClear(&g_touched);
-   while(!atomicTestClear(&g_touched) && !atomicTestClear(&g_keyPushed)
+   atomicClear(&g_touched);   
+   while(!isTouched() && !atomicTestClear(&g_keyPushed)
          && !IsTimerElapsed(timerindex));
 
 }

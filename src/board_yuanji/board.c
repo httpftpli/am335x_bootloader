@@ -21,6 +21,7 @@
 #include "pf_mux.h"
 #include "pf_platform.h"
 #include "hw_tps65217.h"
+#include "pf_tps65217.h"
 #include "uartstdio.h"
 #include "soc_AM335X.h"
 #include "interrupt.h"
@@ -28,6 +29,7 @@
 #include "module.h"
 #include "mmath.h"
 #include "cpld.h"
+#include "board.h"
 
 
 /******************************************************************************
@@ -397,7 +399,7 @@ void PerPLLInit(void)
  * \return none
  *
  */
-void DDRPLLInit(void)
+void DDRPLLInit(unsigned int freqMult)
 {
     volatile unsigned int regVal = 0;
 
@@ -417,14 +419,15 @@ void DDRPLLInit(void)
                            CM_WKUP_CM_CLKSEL_DPLL_DDR_DPLL_DIV);
 
     HWREG(SOC_CM_WKUP_REGS + CM_WKUP_CM_CLKSEL_DPLL_DDR) |=
-        ((DDRPLL_M << CM_WKUP_CM_CLKSEL_DPLL_DDR_DPLL_MULT_SHIFT) |
-         (DDRPLL_N << CM_WKUP_CM_CLKSEL_DPLL_DDR_DPLL_DIV_SHIFT));
+                     ((freqMult << CM_WKUP_CM_CLKSEL_DPLL_DDR_DPLL_MULT_SHIFT) |
+                      (DDRPLL_N << CM_WKUP_CM_CLKSEL_DPLL_DDR_DPLL_DIV_SHIFT));
 
-    HWREG(SOC_CM_WKUP_REGS + CM_WKUP_CM_DIV_M2_DPLL_DDR) &=
-                       ~CM_WKUP_CM_DIV_M2_DPLL_DDR_DPLL_CLKOUT_DIV;
+    regVal = HWREG(SOC_CM_WKUP_REGS + CM_WKUP_CM_DIV_M2_DPLL_DDR);
+    regVal = regVal & ~CM_WKUP_CM_DIV_M2_DPLL_DDR_DPLL_CLKOUT_DIV;
+    regVal = regVal | DDRPLL_M2;
 
-    /* Set the CLKOUT divider */
-    HWREG(SOC_CM_WKUP_REGS + CM_WKUP_CM_DIV_M2_DPLL_DDR) |= DDRPLL_M2;
+    /* Set the CLKOUT2 divider */
+    HWREG(SOC_CM_WKUP_REGS + CM_WKUP_CM_DIV_M2_DPLL_DDR) = regVal;
 
     /* Now LOCK the PLL by enabling it */
     regVal = HWREG(SOC_CM_WKUP_REGS + CM_WKUP_CM_CLKMODE_DPLL_DDR) &
@@ -571,122 +574,17 @@ void PowerDomainTransitionInit(void)
  *
  * \return none
  */
-void PLLInit(void)
+void PLLInit(unsigned int ddrPllMul)
 {
     MPUPLLInit();
     CorePLLInit();
     PerPLLInit();
-    DDRPLLInit();
+    DDRPLLInit(ddrPllMul);
     InterfaceClkInit();
     PowerDomainTransitionInit();
     //DisplayPLLInit();
 }
 
-
-
-unsigned char  TPS65217RegRead(unsigned char regOffset)
-{
-    unsigned char val;
-    I2CMasterReadEx(SOC_I2C_0_REGS,0x24,&regOffset,1,&val,1);
-    return val;
-}
-
-/**
- *  \brief            - Generic function that can write a TPS65217 PMIC
- *                      register or bit field regardless of protection
- *                      level.
- *
- * \param regOffset:  - Register address to write.
- *
- * \param dest_val    - Value to write.
- *
- * \param mask        - Bit mask (8 bits) to be applied.  Function will only
- *                      change bits that are set in the bit mask.
- *
- * \return:            BOOL.
- */
-BOOL TPS65217RegWrite(unsigned char regOffset,
-                      unsigned char dest_val, unsigned char mask) {
-   unsigned char read_val;
-   unsigned char xor_reg;
-   unsigned char pswreg = 0x55;
-   unsigned char port_level;
-   unsigned char i2cwritebuf[2];
-   unsigned char i2cregaddr;
-   if (regOffset <= 12) {
-      port_level = PROT_LEVEL_NONE;
-   } else if ((regOffset <= 21) && ((regOffset >= 14))) {
-      port_level = PROT_LEVEL_2;
-   } else {
-      port_level = PROT_LEVEL_1;
-   }
-
-   if (mask != MASK_ALL_BITS) {
-      I2CMasterReadEx(SOC_I2C_0_REGS, 0x24, &regOffset, 1, &read_val, 1);
-      read_val &= (~mask);
-      read_val |= (dest_val & mask);
-      dest_val = read_val;
-   }
-   if (port_level == PROT_LEVEL_NONE) {
-      i2cwritebuf[0] = regOffset;
-      i2cwritebuf[1] = dest_val;
-      return I2CMasterWrite(SOC_I2C_0_REGS, 0x24, i2cwritebuf, 2);
-   }
-
-   if (port_level != PROT_LEVEL_NONE) {
-      xor_reg = regOffset ^ PASSWORD_UNLOCK;
-      i2cwritebuf[0] = PASSWORD;
-      i2cwritebuf[1] = xor_reg;
-      I2CMasterWrite(SOC_I2C_0_REGS, 0x24, i2cwritebuf, 2);
-      i2cwritebuf[0] = regOffset;
-      i2cwritebuf[1] = dest_val;
-      I2CMasterWrite(SOC_I2C_0_REGS, 0x24, i2cwritebuf, 2);
-      if (port_level == PROT_LEVEL_1) {
-         i2cregaddr = PASSWORD;
-         I2CMasterReadEx(SOC_I2C_0_REGS, 0x24, &i2cregaddr, 1, &pswreg, 1);
-         if (pswreg  == 0) {
-            return TRUE;
-         } else {
-            return FALSE;
-         }
-      }
-      //port_level == 2
-      i2cwritebuf[0] = PASSWORD;
-      i2cwritebuf[1] = xor_reg;
-      I2CMasterWrite(SOC_I2C_0_REGS, 0x24, i2cwritebuf, 2);
-      i2cwritebuf[0] = regOffset;
-      i2cwritebuf[1] = dest_val;
-      I2CMasterWrite(SOC_I2C_0_REGS, 0x24, i2cwritebuf, 2);
-      i2cregaddr = PASSWORD;
-      I2CMasterReadEx(SOC_I2C_0_REGS, 0x24, &i2cregaddr, 1, &pswreg, 1);
-      if (pswreg == 0) {
-         return TRUE;
-      }
-   }
-   return FALSE;
-}
-
-
-
-/**
- *  \brief              - Controls output voltage setting for the DCDC1,
- *                        DCDC2, or DCDC3 control registers in the PMIC.
- *
- * \param  dc_cntrl_reg   DCDC Control Register address.
- *                        Must be DEFDCDC1, DEFDCDC2, or DEFDCDC3.
- *
- * \param  volt_sel       Register value to set.  See PMIC TRM for value set.
- *
- * \return:               None.
- */
-void TPS65217VoltageUpdate(unsigned char dc_cntrl_reg, unsigned char volt_sel)
-{
-    /* set voltage level */
-    TPS65217RegWrite(dc_cntrl_reg, volt_sel, MASK_ALL_BITS);
-
-    /* set GO bit to initiate voltage transition */
-    TPS65217RegWrite(DEFSLEW, DCDC_GO, DCDC_GO);
-}
 
 
 /*
@@ -697,7 +595,7 @@ void TPS65217VoltageUpdate(unsigned char dc_cntrl_reg, unsigned char volt_sel)
  * \return none
  */
 
-void ConfigVddOpVoltage(void)
+bool ConfigVddOpVoltage(void)
 {
     unsigned char vol_sel = DCDC_VOLT_SEL_1100MV;
 #if (OPP == OPP_SR_TURBO)
@@ -708,7 +606,7 @@ void ConfigVddOpVoltage(void)
     vol_sel = DCDC_VOLT_SEL_1100MV;
 #endif
     /* Set DCDC2 (MPU) voltage to 1.275V */
-    TPS65217VoltageUpdate(DEFDCDC2, vol_sel);
+    return TPS65217VoltageUpdate(DEFDCDC2, vol_sel);
     /* Set LDO3, LDO4 output voltage to 3.3V */
     //TPS65217RegWrite(DEFLS1, LDO_VOLTAGE_OUT_3_3, LDO_MASK);
     //TPS65217RegWrite(DEFLS2, LDO_VOLTAGE_OUT_3_3, LDO_MASK);
@@ -788,7 +686,6 @@ void EMIFPinMuxSetup(unsigned int instance)
 
 
 static void PinMuxSetup(void){
-#ifdef YUANJI
 MUX_VAL(CONTROL_PADCONF_GPMC_AD0, (IEN | PD | MODE0)) /* gpmc_ad0 */\
 	MUX_VAL(CONTROL_PADCONF_GPMC_AD1, (IEN | PD | MODE0)) /* gpmc_ad1 */\
 	MUX_VAL(CONTROL_PADCONF_GPMC_AD2, (IEN | PD | MODE0)) /* gpmc_ad2 */\
@@ -885,52 +782,6 @@ MUX_VAL(CONTROL_PADCONF_GPMC_AD0, (IEN | PD | MODE0)) /* gpmc_ad0 */\
 	MUX_VAL(CONTROL_PADCONF_TCK, (IEN | PU | MODE0)) /* TCK */\
 	MUX_VAL(CONTROL_PADCONF_USB1_DRVVBUS, (IDIS | PD | MODE0)) /* USB1_DRVVBUS */\
           ;
-#else
-  MUX_VAL(CONTROL_PADCONF_MMC0_DAT3, (IEN | PU | MODE0 )) /* MMC0_DAT3 */\
-  MUX_VAL(CONTROL_PADCONF_MMC0_DAT2, (IEN | PU | MODE0 )) /* MMC0_DAT2 */\
-  MUX_VAL(CONTROL_PADCONF_MMC0_DAT1, (IEN | PU | MODE0 )) /* MMC0_DAT1 */\
-  MUX_VAL(CONTROL_PADCONF_MMC0_DAT0, (IEN | PU | MODE0 )) /* MMC0_DAT0 */\
-  MUX_VAL(CONTROL_PADCONF_MMC0_CLK, (IEN | PU | MODE0 )) /* MMC0_CLK */\
-  MUX_VAL(CONTROL_PADCONF_MMC0_CMD, (IEN | PU | MODE0 )) /* MMC0_CMD */\
-  MUX_VAL(CONTROL_PADCONF_I2C0_SDA, (IEN | OFF | MODE0 )) /* I2C0_SDA */\
-  MUX_VAL(CONTROL_PADCONF_I2C0_SCL, (IEN | OFF | MODE0 )) /* I2C0_SCL */\
-MUX_VAL(CONTROL_PADCONF_SPI0_SCLK, (IEN | OFF | MODE0 )) /* SPI0_SCLK */\
-MUX_VAL(CONTROL_PADCONF_SPI0_D0, (IEN | OFF | MODE0 )) /* SPI0_D0 */\
-MUX_VAL(CONTROL_PADCONF_SPI0_D1, (IEN | OFF | MODE0 )) /* SPI0_D1 */\
-MUX_VAL(CONTROL_PADCONF_SPI0_CS0, (IEN | PU | MODE0 )) /* SPI0_CS0 */\
-MUX_VAL(CONTROL_PADCONF_GPMC_AD8, (IEN | OFF | MODE1 )) /* LCD_DATA23 */\
-MUX_VAL(CONTROL_PADCONF_GPMC_AD9, (IEN | OFF | MODE1 )) /* LCD_DATA22 */\
-MUX_VAL(CONTROL_PADCONF_GPMC_AD10, (IEN | OFF | MODE1 )) /* LCD_DATA21 */\
-MUX_VAL(CONTROL_PADCONF_GPMC_AD11, (IEN | OFF | MODE1 )) /* LCD_DATA20 */\
-MUX_VAL(CONTROL_PADCONF_GPMC_AD12, (IEN | OFF | MODE1 )) /* LCD_DATA19 */\
-MUX_VAL(CONTROL_PADCONF_GPMC_AD13, (IEN | OFF | MODE1 )) /* LCD_DATA18 */\
-MUX_VAL(CONTROL_PADCONF_GPMC_AD14, (IEN | OFF | MODE1 )) /* LCD_DATA17 */\
-MUX_VAL(CONTROL_PADCONF_GPMC_AD15, (IEN | OFF | MODE1 )) /* LCD_DATA16 */\
-MUX_VAL(CONTROL_PADCONF_GPMC_WAIT0, (IEN | PU | MODE6 )) /* UART4_RXD_MUX2 */\
-MUX_VAL(CONTROL_PADCONF_GPMC_WPN, (IEN | PU | MODE6 )) /* UART4_TXD_MUX2 */\
-MUX_VAL(CONTROL_PADCONF_LCD_DATA0, (IEN | OFF | MODE0 )) /* LCD_DATA0 */\
-MUX_VAL(CONTROL_PADCONF_LCD_DATA1, (IEN | OFF | MODE0 )) /* LCD_DATA1 */\
-MUX_VAL(CONTROL_PADCONF_LCD_DATA2, (IEN | OFF | MODE0 )) /* LCD_DATA2 */\
-MUX_VAL(CONTROL_PADCONF_LCD_DATA3, (IEN | OFF | MODE0 )) /* LCD_DATA3 */\
-MUX_VAL(CONTROL_PADCONF_LCD_DATA4, (IEN | OFF | MODE0 )) /* LCD_DATA4 */\
-MUX_VAL(CONTROL_PADCONF_LCD_DATA5, (IEN | OFF | MODE0 )) /* LCD_DATA5 */\
-MUX_VAL(CONTROL_PADCONF_LCD_DATA6, (IEN | OFF | MODE0 )) /* LCD_DATA6 */\
-MUX_VAL(CONTROL_PADCONF_LCD_DATA7, (IEN | OFF | MODE0 )) /* LCD_DATA7 */\
-MUX_VAL(CONTROL_PADCONF_LCD_DATA8, (IEN | OFF | MODE0 )) /* LCD_DATA8 */\
-MUX_VAL(CONTROL_PADCONF_LCD_DATA9, (IEN | OFF | MODE0 )) /* LCD_DATA9 */\
-MUX_VAL(CONTROL_PADCONF_LCD_DATA10, (IEN | OFF | MODE0 )) /* LCD_DATA10 */\
-MUX_VAL(CONTROL_PADCONF_LCD_DATA11, (IEN | OFF | MODE0 )) /* LCD_DATA11 */\
-MUX_VAL(CONTROL_PADCONF_LCD_DATA12, (IEN | OFF | MODE0 )) /* LCD_DATA12 */\
-MUX_VAL(CONTROL_PADCONF_LCD_DATA13, (IEN | OFF | MODE0 )) /* LCD_DATA13 */\
-MUX_VAL(CONTROL_PADCONF_LCD_DATA14, (IEN | OFF | MODE0 )) /* LCD_DATA14 */\
-MUX_VAL(CONTROL_PADCONF_LCD_DATA15, (IEN | OFF | MODE0 )) /* LCD_DATA15 */\
-MUX_VAL(CONTROL_PADCONF_LCD_VSYNC, (IDIS | OFF | MODE0 )) /* LCD_VSYNC */\
-MUX_VAL(CONTROL_PADCONF_LCD_HSYNC, (IDIS | OFF | MODE0 )) /* LCD_HSYNC */\
-MUX_VAL(CONTROL_PADCONF_LCD_PCLK, (IDIS | OFF | MODE0 )) /* LCD_PCLK */\
-MUX_VAL(CONTROL_PADCONF_LCD_AC_BIAS_EN, (IDIS | OFF | MODE0 )) /* LCD_AC_BIAS_EN */\
-MUX_VAL(CONTROL_PADCONF_USB0_DRVVBUS, (IDIS | PD | MODE0 )) /* USB0_DRVVBUS */\
-;
-#endif
 }
 
 /*
@@ -1008,6 +859,41 @@ static void DDR2PhyInit(void)
 
 
 
+static void DDR3PhyInit(void)
+{
+    /* Enable VTP */
+    HWREG(SOC_CONTROL_REGS + CONTROL_VTP_CTRL) |= CONTROL_VTP_CTRL_ENABLE;
+    HWREG(SOC_CONTROL_REGS + CONTROL_VTP_CTRL) &= ~CONTROL_VTP_CTRL_CLRZ;
+    HWREG(SOC_CONTROL_REGS + CONTROL_VTP_CTRL) |= CONTROL_VTP_CTRL_CLRZ;
+    while((HWREG(SOC_CONTROL_REGS + CONTROL_VTP_CTRL) & CONTROL_VTP_CTRL_READY) !=
+                CONTROL_VTP_CTRL_READY);
+
+    /* DDR PHY CMD0 Register configuration */
+    HWREG(CMD0_SLAVE_RATIO_0)   = DDR3_CMD0_SLAVE_RATIO_0;
+    HWREG(CMD0_INVERT_CLKOUT_0) = DDR3_CMD0_INVERT_CLKOUT_0;
+
+    /* DDR PHY CMD1 Register configuration */
+    HWREG(CMD1_SLAVE_RATIO_0)   = DDR3_CMD1_SLAVE_RATIO_0;
+    HWREG(CMD1_INVERT_CLKOUT_0) = DDR3_CMD1_INVERT_CLKOUT_0;
+
+    /* DDR PHY CMD2 Register configuration */
+    HWREG(CMD2_SLAVE_RATIO_0)   = DDR3_CMD2_SLAVE_RATIO_0;
+    HWREG(CMD2_INVERT_CLKOUT_0) = DDR3_CMD2_INVERT_CLKOUT_0;
+
+    /* DATA macro configuration */
+    HWREG(DATA0_RD_DQS_SLAVE_RATIO_0)  = DDR3_DATA0_RD_DQS_SLAVE_RATIO_0;
+    HWREG(DATA0_WR_DQS_SLAVE_RATIO_0)  = DDR3_DATA0_WR_DQS_SLAVE_RATIO_0;
+    HWREG(DATA0_FIFO_WE_SLAVE_RATIO_0) = DDR3_DATA0_FIFO_WE_SLAVE_RATIO_0;
+    HWREG(DATA0_WR_DATA_SLAVE_RATIO_0) = DDR3_DATA0_WR_DATA_SLAVE_RATIO_0;
+    HWREG(DATA1_RD_DQS_SLAVE_RATIO_0)  = DDR3_DATA0_RD_DQS_SLAVE_RATIO_1;
+    HWREG(DATA1_WR_DQS_SLAVE_RATIO_0)  = DDR3_DATA0_WR_DQS_SLAVE_RATIO_1;
+    HWREG(DATA1_FIFO_WE_SLAVE_RATIO_0) = DDR3_DATA0_FIFO_WE_SLAVE_RATIO_1;
+    HWREG(DATA1_WR_DATA_SLAVE_RATIO_0) = DDR3_DATA0_WR_DATA_SLAVE_RATIO_1;
+
+}
+
+
+
 /* \brief This function initializes the DDR2
  *
  * \param none
@@ -1068,6 +954,69 @@ void DDR2Init(void)
     HWREG(SOC_CONTROL_REGS + CONTROL_SECURE_EMIF_SDRAM_CONFIG) = DDR2_EMIF_SDRAM_CONFIG;
 
 }
+
+void DDR3Init(void)
+{
+    /* DDR3 Phy Initialization */
+    DDR3PhyInit();
+    HWREG(SOC_CONTROL_REGS + CONTROL_DDR_CMD_IOCTRL(0)) =
+                                                 DDR3_CONTROL_DDR_CMD_IOCTRL_0;
+    HWREG(SOC_CONTROL_REGS + CONTROL_DDR_CMD_IOCTRL(1)) =
+                                                 DDR3_CONTROL_DDR_CMD_IOCTRL_1;
+    HWREG(SOC_CONTROL_REGS + CONTROL_DDR_CMD_IOCTRL(2)) =
+                                                 DDR3_CONTROL_DDR_CMD_IOCTRL_2;
+    HWREG(SOC_CONTROL_REGS + CONTROL_DDR_DATA_IOCTRL(0)) =
+                                                 DDR3_CONTROL_DDR_DATA_IOCTRL_0;
+    HWREG(SOC_CONTROL_REGS + CONTROL_DDR_DATA_IOCTRL(1)) =
+                                                 DDR3_CONTROL_DDR_DATA_IOCTRL_1;
+
+    /* IO to work for DDR3 */
+    HWREG(SOC_CONTROL_REGS + CONTROL_DDR_IO_CTRL) &= DDR3_CONTROL_DDR_IO_CTRL;
+
+    HWREG(SOC_CONTROL_REGS + CONTROL_DDR_CKE_CTRL) |= CONTROL_DDR_CKE_CTRL_DDR_CKE_CTRL;
+
+    HWREG(SOC_EMIF_0_REGS + EMIF_DDR_PHY_CTRL_1) = DDR3_EMIF_DDR_PHY_CTRL_1;
+
+    /* Dynamic Power Down */
+   /* if((DEVICE_VERSION_2_0 == deviceVersion) ||
+       (DEVICE_VERSION_2_1 == deviceVersion))
+    {
+        HWREG(SOC_EMIF_0_REGS + EMIF_DDR_PHY_CTRL_1) |=
+                                              DDR3_EMIF_DDR_PHY_CTRL_1_DY_PWRDN;
+    } */
+
+    HWREG(SOC_EMIF_0_REGS + EMIF_DDR_PHY_CTRL_1_SHDW) =
+                                                 DDR3_EMIF_DDR_PHY_CTRL_1_SHDW;
+
+    /* Dynamic Power Down */
+    /*if((DEVICE_VERSION_2_0 == deviceVersion) ||
+       (DEVICE_VERSION_2_1 == deviceVersion))
+    {
+        HWREG(SOC_EMIF_0_REGS + EMIF_DDR_PHY_CTRL_1_SHDW) |=
+                                         DDR3_EMIF_DDR_PHY_CTRL_1_SHDW_DY_PWRDN;
+    } */
+
+    HWREG(SOC_EMIF_0_REGS + EMIF_DDR_PHY_CTRL_2) = DDR3_EMIF_DDR_PHY_CTRL_2;
+
+    HWREG(SOC_EMIF_0_REGS + EMIF_SDRAM_TIM_1)      = DDR3_EMIF_SDRAM_TIM_1;
+    HWREG(SOC_EMIF_0_REGS + EMIF_SDRAM_TIM_1_SHDW) = DDR3_EMIF_SDRAM_TIM_1_SHDW;
+    HWREG(SOC_EMIF_0_REGS + EMIF_SDRAM_TIM_2)      = DDR3_EMIF_SDRAM_TIM_2;
+    HWREG(SOC_EMIF_0_REGS + EMIF_SDRAM_TIM_2_SHDW) = DDR3_EMIF_SDRAM_TIM_2_SHDW;
+    HWREG(SOC_EMIF_0_REGS + EMIF_SDRAM_TIM_3)      = DDR3_EMIF_SDRAM_TIM_3;
+    HWREG(SOC_EMIF_0_REGS + EMIF_SDRAM_TIM_3_SHDW) = DDR3_EMIF_SDRAM_TIM_3_SHDM;
+
+    HWREG(SOC_EMIF_0_REGS + EMIF_SDRAM_REF_CTRL)   = DDR3_EMIF_SDRAM_REF_CTRL_VAL1;
+    HWREG(SOC_EMIF_0_REGS + EMIF_SDRAM_REF_CTRL_SHDW) =
+                                                 DDR3_EMIF_SDRAM_REF_CTRL_SHDW_VAL1;
+
+    HWREG(SOC_EMIF_0_REGS + EMIF_ZQ_CONFIG)     = DDR3_EMIF_ZQ_CONFIG_VAL;
+    HWREG(SOC_EMIF_0_REGS + EMIF_SDRAM_CONFIG)     = DDR3_EMIF_SDRAM_CONFIG;
+
+    /* The CONTROL_SECURE_EMIF_SDRAM_CONFIG register exports SDRAM configuration
+       information to the EMIF */
+    HWREG(SOC_CONTROL_REGS + CONTROL_SECURE_EMIF_SDRAM_CONFIG) = DDR3_EMIF_SDRAM_CONFIG;
+}
+
 
 
 /* \brief This function initializes the EMIF
@@ -1177,165 +1126,6 @@ static void EDMAInit(){
    }
 }
 
-#define KEYSCANCODE_0		20
-#define KEYSCANCODE_1		8
-#define KEYSCANCODE_2		9
-#define KEYSCANCODE_3		10
-#define KEYSCANCODE_4		11
-#define KEYSCANCODE_5		12
-#define KEYSCANCODE_6		16
-#define KEYSCANCODE_7		17
-#define KEYSCANCODE_8		18
-#define KEYSCANCODE_9		19
-#define KEYSCANCODE_DOT	   50
-#define KEYSCANCODE_ZF		51
-#define KEYSCANCODE_A		24
-#define KEYSCANCODE_B		26
-#define KEYSCANCODE_C		52
-#define KEYSCANCODE_D		53
-#define KEYSCANCODE_E		54
-#define KEYSCANCODE_F		55
-#define KEYSCANCODE_F1		0
-#define KEYSCANCODE_F2		1
-#define KEYSCANCODE_F3		2
-#define KEYSCANCODE_F4		3
-#define KEYSCANCODE_F5		4
-#define KEYSCANCODE_F6		5
-#define KEYSCANCODE_RIGHT	29
-#define KEYSCANCODE_LEFT	27
-#define KEYSCANCODE_UP		25
-#define KEYSCANCODE_DOWN	21
-#define KEYSCANCODE_QUK	28
-#define KEYSCANCODE_ESC	32
-#define KEYSCANCODE_ENTER	33
-#define KEYSCANCODE_PU		35
-#define KEYSCANCODE_PD		36
-#define KEYSCANCODE_USB	56
-#define KEYSCANCODE_MEM	30
-#define KEYSCANCODE_CE		14
-#define KEYSCANCODE_POP	31
-
-static unsigned char keyCode(int scancode) {
-   unsigned int key;
-   switch (scancode) {
-   case KEYSCANCODE_0 :
-      key =  KEY_0;
-      break;
-   case KEYSCANCODE_1 :
-      key =   KEY_1;
-      break;
-   case KEYSCANCODE_2 :
-      key =   KEY_2;
-      break;
-   case KEYSCANCODE_3 :
-      key =   KEY_3;
-      break;
-   case KEYSCANCODE_4  :
-      key =   KEY_4;
-      break;
-   case KEYSCANCODE_5  :
-      key =   KEY_5;
-      break;
-   case KEYSCANCODE_6  :
-      key =   KEY_6;
-      break;
-   case KEYSCANCODE_7 :
-      key =   KEY_7;
-      break;
-   case KEYSCANCODE_8 :
-      key =   KEY_8;
-      break;
-   case KEYSCANCODE_9 :
-      key =   KEY_9;
-      break;
-   case KEYSCANCODE_DOT:
-      key =   KEY_POINT;
-      break;
-   case KEYSCANCODE_ZF :
-      key =   KEY_ZF;
-      break;
-   case KEYSCANCODE_A  :
-      key =   KEY_A;
-      break;
-   case KEYSCANCODE_B :
-      key =   KEY_B;
-      break;
-   case KEYSCANCODE_C  :
-      key =   KEY_C;
-      break;
-   case KEYSCANCODE_D :
-      key =   KEY_D;
-      break;
-   case KEYSCANCODE_E :
-      key =   KEY_E;
-      break;
-   case KEYSCANCODE_F :
-      key =  KEY_F;
-      break;
-   case KEYSCANCODE_F1:
-      key =   KEY_F1;
-      break;
-   case KEYSCANCODE_F2 :
-      key =   KEY_F2;
-      break;
-   case KEYSCANCODE_F3 :
-      key =   KEY_F3;
-      break;
-   case KEYSCANCODE_F4 :
-      key =  KEY_F4;
-      break;
-   case KEYSCANCODE_F5 :
-      key = KEY_F5;
-      break;
-   case KEYSCANCODE_F6:
-      key = KEY_F6;
-      break;
-   case KEYSCANCODE_RIGHT:
-      key =   KEY_RIGHT;
-      break;
-   case KEYSCANCODE_LEFT :
-      key =   KEY_LEFT;
-      break;
-   case KEYSCANCODE_UP :
-      key = KEY_UP;
-      break;
-   case KEYSCANCODE_DOWN:
-      key =   KEY_DOWN;
-      break;
-   case KEYSCANCODE_QUK :
-      key =   KEY_QUK;
-      break;
-   case KEYSCANCODE_ESC :
-      key =   KEY_ESC;
-      break;
-   case KEYSCANCODE_ENTER:
-      key =   KEY_OK;
-      break;
-   case KEYSCANCODE_PU :
-      key =   KEY_PU;
-      break;
-   case KEYSCANCODE_PD :
-      key =   KEY_PD;
-      break;
-   case KEYSCANCODE_USB:
-      key =   KEY_USB;
-      break;
-   case KEYSCANCODE_CE :
-      key =   KEY_CE;
-      break;
-   case KEYSCANCODE_MEM :
-      key =   KEY_MEM;
-      break;
-   case KEYSCANCODE_POP :
-      key =   KEY_POP;
-      break;
-   default:
-      key =   KEY_NO;
-      break;
-   }
-   return key;
-}
-
 
 
 
@@ -1345,6 +1135,7 @@ mmcsdCardInfo card;
 extern void USBIntConfigure(int instatance);
 
 
+#if 0
 void PinMuxSetup(void){
 MUX_VAL(CONTROL_PADCONF_GPMC_AD0, (IEN | PD | MODE0)) /* gpmc_ad0 */\
 	MUX_VAL(CONTROL_PADCONF_GPMC_AD1, (IEN | PD | MODE0)) /* gpmc_ad1 */\
@@ -1442,14 +1233,17 @@ MUX_VAL(CONTROL_PADCONF_GPMC_AD0, (IEN | PD | MODE0)) /* gpmc_ad0 */\
 	MUX_VAL(CONTROL_PADCONF_TCK, (IEN | PU | MODE0)) /* TCK */\
 	MUX_VAL(CONTROL_PADCONF_USB1_DRVVBUS, (IDIS | PD | MODE0)) /* USB1_DRVVBUS */\
           ;
-
 }
+#endif
 
 
 void __lcd_back_ligth_ctr(unsigned char lightpwm)
 {
 	LCD_REG->LCD_PWM = lightpwm;
 }
+
+
+unsigned int boardErrFlag = 0;
 
 void BlPlatformConfig(void)
 {
@@ -1460,20 +1254,29 @@ void BlPlatformConfig(void)
     IntAINTCInit();
     IntMasterIRQEnable();
     I2CInit(MODULE_ID_I2C0,100000, NULL, 0);
-    ConfigVddOpVoltage();
+    if(!ConfigVddOpVoltage()) boardErrFlag |= BOARD_ERR_PICM;
     HWREG(SOC_WDT_1_REGS + WDT_WSPR) = 0xAAAAu;
     while(HWREG(SOC_WDT_1_REGS + WDT_WWPS) != 0x00);
 
     HWREG(SOC_WDT_1_REGS + WDT_WSPR) = 0x5555u;
     while(HWREG(SOC_WDT_1_REGS + WDT_WWPS) != 0x00);
-
-    PLLInit();
+    
+    unsigned char tps65217chipid = Tps65712ChipId();
+    if (tps65217chipid == 0x0f) {//tps65271b
+       PLLInit(DDR2PLL_M);
+    }else if(tps65217chipid == 0x0e){//tps65217c
+       PLLInit(DDR3PLL_M);
+    }
     L3L4ClockInit();
     /* EMIF Initialization */
     EMIFInit();
     /* DDR Initialization */
-    DDR2Init();
-
+    
+    if (tps65217chipid == 0x0f) {//tps65271b
+        DDR2Init();
+    }else if(tps65217chipid == 0x0e){//tps65217c
+        DDR3Init();
+    }
     EDMAInit();
     TimerTickConfigure(MODULE_ID_TIMER2);
     TimerTickStart();
@@ -1482,7 +1285,7 @@ void BlPlatformConfig(void)
     UARTStdioInit();
 
     GPMCInitForNOR();
-    USBIntConfigure(1);
+    USBIntConfigure(USB_INSTANCE_FOR_USBDISK);
     TouchScreenInit();
 
     //SPIMasterInit(MODULE_ID_SPI0, 0, 12000000, 1, 1, 0,8);
@@ -1493,8 +1296,8 @@ void BlPlatformConfig(void)
                        &card, NULL,NULL, NULL);
     MMCSDP_CtrlInit(&mmcsdctr[0]);
     MMCSDP_CardInit(&mmcsdctr[0],MMCSD_CARD_MMC);
-    RTCInit();
-    registKeyMap(keyCode);
+    if(RTCInit() == RTC_FLAG_EXTERN_NONE) boardErrFlag |= BOARD_ERR_EXRTC;
+    //registKeyMap(keyCode);
 }
 
 

@@ -10,6 +10,9 @@
 #include "cpld.h"
 #include "pf_timertick.h"
 #include "bl_post.h"
+#include "pf_tsc2007.h"
+#include "board.h"
+#include <string.h>
 
 
 #define FORCEBOOT_WAITTIME  2000 //ms
@@ -79,17 +82,29 @@ extern void shortcuthandler(int keycode);
 extern mmcsdCtrlInfo mmcsdctr[2];
 
 
+extern unsigned int boardErrFlag;
+
 int main(void) {
     BlPlatformConfig();
     //LCDRasterStart();
-    LCDBackLightON(255);
+    //LCDBackLightON(255);
     UARTPuts("Minde bootloader \n\r ", -1);
     int val = 0;
     uint32 bootparam = 0;
     isIDok = isIDvailable();
     bootparam = getbootparam();
+
+#ifdef INNERBOOT
+    bootparam |= BOOT_TS_CAL | BOOT_POST;
+#endif
+
     if (!isIDok) {
         UARTPuts("ID error...\r\n\n", -1);
+        goto BOOTLOADER;
+    }
+    
+    if(boardErrFlag & BOARD_ERR_PICM){
+        UARTPuts("Board Init PICM Error,Enter to bootloader..\r\n\n", -1);
         goto BOOTLOADER;
     }
 
@@ -144,6 +159,11 @@ int main(void) {
 #endif
     hmiInit();
     f_mount(0, &inandfs);
+    char errbuf[100]  = "ERROR:";
+    if(boardErrFlag & BOARD_ERR_PICM){
+      strcat(errbuf,"PICM");
+      statBarPrint(1, errbuf); 
+    }    
     while (1) {
         guiExec();
         usbMscProcess();
@@ -151,6 +171,7 @@ int main(void) {
         displayUdisk();
         probIdisk_display();
         statLabelShowTime();
+        tsc2007TouchProcess();
     }
 }
 
