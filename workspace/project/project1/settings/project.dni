@@ -21,7 +21,7 @@ TypeViolation=1
 UnspecRange=1
 ActionState=1
 [DebugChecksum]
-Checksum=-1343792606
+Checksum=-1061858842
 [Exceptions]
 StopOnUncaught=_ 0
 StopOnThrow=_ 0
@@ -37,33 +37,6 @@ Mode=1
 Graph=0
 Symbiont=0
 Exclusions=
-[InterruptLog]
-LogEnabled=0
-GraphEnabled=0
-ShowTimeLog=1
-SumEnabled=0
-ShowTimeSum=1
-SumSortOrder=0
-[DataLog]
-LogEnabled=0
-GraphEnabled=0
-ShowTimeLog=1
-SumEnabled=0
-ShowTimeSum=1
-[Interrupts]
-Enabled=1
-[MemConfig]
-Base=1
-Manual=0
-Ddf=1
-TypeViol=0
-Stop=1
-[Trace1]
-Enabled=0
-ShowSource=1
-[Simulator]
-Freq=10000000
-MultiCoreRunAll=1
 [struct_types]
 Fmt0=APPHEADER-magic	4	0
 Fmt1=APPSETCTION-descriptOffset	4	0
@@ -100,10 +73,34 @@ LogFile=_ ""
 Enabled=0
 [CallStackStripe]
 ShowTiming=1
+[InterruptLog]
+LogEnabled=0
+GraphEnabled=0
+ShowTimeLog=1
+SumEnabled=0
+ShowTimeSum=1
+SumSortOrder=0
+[DataLog]
+LogEnabled=0
+GraphEnabled=0
+ShowTimeLog=1
+SumEnabled=0
+ShowTimeSum=1
 [Disassemble mode]
 mode=0
 [Breakpoints2]
 Count=0
+[Interrupts]
+Enabled=1
+[MemConfig]
+Base=1
+Manual=0
+Ddf=1
+TypeViol=0
+Stop=1
+[Trace1]
+Enabled=0
+ShowSource=1
 [Aliases]
 A0=_ "E:\md335x_bootloader\lib\cpu\armv7a\ewarm\cp15.S" ""
 A1=_ "E:\md335x_bootloader\lib\cpu\armv7a\ewarm\init.S" ""
@@ -115,3 +112,6 @@ A6=_ "E:\softwareProject\md335x_bootloader\lib\fatfs\src\ff_ext.c" ""
 A7=_ "E:\softwareProject\md335x_bootloader\lib\utils\mem.c" ""
 Count=8
 SuppressDialog=0
+[Simulator]
+Freq=10000000
+MultiCoreRunAll=1

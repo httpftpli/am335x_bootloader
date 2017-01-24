@@ -17,12 +17,13 @@
 #define MAX_BUTTON_CAPTION   30
 #define MAX_LABEL_CAPTION    100
 
-#define BTR_VERSION  "V1.4"
-const char Ver[] = { "SoftVer-A.MWYT.SW-A.01.04.00&"__DATE__ };
+#define BTR_VERSION  "V1.5"
+const char Ver[] = { "SoftVer-A.MWYT.SW-A.01.05.00&"__DATE__ };
 
 /*
 V1.3: 支持外部触摸
 V1.4：支持DDR3 DDR3L 自动检测
+V1.5: 串口触摸支持magic字段为0x01 或者 0x0f
 
 */
 
